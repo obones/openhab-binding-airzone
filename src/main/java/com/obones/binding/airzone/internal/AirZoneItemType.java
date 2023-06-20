@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.core.items.GenericItem;
 import org.openhab.core.library.items.NumberItem;
-import org.openhab.core.library.items.RollershutterItem;
 import org.openhab.core.library.items.StringItem;
 import org.openhab.core.library.items.SwitchItem;
 import org.openhab.core.thing.ThingTypeUID;

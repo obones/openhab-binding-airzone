@@ -11,14 +11,15 @@
  */
 package com.obones.binding.airzone.internal.factory;
 
+// @formatter:off
 import java.util.HashSet;
-import java.util.Hashtable;
+//import java.util.Hashtable;
 import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.osgi.framework.ServiceRegistration;
-import org.openhab.core.config.discovery.DiscoveryService;
+//import org.openhab.core.config.discovery.DiscoveryService;
 import org.openhab.core.i18n.LocaleProvider;
 import org.openhab.core.i18n.TranslationProvider;
 import org.openhab.core.thing.Bridge;
@@ -48,13 +49,13 @@ import com.obones.binding.airzone.internal.utils.Localization;
  */
 @NonNullByDefault
 @Component(service = ThingHandlerFactory.class, name = "binding.airzone")
-public class AirZoneHandlerFactory {
+public class AirZoneHandlerFactory extends BaseThingHandlerFactory {
     private @NonNullByDefault({}) final Logger logger = LoggerFactory.getLogger(AirZoneHandlerFactory.class);
-    
+
     // Class internal
 
     private @Nullable ServiceRegistration<?> discoveryServiceRegistration = null;
-    private @Nullable AirZoneDiscoveryService discoveryService = null;
+    // private @Nullable AirZoneDiscoveryService discoveryService = null;
 
     private Set<AirZoneBindingHandler> airZoneBindingHandlers = new HashSet<>();
     private Set<AirZoneBridgeHandler> airZoneBridgeHandlers = new HashSet<>();
@@ -70,6 +71,7 @@ public class AirZoneHandlerFactory {
 
     private void registerDeviceDiscoveryService(AirZoneBridgeHandler bridgeHandler) {
         logger.trace("registerDeviceDiscoveryService({}) called.", bridgeHandler);
+        /*
         AirZoneDiscoveryService discoveryService = this.discoveryService;
         if (discoveryService == null) {
             discoveryService = this.discoveryService = new AirZoneDiscoveryService(localization);
@@ -79,10 +81,12 @@ public class AirZoneHandlerFactory {
             discoveryServiceRegistration = bundleContext.registerService(DiscoveryService.class.getName(),
                     discoveryService, new Hashtable<>());
         }
+        */
     }
 
     private synchronized void unregisterDeviceDiscoveryService(AirZoneBridgeHandler bridgeHandler) {
         logger.trace("unregisterDeviceDiscoveryService({}) called.", bridgeHandler);
+        /*
         AirZoneDiscoveryService discoveryService = this.discoveryService;
         if (discoveryService != null) {
             discoveryService.removeBridge(bridgeHandler);
@@ -94,6 +98,7 @@ public class AirZoneHandlerFactory {
                 }
             }
         }
+        */
     }
 
     private @Nullable ThingHandler createBindingHandler(Thing thing) {
