@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- AirZone Bridge Things Binding -->
+<thing:thing-descriptions bindingId="airzone"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
+
+	<!-- AirZone Bridge Binding -->
+	<bridge-type id="airzone">
+		<label>@text/bridge-type.airzone.airzone.label</label>
+		<description>@text/bridge-type.airzone.airzone.description</description>
+
+		<channels>
+			<channel id="status" typeId="status"/>
+			<channel id="reload" typeId="reload"/>
+			<channel id="downtime" typeId="downtime"/>
+			<channel id="doDetection" typeId="doDetection"/>
+		</channels>
+
+		<properties>
+			<property name="vendor">AirZone</property>
+			<!-- Bridge properties
+				<property name="firmware" />
+				<property name="ipAddress" />
+				<property name="subnetMask" />
+				<property name="defaultGW" />
+				<property name="DHCP" />
+				<property name="WLANSSID" />
+				<property name="WLANPassword" />
+				<property name="products" />
+				<property name="scenes" />
+				<property name="check" />
+			-->
+		</properties>
+		<representation-property>ipAddress</representation-property>
+
+		<config-description-ref uri="bridge-type:airzone:bridge"/>
+
+	</bridge-type>
+
+</thing:thing-descriptions>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- AirZone Binding -->
+<thing:thing-descriptions bindingId="airzone"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
+
+	<!-- Channel Type - of Binding -->
+
+	<channel-type id="information">
+		<item-type>String</item-type>
+		<label>@text/channel-type.airzone.information.label</label>
+		<description>@text/channel-type.airzone.information.description</description>
+		<category>NetworkAppliance</category>
+		<state readOnly="true"></state>
+	</channel-type>
+
+
+	<!-- Channel Type - of Bridge -->
+
+	<channel-type id="status">
+		<item-type>String</item-type>
+		<label>@text/channel-type.airzone.status.label</label>
+		<description>@text/channel-type.airzone.status.description</description>
+		<category>NetworkAppliance</category>
+		<state readOnly="true"></state>
+	</channel-type>
+
+	<channel-type id="reload" advanced="true">
+		<item-type>Switch</item-type>
+		<label>@text/channel-type.airzone.reload.label</label>
+		<description>@text/channel-type.airzone.reload.description</description>
+		<category>NetworkAppliance</category>
+	</channel-type>
+
+	<channel-type id="downtime" advanced="true">
+		<item-type>Number</item-type>
+		<label>@text/channel-type.airzone.downtime.label</label>
+		<description>@text/channel-type.airzone.downtime.description</description>
+		<category>NetworkAppliance</category>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="doDetection" advanced="true">
+		<item-type>Switch</item-type>
+		<label>@text/channel-type.airzone.doDetection.label</label>
+		<description>@text/channel-type.airzone.doDetection.description</description>
+		<category>NetworkAppliance</category>
+	</channel-type>
+
+	<!-- Channel Type - Generic Things -->
+
+</thing:thing-descriptions>
