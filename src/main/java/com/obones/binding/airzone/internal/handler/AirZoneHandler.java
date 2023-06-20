@@ -122,4 +122,13 @@ public class AirZoneHandler extends BaseThingHandler {
             super.handleConfigurationUpdate(configurationParameters);
         }
     }
+
+    /**
+     * Update dynamic channels.
+     *
+     * @param bridgeHandler the calling bridge handler.
+     * @throws IllegalStateException if something went wrong.
+     */
+    public void updateDynamicChannels(AirZoneBridgeHandler bridgeHandler) throws IllegalStateException {
+    }
 }
