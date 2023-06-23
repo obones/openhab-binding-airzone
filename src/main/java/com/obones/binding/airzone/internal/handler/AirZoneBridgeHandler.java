@@ -396,18 +396,7 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
     private void bridgeParamsUpdated() {
         logger.debug("bridgeParamsUpdated() called.");
 
-        // Determine the appropriate bridge communication channel
-        boolean validBridgeFound = false;
         thisBridge = myJsonBridge;
-        validBridgeFound = true;
-
-        if (!validBridgeFound) {
-            logger.debug("No valid protocol selected, aborting this {} binding.", AirZoneBindingConstants.BINDING_ID);
-            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
-                    "@text/runtime.bridge-offline-no-valid-bridgeProtocol-selected");
-            logger.trace("bridgeParamsUpdated() done.");
-            return;
-        }
 
         // do not use InetAddress.isReachable, the AirZone server does not respond to ping
         try (Socket soc = new Socket())
@@ -418,32 +407,6 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR);
             return;
         }
-        logger.trace("bridgeParamsUpdated(): Trying to authenticate towards bridge.");
-
-/*        if (!thisBridge.bridgeLogin()) {
-            logger.warn("{} bridge login sequence failed; expecting bridge is OFFLINE.",
-                    AirZoneBindingConstants.BINDING_ID);
-            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
-                    "@text/runtime.bridge-offline-login-sequence-failed");
-            logger.trace("bridgeParamsUpdated() done.");
-            return;
-        }*/
-
-        logger.trace("bridgeParamsUpdated(): Querying bridge state.");
-
-        logger.trace("bridgeParamsUpdated(): Fetching existing scenes.");
-/*        bridgeParameters.scenes.getScenes(thisBridge);
-        logger.debug("Found AirZone scenes:\n\t{}",
-                bridgeParameters.scenes.getChannel().existingScenes.toString(false, "\n\t"));*/
-
-        /*if (thisBridge.bridgeAPI().setHouseStatusMonitor() != null) {
-            logger.trace("bridgeParamsUpdated(): Activating HouseStatusMonitor.");
-            if (new AirZoneBridgeSetHouseStatusMonitor().modifyHSM(thisBridge, true)) {
-                logger.trace("bridgeParamsUpdated(): HSM activated.");
-            } else {
-                logger.warn("Activation of House-Status-Monitoring failed (might lead to a lack of status updates).");
-            }
-        }*/
 
         updateDynamicChannels();
 
