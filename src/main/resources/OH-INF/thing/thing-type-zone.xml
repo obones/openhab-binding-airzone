@@ -26,6 +26,13 @@
 			<channel id="heat_stage" typeId="stage" />
 			<channel id="cold_stage" typeId="stage" />
 		</channels>
+		<properties>
+			<property name="vendor">AirZone</property>
+			<property name="thermosType" />
+			<property name="thermosFirmware" />
+			<property name="thermosRadio" />
+			<property name="masterZoneId" />
+		</properties>
 		<representation-property>serial</representation-property>
 		<config-description-ref uri="thing-type:airzone:zone"/>
 	</thing-type>
