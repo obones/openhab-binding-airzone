@@ -22,6 +22,7 @@ import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingStatus;
 import org.openhab.core.thing.ThingStatusDetail;
+import org.openhab.core.thing.ThingStatusInfo;
 import org.openhab.core.thing.binding.BaseThingHandler;
 import org.openhab.core.thing.binding.BridgeHandler;
 import org.openhab.core.types.Command;
@@ -120,6 +121,19 @@ public class AirZoneHandler extends BaseThingHandler {
             initialize();
         } else {
             super.handleConfigurationUpdate(configurationParameters);
+        }
+    }
+
+    @Override
+    public void bridgeStatusChanged(ThingStatusInfo info) {
+        switch (info.getStatus())
+        {
+            case OFFLINE:
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.BRIDGE_OFFLINE);
+            case ONLINE:
+                updateStatus(ThingStatus.ONLINE, ThingStatusDetail.NONE);
+            default:
+                super.bridgeStatusChanged(info);
         }
     }
 
