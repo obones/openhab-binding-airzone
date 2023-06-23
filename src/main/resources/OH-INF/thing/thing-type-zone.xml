@@ -14,8 +14,17 @@
 		</supported-bridge-type-refs>
 		<label>@text/thing-type.airzone.zone.label</label>
 		<description>@text/thing-type.airzone.zone.description</description>
-		<category>Temperature</category>
+		<category>HVAC</category>
 		<channels>
+			<channel id="name" typeId="name" />
+			<channel id="on_off" typeId="on_off" />
+			<channel id="temperature" typeId="temperature" />
+			<channel id="humidity" typeId="humidity" />
+			<channel id="setpoint" typeId="setpointTemperature" />
+			<channel id="mode" typeId="mode" />
+			<channel id="fan_speed" typeId="speed" />
+			<channel id="heat_stage" typeId="stage" />
+			<channel id="cold_stage" typeId="stage" />
 		</channels>
 		<representation-property>serial</representation-property>
 		<config-description-ref uri="thing-type:airzone:zone"/>
