@@ -92,6 +92,17 @@ public class AirZoneBindingConstants {
 
     public static final String PROPERTY_BRIDGE_SCENES = "zones";
 
+    // List of all zone channel ids
+    public static final String CHANNEL_ZONE_NAME = "name";
+    public static final String CHANNEL_ZONE_ON_OFF = "on_off";
+    public static final String CHANNEL_ZONE_TEMPERATURE = "temperature";
+    public static final String CHANNEL_ZONE_HUMIDITY = "humidity";
+    public static final String CHANNEL_ZONE_SETPOINT = "setpoint";
+    public static final String CHANNEL_ZONE_MODE = "mode";
+    public static final String CHANNEL_ZONE_FAN_SPEED = "fan_speed";
+    public static final String CHANNEL_ZONE_HEAT_STAGE = "heat_stage";
+    public static final String CHANNEL_ZONE_COLD_STAGE = "cold_stage";
+
     // Helper definitions
     public static final String BINDING_VALUES_SEPARATOR = ",";
     public static final String OUTPUT_VALUE_SEPARATOR = ",";

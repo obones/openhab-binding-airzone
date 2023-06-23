@@ -12,14 +12,19 @@
  */
 package com.obones.binding.airzone.internal.handler;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -27,15 +32,21 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import javax.validation.constraints.Null;
+
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.core.common.AbstractUID;
 import org.openhab.core.common.NamedThreadFactory;
+import org.openhab.core.io.net.http.HttpUtil;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.thing.Bridge;
+import org.openhab.core.thing.Channel;
 import org.openhab.core.thing.ChannelUID;
+import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingStatus;
 import org.openhab.core.thing.ThingStatusDetail;
 import org.openhab.core.thing.ThingTypeUID;
@@ -49,11 +60,15 @@ import org.openhab.core.types.UnDefType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+
 import com.obones.binding.airzone.internal.AirZoneBinding;
 import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.AirZoneItemType;
 import com.obones.binding.airzone.internal.bridge.AirZoneBridge;
 import com.obones.binding.airzone.internal.config.AirZoneBridgeConfiguration;
+import com.obones.binding.airzone.internal.config.AirZoneThingConfiguration;
 import com.obones.binding.airzone.internal.factory.AirZoneHandlerFactory;
 import com.obones.binding.airzone.internal.handler.utils.ThingProperty;
 import com.obones.binding.airzone.internal.utils.Localization;
@@ -418,48 +433,223 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
 
     // Continuous synchronization methods
 
+    private static class zoneResponse {
+		private int systemID;
+		private int zoneID;
+		private String name = "";
+        @SuppressWarnings("unused")
+        private int thermos_type;
+        @SuppressWarnings("unused")
+		private String thermos_firmware = "";
+        @SuppressWarnings("unused")
+		private int thermos_radio;
+		private int on;
+        @SuppressWarnings("unused")
+		private double double_sp;
+        @SuppressWarnings("unused")
+		private double coolsetpoint;
+        @SuppressWarnings("unused")
+		private double coolmaxtemp;
+        @SuppressWarnings("unused")
+		private double coolmintemp;
+        @SuppressWarnings("unused")
+		private double heatsetpoint;
+        @SuppressWarnings("unused")
+		private double heatmaxtemp;
+        @SuppressWarnings("unused")
+		private double heatmintemp;
+        @SuppressWarnings("unused")
+		private double maxTemp;
+        @SuppressWarnings("unused")
+		private double minTemp;
+		private double setpoint;
+		private double roomTemp;
+		private int sleep;
+        @SuppressWarnings("unused")
+		private double temp_step;
+        @SuppressWarnings("unused")
+		private int[] modes = {};
+		private int mode;
+		private int speed;
+		private int coldStage;
+		private int heatStage;
+        @SuppressWarnings("unused")
+		private int coldStages;
+        @SuppressWarnings("unused")
+		private int heatStages;
+		private double humidity;
+		private int units;
+        @SuppressWarnings("unused")
+		private String[] errors = {};
+        @SuppressWarnings("unused")
+		private int air_demand;
+        @SuppressWarnings("unused")
+		private int floor_demand;
+        @SuppressWarnings("unused")
+		private int cold_demand;
+        @SuppressWarnings("unused")
+		private int heat_demand;
+        @SuppressWarnings("unused")
+		private int aq_mode;
+		private double aq_quality;
+        @SuppressWarnings("unused")
+		private double aq_thrlow;
+        @SuppressWarnings("unused")
+		private double aq_thrhigh;
+        @SuppressWarnings("unused")
+		private double heatangle;
+        @SuppressWarnings("unused")
+		private double coldangle;
+        @SuppressWarnings("unused")
+		private int master_zoneID;
+        @SuppressWarnings("unused")
+		private String eco_adapt = "";
+        @SuppressWarnings("unused")
+		private int antifreeze;
+    }
+
+    private static class zonesResponse {
+        private zoneResponse[] data = {};
+    }
+
+    private static class systemsResponse {
+        private zonesResponse[] systems = {};
+    }
+
     private synchronized void refreshSchedulerJob() {
         logger.debug("refreshSchedulerJob() initiated by {} starting cycle {}.", Thread.currentThread(),
                 refreshCounter);
         logger.trace("refreshSchedulerJob(): processing of possible HSM messages.");
 
         // Background execution of bridge related I/O
-        submitCommunicationsJob(() -> {
+        /*submitCommunicationsJob(() -> {
             getHouseStatusCommsJob();
-        });
+        });*/
 
-        logger.trace(
+        try {
+            String url = "http://".concat(airZoneBridgeConfiguration.ipAddress).concat(":").concat(Integer.toString(airZoneBridgeConfiguration.tcpPort)).concat("/api/v1/hvac");
+            Properties headerItems = new Properties();
+            InputStream content = new ByteArrayInputStream("{\"systemID\":0,\"zoneID\":0}".getBytes(StandardCharsets.UTF_8));
+            //logger.warn("calling {}", url);
+            String jsonResponse = HttpUtil.executeUrl("POST", url, headerItems, content, "application/json",
+                    this.airZoneBridgeConfiguration().timeoutMsecs);
+            if (jsonResponse == null)
+            {
+                logger.warn("no json response, exiting");
+                return;
+            }
+
+            // Give the bridge some time to breathe
+            logger.trace("io(): wait time {} msecs.", airZoneBridgeConfiguration().timeoutMsecs);
+            try {
+                Thread.sleep(airZoneBridgeConfiguration().timeoutMsecs);
+            } catch (InterruptedException ie) {
+                logger.trace("io() wait interrupted.");
+            }
+            
+            jsonResponse = jsonResponse.replaceAll("^.+,\n", "");
+            logger.trace("io() cleaned response {}.", jsonResponse);
+            Gson gson = new Gson();
+            @Nullable systemsResponse response = gson.fromJson(jsonResponse, systemsResponse.class);
+
+            /*if (response == null) {
+                throw new IOException("Failed to create 'response' object");
+            }*/
+
+            //logger.warn("Response received {}", response.systems.length);
+            //BridgeChannels.getAllLinkedChannelUIDs(this);
+            for (Thing thing : getThing().getThings()) {
+                Set<ChannelUID> channelUIDs = new HashSet<>();
+                for (Channel channel : thing.getChannels()) {
+                    ChannelUID uid = channel.getUID();
+                    if (isLinked(uid)) 
+                        channelUIDs.add(uid);
+                }
+
+                if (!channelUIDs.isEmpty()) {
+                    //logger.warn("Some channels are linked");
+                    AirZoneThingConfiguration config = thing.getConfiguration().as(AirZoneThingConfiguration.class);
+                    for (zonesResponse system : response.systems) {
+                        for (zoneResponse zone : system.data) {
+                            //logger.warn("zone {} from system {}", zone.zoneID, zone.systemID);
+                            if ((zone.systemID == config.systemId) && (zone.zoneID == config.zoneId)) {
+                                for (ChannelUID uid : channelUIDs) {
+                                    State newState = null;
+                                    String channelId = uid.getId();
+                                    switch (channelId) {
+                                        case AirZoneBindingConstants.CHANNEL_ZONE_NAME:
+                                            newState = new StringType(zone.name);
+                                            break;
+                                        case AirZoneBindingConstants.CHANNEL_ZONE_ON_OFF:
+                                            newState = (zone.on != 0 ? OnOffType.ON : OnOffType.OFF);
+                                            break;
+                                        case AirZoneBindingConstants.CHANNEL_ZONE_TEMPERATURE:
+                                            newState = new DecimalType(zone.roomTemp);
+                                            break;
+                                        case AirZoneBindingConstants.CHANNEL_ZONE_HUMIDITY:
+                                            newState = new DecimalType(zone.humidity);
+                                            break;
+                                        case AirZoneBindingConstants.CHANNEL_ZONE_SETPOINT:
+                                            newState = new DecimalType(zone.setpoint);
+                                            break;
+                                        case AirZoneBindingConstants.CHANNEL_ZONE_MODE:
+                                            newState = new DecimalType(zone.mode);
+                                            break;
+                                        case AirZoneBindingConstants.CHANNEL_ZONE_FAN_SPEED:
+                                            newState = new DecimalType(zone.speed);
+                                            break;
+                                        case AirZoneBindingConstants.CHANNEL_ZONE_HEAT_STAGE:
+                                            newState = new DecimalType(zone.heatStage);
+                                            break;
+                                        case AirZoneBindingConstants.CHANNEL_ZONE_COLD_STAGE:
+                                            newState = new DecimalType(zone.coldStage);
+                                            break;
+                                    }
+
+                                    if (newState != null)
+                                        updateState(uid, newState);
+                                }
+                            }
+                        }
+                    }
+                }
+            }            
+        } catch (IOException ioe) {
+            logger.warn("exception {}", ioe.toString());
+        }
+
+        /*logger.trace(
                 "refreshSchedulerJob(): loop through all (child things and bridge) linked channels needing a refresh");
-        /*for (ChannelUID channelUID : BridgeChannels.getAllLinkedChannelUIDs(this)) {
+        for (ChannelUID channelUID : BridgeChannels.getAllLinkedChannelUIDs(this)) {
             if (AirZoneItemType.isToBeRefreshedNow(refreshCounter, thingTypeUIDOf(channelUID), channelUID.getId())) {
                 logger.trace("refreshSchedulerJob(): refreshing channel {}.", channelUID);
                 handleCommand(channelUID, RefreshType.REFRESH);
             }
         }*/
 
-        logger.trace("refreshSchedulerJob(): loop through properties needing a refresh");
+        /*logger.trace("refreshSchedulerJob(): loop through properties needing a refresh");
         for (AirZoneItemType airZoneItem : AirZoneItemType.getPropertyEntriesByThing(getThing().getThingTypeUID())) {
             if (AirZoneItemType.isToBeRefreshedNow(refreshCounter, getThing().getThingTypeUID(),
                     airZoneItem.getIdentifier())) {
                 logger.trace("refreshSchedulerJob(): refreshing property {}.", airZoneItem.getIdentifier());
                 handleCommand(new ChannelUID(getThing().getUID(), airZoneItem.getIdentifier()), RefreshType.REFRESH);
             }
-        }
+        }*/
         logger.debug("refreshSchedulerJob() initiated by {} finished cycle {}.", Thread.currentThread(),
                 refreshCounter);
         refreshCounter++;
     }
 
-    private void getHouseStatusCommsJob() {
+    /*private void getHouseStatusCommsJob() {
         logger.trace("getHouseStatusCommsJob() initiated by {} will process HouseStatus.", Thread.currentThread());
-        /*if (new AirZoneBridgeGetHouseStatus().evaluateState(thisBridge)) {
+        if (new AirZoneBridgeGetHouseStatus().evaluateState(thisBridge)) {
             logger.trace("getHouseStatusCommsJob(): => GetHouseStatus() => updates received => synchronizing");
             syncChannelsWithProducts();
         } else {
             logger.trace("getHouseStatusCommsJob(): => GetHouseStatus() => no updates");
-        }*/
+        }
         logger.trace("getHouseStatusCommsJob() initiated by {} has finished.", Thread.currentThread());
-    }
+    }*/
 
     /**
      * In case of recognized changes in the real world, the method will

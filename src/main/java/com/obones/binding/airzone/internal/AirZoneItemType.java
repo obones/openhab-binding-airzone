@@ -81,6 +81,16 @@ public enum AirZoneItemType {
     BRIDGE_DOWNTIME(AirZoneBindingConstants.THING_TYPE_BRIDGE,                    AirZoneBindingConstants.CHANNEL_BRIDGE_DOWNTIME,       TypeFlavor.READONLY_VOLATILE_NUMBER),
     BRIDGE_RELOAD(AirZoneBindingConstants.THING_TYPE_BRIDGE,                      AirZoneBindingConstants.CHANNEL_BRIDGE_RELOAD,         TypeFlavor.INITIATOR),
     BRIDGE_DO_DETECTION(AirZoneBindingConstants.THING_TYPE_BRIDGE,                AirZoneBindingConstants.CHANNEL_BRIDGE_DO_DETECTION,   TypeFlavor.INITIATOR),
+    //
+    ZONE_NAME(AirZoneBindingConstants.THING_TYPE_AIRZONE_ZONE,                    AirZoneBindingConstants.CHANNEL_ZONE_NAME,             TypeFlavor.READONLY_VOLATILE_STRING),
+    ZONE_ON_OFF(AirZoneBindingConstants.THING_TYPE_AIRZONE_ZONE,                  AirZoneBindingConstants.CHANNEL_ZONE_ON_OFF,           TypeFlavor.READWRITE_VOLATILE_SWITCH),
+    ZONE_TEMPERATURE(AirZoneBindingConstants.THING_TYPE_AIRZONE_ZONE,             AirZoneBindingConstants.CHANNEL_ZONE_TEMPERATURE,      TypeFlavor.READONLY_VOLATILE_NUMBER),
+    ZONE_HUMIDITY(AirZoneBindingConstants.THING_TYPE_AIRZONE_ZONE,                AirZoneBindingConstants.CHANNEL_ZONE_HUMIDITY,         TypeFlavor.READONLY_VOLATILE_NUMBER),
+    ZONE_SETPOINT(AirZoneBindingConstants.THING_TYPE_AIRZONE_ZONE,                AirZoneBindingConstants.CHANNEL_ZONE_SETPOINT,         TypeFlavor.READWRITE_VOLATILE_NUMBER),
+    ZONE_MODE(AirZoneBindingConstants.THING_TYPE_AIRZONE_ZONE,                    AirZoneBindingConstants.CHANNEL_ZONE_MODE,             TypeFlavor.READWRITE_VOLATILE_NUMBER),
+    ZONE_FAN_SPEED(AirZoneBindingConstants.THING_TYPE_AIRZONE_ZONE,               AirZoneBindingConstants.CHANNEL_ZONE_FAN_SPEED,        TypeFlavor.READWRITE_VOLATILE_NUMBER),
+    ZONE_HEAT_STAGE(AirZoneBindingConstants.THING_TYPE_AIRZONE_ZONE,              AirZoneBindingConstants.CHANNEL_ZONE_HEAT_STAGE,       TypeFlavor.READONLY_VOLATILE_NUMBER),
+    ZONE_COLD_STAGE(AirZoneBindingConstants.THING_TYPE_AIRZONE_ZONE,              AirZoneBindingConstants.CHANNEL_ZONE_COLD_STAGE,       TypeFlavor.READONLY_VOLATILE_NUMBER),
     ;
     // @formatter:on
 
@@ -105,6 +115,10 @@ public enum AirZoneItemType {
          * Used to present volatile configuration parameters as NumberItem.
          */
         WRITEONLY_VOLATILE_SWITCH,
+        /**
+         * Used to present volatile configuration parameters as NumberItem.
+         */
+        READWRITE_VOLATILE_NUMBER,
         /**
          * Used to present volatile configuration parameters as SwitchItem.
          */
@@ -202,6 +216,14 @@ public enum AirZoneItemType {
                 this.itemIsExecutable = false;
                 this.itemIsToBeRefreshed = false;
                 this.itemsRefreshDivider = REFRESH_EACH_MINUTE;
+                break;
+            case READWRITE_VOLATILE_NUMBER:
+                this.itemClass = NumberItem.class;
+                this.itemIsReadable = true;
+                this.itemIsWritable = true;
+                this.itemIsExecutable = false;
+                this.itemIsToBeRefreshed = true;
+                this.itemsRefreshDivider = REFRESH_EVERY_CYCLE;
                 break;
             case READWRITE_VOLATILE_SWITCH:
                 this.itemClass = SwitchItem.class;
