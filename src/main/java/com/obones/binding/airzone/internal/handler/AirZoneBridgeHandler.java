@@ -14,6 +14,8 @@ package com.obones.binding.airzone.internal.handler;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
@@ -406,13 +408,13 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
             logger.trace("bridgeParamsUpdated() done.");
             return;
         }
-        try {
-            InetAddress bridgeAddress = InetAddress.getByName(airZoneBridgeConfiguration.ipAddress);
-            if (!bridgeAddress.isReachable(airZoneBridgeConfiguration.timeoutMsecs)) {
-                throw new IOException();
-            }
-        } catch (IOException e) {
-            logger.debug("bridgeParamsUpdated(): Bridge ip address not reachable.");
+
+        // do not use InetAddress.isReachable, the AirZone server does not respond to ping
+        try (Socket soc = new Socket())
+        {
+            soc.connect(new InetSocketAddress(airZoneBridgeConfiguration.ipAddress, airZoneBridgeConfiguration.tcpPort), airZoneBridgeConfiguration.timeoutMsecs);
+        } catch (IOException ex) {
+            logger.error("bridgeParamsUpdated(): Bridge ip address {}:{} not reachable with {} timeout: {}.", airZoneBridgeConfiguration.ipAddress, airZoneBridgeConfiguration.tcpPort, airZoneBridgeConfiguration.timeoutMsecs, ex.getMessage());
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR);
             return;
         }
