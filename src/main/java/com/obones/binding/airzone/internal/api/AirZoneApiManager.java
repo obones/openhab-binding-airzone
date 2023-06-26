@@ -133,6 +133,8 @@ public class AirZoneApiManager {
         } catch (IOException ioe) {
             logger.warn("exception {}", ioe.toString());
         }
+
+        fetchStatus();
     }
 
     private String executePostUrl(String requestContent) throws IOException {
