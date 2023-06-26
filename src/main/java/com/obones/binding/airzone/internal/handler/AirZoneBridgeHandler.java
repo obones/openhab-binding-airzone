@@ -945,8 +945,8 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
     private void updateDynamicChannels() {
         getThing().getThings().stream().forEach(thing -> {
             ThingHandler thingHandler = thing.getHandler();
-            if (thingHandler instanceof AirZoneHandler) {
-                ((AirZoneHandler) thingHandler).updateDynamicChannels(this);
+            if (thingHandler instanceof AirZoneThingHandler) {
+                ((AirZoneThingHandler) thingHandler).updateDynamicChannels(this);
             }
         });
     }

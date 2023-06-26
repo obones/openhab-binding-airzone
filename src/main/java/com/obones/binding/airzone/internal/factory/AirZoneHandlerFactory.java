@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.handler.AirZoneBindingHandler;
 import com.obones.binding.airzone.internal.handler.AirZoneBridgeHandler;
-import com.obones.binding.airzone.internal.handler.AirZoneHandler;
+import com.obones.binding.airzone.internal.handler.AirZoneThingHandler;
 import com.obones.binding.airzone.internal.utils.Localization;
 
 /**
@@ -59,7 +59,7 @@ public class AirZoneHandlerFactory extends BaseThingHandlerFactory {
 
     private Set<AirZoneBindingHandler> airZoneBindingHandlers = new HashSet<>();
     private Set<AirZoneBridgeHandler> airZoneBridgeHandlers = new HashSet<>();
-    private Set<AirZoneHandler> airZoneHandlers = new HashSet<>();
+    private Set<AirZoneThingHandler> airZoneThingHandlers = new HashSet<>();
 
     private @NonNullByDefault({}) LocaleProvider localeProvider;
     private @NonNullByDefault({}) TranslationProvider i18nProvider;
@@ -118,14 +118,14 @@ public class AirZoneHandlerFactory extends BaseThingHandlerFactory {
 
     private @Nullable ThingHandler createThingHandler(Thing thing) {
         logger.trace("createThingHandler({}) called for thing named '{}'.", thing.getUID(), thing.getLabel());
-        AirZoneHandler airZoneHandler = new AirZoneHandler(thing, localization);
-        airZoneHandlers.add(airZoneHandler);
-        return airZoneHandler;
+        AirZoneThingHandler airZoneThingHandler = new AirZoneThingHandler(thing, localization);
+        airZoneThingHandlers.add(airZoneThingHandler);
+        return airZoneThingHandler;
     }
 
     private void updateBindingState() {
         airZoneBindingHandlers.forEach((AirZoneBindingHandler airZoneBindingHandler) -> {
-            airZoneBindingHandler.updateBindingState(airZoneBridgeHandlers.size(), airZoneHandlers.size());
+            airZoneBindingHandler.updateBindingState(airZoneBridgeHandlers.size(), airZoneThingHandlers.size());
         });
     }
 
@@ -209,9 +209,9 @@ public class AirZoneHandlerFactory extends BaseThingHandlerFactory {
             unregisterDeviceDiscoveryService((AirZoneBridgeHandler) thingHandler);
         } else
         // Handle removal of Things behind the Bridge
-        if (thingHandler instanceof AirZoneHandler) {
+        if (thingHandler instanceof AirZoneThingHandler) {
             logger.trace("removeHandler() removing thing '{}'.", thingHandler.toString());
-            airZoneHandlers.remove(thingHandler);
+            airZoneThingHandlers.remove(thingHandler);
         }
         updateBindingState();
         super.removeHandler(thingHandler);

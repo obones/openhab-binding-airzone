@@ -33,18 +33,18 @@ import org.slf4j.LoggerFactory;
 import com.obones.binding.airzone.internal.utils.Localization;
 
 /***
- * The{@link AirZoneHandler} is responsible for handling commands, which are
+ * The{@link AirZoneThingHandler} is responsible for handling commands, which are
  * sent via {@link AirZoneBridgeHandler} to one of the channels.
  *
  * @author Olivier Sannier - Initial contribution
  */
 @NonNullByDefault
-public class AirZoneHandler extends BaseThingHandler {
-    private @NonNullByDefault({}) final Logger logger = LoggerFactory.getLogger(AirZoneHandler.class);
+public class AirZoneThingHandler extends BaseThingHandler {
+    private @NonNullByDefault({}) final Logger logger = LoggerFactory.getLogger(AirZoneThingHandler.class);
 
-    public AirZoneHandler(Thing thing, Localization localization) {
+    public AirZoneThingHandler(Thing thing, Localization localization) {
         super(thing);
-        logger.trace("AirZoneHandler(thing={},localization={}) constructor called.", thing, localization);
+        logger.trace("AirZoneThingHandler(thing={},localization={}) constructor called.", thing, localization);
     }
 
     @Override
