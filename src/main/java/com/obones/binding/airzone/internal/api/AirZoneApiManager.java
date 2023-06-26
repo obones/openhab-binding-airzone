@@ -12,8 +12,10 @@
 package com.obones.binding.airzone.internal.api;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.obones.binding.airzone.internal.api.model.*;
 import com.obones.binding.airzone.internal.config.AirZoneBridgeConfiguration;
+import com.obones.binding.airzone.internal.config.AirZoneThingConfiguration;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -24,6 +26,10 @@ import java.util.Properties;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.core.io.net.http.HttpUtil;
+import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.thing.ChannelUID;
+import org.openhab.core.thing.Thing;
+import org.openhab.core.types.Command;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
@@ -92,8 +98,38 @@ public class AirZoneApiManager {
         return latestZones.get(systemId, zoneId);
     }
 
+    public void setZoneSetPoint(Thing thing, ChannelUID channelUID, Command command) {
+        setChannelValue(thing, "setpoint", command);
+    }
+
+    private void setChannelValue(Thing thing, String fieldName, Command command) {
+        AirZoneThingConfiguration config = thing.getConfiguration().as(AirZoneThingConfiguration.class);
+
+        JsonElement json = gson.toJsonTree(new Object());
+        json.getAsJsonObject().addProperty("systemID", config.systemId);
+        json.getAsJsonObject().addProperty("zoneID", config.zoneId);
+
+        if (command instanceof DecimalType) {
+            json.getAsJsonObject().addProperty(fieldName, ((DecimalType) command).doubleValue());
+        } else {
+            json.getAsJsonObject().addProperty(fieldName, command.toString());
+        }
+
+        String content = gson.toJson(json);
+
+        try {
+            executePutUrl(content);
+        } catch (IOException ioe) {
+            logger.warn("exception {}", ioe.toString());
+        }
+    }
+
     private String executePostUrl(String requestContent) throws IOException {
         return executeUrl("POST", requestContent);
+    }
+
+    private String executePutUrl(String requestContent) throws IOException {
+        return executeUrl("PUT", requestContent);
     }
 
     private String executeUrl(String httpMethod, String requestContent) throws IOException {
@@ -101,7 +137,7 @@ public class AirZoneApiManager {
         Properties headerItems = new Properties();
         InputStream content = new ByteArrayInputStream(requestContent.getBytes(StandardCharsets.UTF_8));
         //logger.warn("calling {}", url);
-        String jsonResponse = HttpUtil.executeUrl("POST", url, headerItems, content, "application/json",
+        String jsonResponse = HttpUtil.executeUrl(httpMethod, url, headerItems, content, "application/json",
                 airZoneBridgeConfiguration.timeoutMsecs);
         if (jsonResponse == null)
             logger.warn("no json response");

@@ -192,6 +192,10 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
         //AirZoneBridgeScenes scenes = new AirZoneBridgeScenes();
     }
 
+    public AirZoneApiManager getApiManager() {
+        return apiManager;
+    }
+
     // Private methods
 
     /**
@@ -714,7 +718,6 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
              */
             logger.trace("handleCommandCommsJob(): working on item {} (type {}) with COMMAND {}.", itemName, itemType,
                     command);
-            Command newValue = null;
             try { // expecting an IllegalArgumentException for unknown AirZone device
                 switch (itemType) {
                     // Bridge channels
@@ -733,9 +736,6 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
                 }
             } catch (IllegalArgumentException e) {
                 logger.warn("Cannot handle command on channel {} as it isn't (yet) known to the bridge.", itemName);
-            }
-            if (newValue != null) {
-                postCommand(channelUID, newValue);
             }
         }
 

@@ -31,6 +31,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.obones.binding.airzone.internal.utils.Localization;
+import com.obones.binding.airzone.internal.AirZoneItemType;
+import com.obones.binding.airzone.internal.api.AirZoneApiManager;
 
 /***
  * The{@link AirZoneThingHandler} is responsible for handling commands, which are
@@ -99,7 +101,32 @@ public class AirZoneThingHandler extends BaseThingHandler {
             if (handler == null) {
                 logger.trace("handleCommand() nothing yet to do as thing is not initialized.");
             } else {
-                handler.handleCommand(channelUID, command);
+                AirZoneBridgeHandler bridgeHandler = (AirZoneBridgeHandler) handler;
+                AirZoneItemType itemType = AirZoneItemType.getByThingAndChannel(bridgeHandler.thingTypeUIDOf(channelUID), channelUID.getId());
+                AirZoneApiManager apiManager = bridgeHandler.getApiManager();
+                Thing thing = getThing();
+
+                switch (itemType) {
+                    case ZONE_NAME:
+                        //apiManager.setZoneName(channelUID, command);
+                        break;
+
+                    case ZONE_ON_OFF:
+                        break;
+
+                    case ZONE_SETPOINT:
+                        apiManager.setZoneSetPoint(thing, channelUID, command);
+                        break;
+                        
+                    case ZONE_MODE:
+                        break;
+                        
+                    case ZONE_FAN_SPEED:
+                        break;
+                        
+                    default:
+                        handler.handleCommand(channelUID, command);
+                }
             }
         }
         logger.trace("handleCommand() done.");
