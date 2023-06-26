@@ -12,16 +12,12 @@
  */
 package com.obones.binding.airzone.internal.handler;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -33,13 +29,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import javax.validation.constraints.Null;
-
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.core.common.AbstractUID;
 import org.openhab.core.common.NamedThreadFactory;
-import org.openhab.core.io.net.http.HttpUtil;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.PercentType;
@@ -67,6 +60,8 @@ import com.google.gson.JsonSyntaxException;
 import com.obones.binding.airzone.internal.AirZoneBinding;
 import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.AirZoneItemType;
+import com.obones.binding.airzone.internal.api.AirZoneApiManager;
+import com.obones.binding.airzone.internal.api.model.AirZoneZone;
 import com.obones.binding.airzone.internal.bridge.AirZoneBridge;
 import com.obones.binding.airzone.internal.config.AirZoneBridgeConfiguration;
 import com.obones.binding.airzone.internal.config.AirZoneThingConfiguration;
@@ -154,6 +149,9 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
      * Information retrieved by {@link AirZoneBinding#AirZoneBinding}.
      */
     private AirZoneBridgeConfiguration airZoneBridgeConfiguration = new AirZoneBridgeConfiguration();
+
+    private AirZoneApiManager apiManager = new AirZoneApiManager(airZoneBridgeConfiguration);
+
 
     private Duration offlineDelay = Duration.ofMinutes(5);
     private int initializeRetriesDone = 0;
@@ -260,6 +258,7 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
 
         logger.trace("initialize(): initialize bridge configuration parameters.");
         airZoneBridgeConfiguration = new AirZoneBinding(getConfigAs(AirZoneBridgeConfiguration.class)).checked();
+        apiManager = new AirZoneApiManager(airZoneBridgeConfiguration);
 
         /*
          * When a binding call to the hub fails with a communication error, it will retry the call for a maximum of
@@ -434,99 +433,6 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
 
     // Continuous synchronization methods
 
-    private static class zoneResponse {
-		private int systemID;
-		private int zoneID;
-		private String name = "";
-        private int thermos_type;
-		private String thermos_firmware = "";
-		private int thermos_radio;
-		private int on;
-        @SuppressWarnings("unused")
-		private double double_sp;
-        @SuppressWarnings("unused")
-		private double coolsetpoint;
-        @SuppressWarnings("unused")
-		private double coolmaxtemp;
-        @SuppressWarnings("unused")
-		private double coolmintemp;
-        @SuppressWarnings("unused")
-		private double heatsetpoint;
-        @SuppressWarnings("unused")
-		private double heatmaxtemp;
-        @SuppressWarnings("unused")
-		private double heatmintemp;
-        @SuppressWarnings("unused")
-		private double maxTemp;
-        @SuppressWarnings("unused")
-		private double minTemp;
-		private double setpoint;
-		private double roomTemp;
-		private int sleep;
-        @SuppressWarnings("unused")
-		private double temp_step;
-        @SuppressWarnings("unused")
-		private int[] modes = {};
-		private int mode;
-		private int speed;
-		private int coldStage;
-		private int heatStage;
-        @SuppressWarnings("unused")
-		private int coldStages;
-        @SuppressWarnings("unused")
-		private int heatStages;
-		private double humidity;
-		private int units;
-        @SuppressWarnings("unused")
-		private String[] errors = {};
-        @SuppressWarnings("unused")
-		private int air_demand;
-        @SuppressWarnings("unused")
-		private int floor_demand;
-        @SuppressWarnings("unused")
-		private int cold_demand;
-        @SuppressWarnings("unused")
-		private int heat_demand;
-        @SuppressWarnings("unused")
-		private int aq_mode;
-		private double aq_quality;
-        /*@SuppressWarnings("unused")
-		private double aq_thrlow;
-        @SuppressWarnings("unused")
-		private double aq_thrhigh;
-        @SuppressWarnings("unused")
-		private double heatangle;
-        @SuppressWarnings("unused")
-		private double coldangle;*/
-		private int master_zoneID;
-        /*@SuppressWarnings("unused")
-		private String eco_adapt = "";
-        @SuppressWarnings("unused")
-		private int antifreeze;*/
-    }
-
-    private static class zonesResponse {
-        private zoneResponse[] data = {};
-    }
-
-    private static class systemsResponse {
-        private zonesResponse[] systems = {};
-    }
-
-    private class zoneResponsesMap extends HashMap<Integer, zoneResponse> {
-        private Integer getKey(int systemId, int zoneId) {
-            return 256 * systemId + zoneId;  // doc says each values goes from 1 to 32 so multiplying by 256 should be safe for a long time.
-        }
-
-        public @Nullable zoneResponse put(int systemId, int zoneId, zoneResponse zone) {
-            return super.put(getKey(systemId, zoneId), zone);
-        }
-
-        public @Nullable zoneResponse get(int systemId, int zoneId) {
-            return super.get(getKey(systemId, zoneId));
-        }
-    }
-
     private synchronized void refreshSchedulerJob() {
         logger.debug("refreshSchedulerJob() initiated by {} starting cycle {}.", Thread.currentThread(),
                 refreshCounter);
@@ -537,106 +443,67 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
             getHouseStatusCommsJob();
         });*/
 
-        try {
-            String url = "http://".concat(airZoneBridgeConfiguration.ipAddress).concat(":").concat(Integer.toString(airZoneBridgeConfiguration.tcpPort)).concat("/api/v1/hvac");
-            Properties headerItems = new Properties();
-            InputStream content = new ByteArrayInputStream("{\"systemID\":0,\"zoneID\":0}".getBytes(StandardCharsets.UTF_8));
-            //logger.warn("calling {}", url);
-            String jsonResponse = HttpUtil.executeUrl("POST", url, headerItems, content, "application/json",
-                    this.airZoneBridgeConfiguration().timeoutMsecs);
-            if (jsonResponse == null)
-            {
-                logger.warn("no json response, exiting");
-                return;
+        apiManager.fetchStatus();
+
+        //BridgeChannels.getAllLinkedChannelUIDs(this);
+        for (Thing thing : getThing().getThings()) {
+            AirZoneThingConfiguration config = thing.getConfiguration().as(AirZoneThingConfiguration.class);
+            AirZoneZone zone = apiManager.getZone(config.systemId, config.zoneId);
+
+            Map<String, String> properties = new HashMap<String, String>();
+            properties.put(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_TYPE, Integer.toString(zone.getThermosType()));
+            properties.put(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_FIRMWARE, zone.getThermosFirmware());
+            properties.put(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_RADIO, Integer.toString(zone.getThermosRadio()));
+            properties.put(AirZoneBindingConstants.PROPERTY_ZONE_MASTER_ZONE_ID, Integer.toString(zone.getMasterZoneID()));
+            thing.setProperties(properties);
+
+            Set<ChannelUID> channelUIDs = new HashSet<>();
+            for (Channel channel : thing.getChannels()) {
+                ChannelUID uid = channel.getUID();
+                if (isLinked(uid)) 
+                    channelUIDs.add(uid);
             }
 
-            // Give the bridge some time to breathe
-            logger.trace("io(): wait time {} msecs.", airZoneBridgeConfiguration().timeoutMsecs);
-            try {
-                Thread.sleep(airZoneBridgeConfiguration().timeoutMsecs);
-            } catch (InterruptedException ie) {
-                logger.trace("io() wait interrupted.");
-            }
-            
-            jsonResponse = jsonResponse.replaceAll("^.+,\n", "");
-            logger.trace("io() cleaned response {}.", jsonResponse);
-            Gson gson = new Gson();
-            @Nullable systemsResponse response = gson.fromJson(jsonResponse, systemsResponse.class);
-
-            /*if (response == null) {
-                throw new IOException("Failed to create 'response' object");
-            }*/
-
-            zoneResponsesMap zones = new zoneResponsesMap();
-            for (zonesResponse system : response.systems) {
-                for (zoneResponse zone : system.data) {
-                    zones.put(zone.systemID, zone.zoneID, zone);
-                }
-            }
-
-            //logger.warn("Response received {}", response.systems.length);
-            //BridgeChannels.getAllLinkedChannelUIDs(this);
-            for (Thing thing : getThing().getThings()) {
-                AirZoneThingConfiguration config = thing.getConfiguration().as(AirZoneThingConfiguration.class);
-                zoneResponse zone = zones.get(config.systemId, config.zoneId);
-
-                Map<String, String> properties = new HashMap<String, String>();
-                properties.put(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_TYPE, Integer.toString(zone.thermos_type));
-                properties.put(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_FIRMWARE, zone.thermos_firmware);
-                properties.put(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_RADIO, Integer.toString(zone.thermos_radio));
-                properties.put(AirZoneBindingConstants.PROPERTY_ZONE_MASTER_ZONE_ID, Integer.toString(zone.master_zoneID));
-                thing.setProperties(properties);
-
-                Set<ChannelUID> channelUIDs = new HashSet<>();
-                for (Channel channel : thing.getChannels()) {
-                    ChannelUID uid = channel.getUID();
-                    if (isLinked(uid)) 
-                        channelUIDs.add(uid);
-                }
-
-                if (!channelUIDs.isEmpty()) {
-                    //logger.warn("Some channels are linked");
-                    for (ChannelUID uid : channelUIDs) {
-                        State newState = null;
-                        String channelId = uid.getId();
-                        switch (channelId) {
-                            case AirZoneBindingConstants.CHANNEL_ZONE_NAME:
-                                newState = new StringType(zone.name);
-                                break;
-                            case AirZoneBindingConstants.CHANNEL_ZONE_ON_OFF:
-                                newState = (zone.on != 0 ? OnOffType.ON : OnOffType.OFF);
-                                break;
-                            case AirZoneBindingConstants.CHANNEL_ZONE_TEMPERATURE:
-                                newState = new DecimalType(zone.roomTemp);
-                                break;
-                            case AirZoneBindingConstants.CHANNEL_ZONE_HUMIDITY:
-                                newState = new DecimalType(zone.humidity);
-                                break;
-                            case AirZoneBindingConstants.CHANNEL_ZONE_SETPOINT:
-                                newState = new DecimalType(zone.setpoint);
-                                break;
-                            case AirZoneBindingConstants.CHANNEL_ZONE_MODE:
-                                newState = new DecimalType(zone.mode);
-                                break;
-                            case AirZoneBindingConstants.CHANNEL_ZONE_FAN_SPEED:
-                                newState = new DecimalType(zone.speed);
-                                break;
-                            case AirZoneBindingConstants.CHANNEL_ZONE_HEAT_STAGE:
-                                newState = new DecimalType(zone.heatStage);
-                                break;
-                            case AirZoneBindingConstants.CHANNEL_ZONE_COLD_STAGE:
-                                newState = new DecimalType(zone.coldStage);
-                                break;
-                        }
-
-                        if (newState != null)
-                            updateState(uid, newState);
+            if (!channelUIDs.isEmpty()) {
+                //logger.warn("Some channels are linked");
+                for (ChannelUID uid : channelUIDs) {
+                    State newState = null;
+                    String channelId = uid.getId();
+                    switch (channelId) {
+                        case AirZoneBindingConstants.CHANNEL_ZONE_NAME:
+                            newState = new StringType(zone.getName());
+                            break;
+                        case AirZoneBindingConstants.CHANNEL_ZONE_ON_OFF:
+                            newState = (zone.getOn() != 0 ? OnOffType.ON : OnOffType.OFF);
+                            break;
+                        case AirZoneBindingConstants.CHANNEL_ZONE_TEMPERATURE:
+                            newState = new DecimalType(zone.getRoomTemp());
+                            break;
+                        case AirZoneBindingConstants.CHANNEL_ZONE_HUMIDITY:
+                            newState = new DecimalType(zone.getHumidity());
+                            break;
+                        case AirZoneBindingConstants.CHANNEL_ZONE_SETPOINT:
+                            newState = new DecimalType(zone.getSetpoint());
+                            break;
+                        case AirZoneBindingConstants.CHANNEL_ZONE_MODE:
+                            newState = new DecimalType(zone.getMode());
+                            break;
+                        case AirZoneBindingConstants.CHANNEL_ZONE_FAN_SPEED:
+                            newState = new DecimalType(zone.getSpeed());
+                            break;
+                        case AirZoneBindingConstants.CHANNEL_ZONE_HEAT_STAGE:
+                            newState = new DecimalType(zone.getHeatStage());
+                            break;
+                        case AirZoneBindingConstants.CHANNEL_ZONE_COLD_STAGE:
+                            newState = new DecimalType(zone.getColdStage());
+                            break;
                     }
+
+                    if (newState != null)
+                        updateState(uid, newState);
                 }
-            }            
-        } catch (IOException ioe) {
-            logger.warn("exception {}", ioe.toString());
-        }
+            }
+        }            
 
         /*logger.trace(
                 "refreshSchedulerJob(): loop through all (child things and bridge) linked channels needing a refresh");
