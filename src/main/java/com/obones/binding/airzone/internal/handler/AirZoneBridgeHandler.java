@@ -13,6 +13,7 @@
 package com.obones.binding.airzone.internal.handler;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -480,7 +481,7 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
                             newState = new DecimalType(zone.getRoomTemp());
                             break;
                         case AirZoneBindingConstants.CHANNEL_ZONE_HUMIDITY:
-                            newState = new DecimalType(zone.getHumidity());
+                            newState = new PercentType(new BigDecimal(zone.getHumidity()));
                             break;
                         case AirZoneBindingConstants.CHANNEL_ZONE_SETPOINT:
                             newState = new DecimalType(zone.getSetpoint());
