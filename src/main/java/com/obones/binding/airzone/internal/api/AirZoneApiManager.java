@@ -98,7 +98,7 @@ public class AirZoneApiManager {
         return latestZones.get(systemId, zoneId);
     }
 
-    public void setZoneSetPoint(Thing thing, ChannelUID channelUID, Command command) {
+    public void setZoneSetPoint(Thing thing, Command command) {
         setChannelValue(thing, "setpoint", command);
     }
 

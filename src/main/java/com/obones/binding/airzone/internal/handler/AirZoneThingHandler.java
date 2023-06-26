@@ -115,7 +115,7 @@ public class AirZoneThingHandler extends BaseThingHandler {
                         break;
 
                     case ZONE_SETPOINT:
-                        apiManager.setZoneSetPoint(thing, channelUID, command);
+                        apiManager.setZoneSetPoint(thing, command);
                         break;
                         
                     case ZONE_MODE:
