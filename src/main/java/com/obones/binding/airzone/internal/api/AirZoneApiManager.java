@@ -27,6 +27,7 @@ import java.util.Properties;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.core.io.net.http.HttpUtil;
 import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
 import org.openhab.core.types.Command;
@@ -98,8 +99,16 @@ public class AirZoneApiManager {
         return latestZones.get(systemId, zoneId);
     }
 
+    public void setZoneOnOff(Thing thing, Command command) {
+        setChannelValue(thing, "on", command);
+    }
+
     public void setZoneSetPoint(Thing thing, Command command) {
         setChannelValue(thing, "setpoint", command);
+    }
+
+    public void setZoneName(Thing thing, Command command) {
+        setChannelValue(thing, "name", command);
     }
 
     private void setChannelValue(Thing thing, String fieldName, Command command) {
@@ -111,6 +120,8 @@ public class AirZoneApiManager {
 
         if (command instanceof DecimalType) {
             json.getAsJsonObject().addProperty(fieldName, ((DecimalType) command).doubleValue());
+        } else if (command instanceof OnOffType) {
+            json.getAsJsonObject().addProperty(fieldName, (command == OnOffType.ON) ? 1 : 0);
         } else {
             json.getAsJsonObject().addProperty(fieldName, command.toString());
         }

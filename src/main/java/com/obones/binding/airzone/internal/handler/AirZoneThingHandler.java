@@ -108,10 +108,11 @@ public class AirZoneThingHandler extends BaseThingHandler {
 
                 switch (itemType) {
                     case ZONE_NAME:
-                        //apiManager.setZoneName(channelUID, command);
+                        apiManager.setZoneName(thing, command);
                         break;
 
                     case ZONE_ON_OFF:
+                        apiManager.setZoneOnOff(thing, command);
                         break;
 
                     case ZONE_SETPOINT:
