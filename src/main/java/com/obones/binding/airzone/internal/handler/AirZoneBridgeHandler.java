@@ -481,7 +481,7 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
                             newState = new DecimalType(zone.getRoomTemp());
                             break;
                         case AirZoneBindingConstants.CHANNEL_ZONE_HUMIDITY:
-                            newState = new PercentType(new BigDecimal(zone.getHumidity()));
+                            newState = new DecimalType(zone.getHumidity());
                             break;
                         case AirZoneBindingConstants.CHANNEL_ZONE_SETPOINT:
                             newState = new DecimalType(zone.getSetpoint());
