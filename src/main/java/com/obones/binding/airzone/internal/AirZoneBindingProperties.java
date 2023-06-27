@@ -24,7 +24,9 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
  * <LI>{@link #PROPERTY_BINDING_NOOFTHINGS} for number of things,</LI>
  * </UL>
  * <UL>
- * <LI>{@link #PROPERTY_ZONE_ID} for defining the id of a scene,</LI>
+ * <LI>{@link #PROPERTY_SYSTEM_ID} for defining the id of a system</LI>
+ * <LI>{@link #PROPERTY_ZONE_ID} for defining the id of a zone</LI>
+ * <LI>{@link #PROPERTY_ZONE_UNIQUE_ID} for defining the unique id of a zone</LI>
  * </UL>
  *
  * @author Olivier Sannier - Initial contribution
@@ -35,5 +37,7 @@ public class AirZoneBindingProperties {
     public static final String PROPERTY_BINDING_NOOFBRIDGES = "numberOfBridges";
     public static final String PROPERTY_BINDING_NOOFTHINGS = "numberOfThings";
 
+    public static final String PROPERTY_SYSTEM_ID = "systemId";
     public static final String PROPERTY_ZONE_ID = "zoneId";
+    public static final String PROPERTY_ZONE_UNIQUE_ID = "zoneUniqueId";
 }

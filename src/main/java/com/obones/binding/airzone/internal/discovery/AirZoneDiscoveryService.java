@@ -189,11 +189,15 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
                     String label = zoneName.replaceAll("\\P{Alnum}", "_");
                     logger.trace("discoverZones(): using label {}.", label);
 
+                    String zoneUniqueId = bridgeHandler.getZoneUniqueId(zone.getSystemID(), zone.getZoneID());
+
                     ThingTypeUID thingTypeUID = AirZoneBindingConstants.THING_TYPE_AIRZONE_ZONE;
-                    ThingUID thingUID = new ThingUID(thingTypeUID, bridgeUID, label);
+                    ThingUID thingUID = new ThingUID(thingTypeUID, bridgeUID, zoneUniqueId);
                     DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID).withThingType(thingTypeUID)
-                            //.withProperty(AirZoneBindingProperties.PROPERTY_ZONE_NAME, zoneName)
-                            //.withRepresentationProperty(AirZoneBindingProperties.PROPERTY_ZONE_NAME)
+                            .withProperty(AirZoneBindingProperties.PROPERTY_SYSTEM_ID, zone.getSystemID())
+                            .withProperty(AirZoneBindingProperties.PROPERTY_ZONE_ID, zone.getZoneID())
+                            .withProperty(AirZoneBindingProperties.PROPERTY_ZONE_UNIQUE_ID, zoneUniqueId)
+                            .withRepresentationProperty(AirZoneBindingProperties.PROPERTY_ZONE_UNIQUE_ID)
                             .withBridge(bridgeUID)
                             .withLabel(label).build();
                     logger.debug("discoverZones(): registering new thing {}.", discoveryResult);

@@ -444,12 +444,10 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
             AirZoneThingConfiguration config = thing.getConfiguration().as(AirZoneThingConfiguration.class);
             AirZoneZone zone = apiManager.getZone(config.systemId, config.zoneId);
 
-            Map<String, String> properties = new HashMap<String, String>();
-            properties.put(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_TYPE, Integer.toString(zone.getThermosType()));
-            properties.put(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_FIRMWARE, zone.getThermosFirmware());
-            properties.put(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_RADIO, Integer.toString(zone.getThermosRadio()));
-            properties.put(AirZoneBindingConstants.PROPERTY_ZONE_MASTER_ZONE_ID, Integer.toString(zone.getMasterZoneID()));
-            thing.setProperties(properties);
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_TYPE, Integer.toString(zone.getThermosType()));
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_FIRMWARE, zone.getThermosFirmware());
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_RADIO, Integer.toString(zone.getThermosRadio()));
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_MASTER_ZONE_ID, Integer.toString(zone.getMasterZoneID()));
 
             Set<ChannelUID> channelUIDs = new HashSet<>();
             for (Channel channel : thing.getChannels()) {
@@ -762,6 +760,15 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
      */
     public boolean isDisposing() {
         return disposing;
+    }
+
+    public String getZoneUniqueId(int systemId, int zoneId) {
+        return airZoneBridgeConfiguration.ipAddress
+            .replace(".", "_")
+            .concat("-")
+            .concat(Integer.toString(systemId))
+            .concat("-")
+            .concat(Integer.toString(zoneId)); 
     }
 
     /**

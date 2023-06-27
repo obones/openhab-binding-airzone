@@ -37,7 +37,7 @@
 			<property name="thermosRadio" />
 			<property name="masterZoneId" />
 		</properties>
-		<representation-property>serial</representation-property>
+		<representation-property>zoneUniqueId</representation-property>
 		<config-description-ref uri="thing-type:airzone:zone"/>
 	</thing-type>
 </thing:thing-descriptions>

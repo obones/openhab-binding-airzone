@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import com.obones.binding.airzone.internal.utils.Localization;
 
 import com.obones.binding.airzone.internal.AirZoneBindingConstants;
+import com.obones.binding.airzone.internal.AirZoneBindingProperties;
 import com.obones.binding.airzone.internal.AirZoneItemType;
 import com.obones.binding.airzone.internal.api.AirZoneApiManager;
 import com.obones.binding.airzone.internal.api.model.AirZoneZone;
@@ -80,6 +81,15 @@ public class AirZoneThingHandler extends BaseThingHandler {
     }
 
     private synchronized void initializeProperties() {
+        Bridge bridge = getBridge();
+        if (bridge != null) {
+            AirZoneBridgeHandler bridgeHandler = (AirZoneBridgeHandler) bridge.getHandler();
+            if (bridgeHandler != null) {
+                AirZoneThingConfiguration config = getConfigAs(AirZoneThingConfiguration.class);
+
+                thing.setProperty(AirZoneBindingProperties.PROPERTY_ZONE_UNIQUE_ID, bridgeHandler.getZoneUniqueId(config.systemId, config.zoneId));
+            }
+        }
         logger.trace("initializeProperties() done.");
     }
 
@@ -234,7 +244,7 @@ public class AirZoneThingHandler extends BaseThingHandler {
                 return true;
             }
         }
-        
+
         return false;
     }
 }
