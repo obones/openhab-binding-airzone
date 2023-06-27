@@ -54,7 +54,7 @@
 			<description>@text/config.airzone.thing.zone.systemId.description</description>
 			<advanced>false</advanced>
 		</parameter>
-		<parameter name="id" type="integer" min="1" max="32" required="true">
+		<parameter name="zoneId" type="integer" min="1" max="32" required="true">
 			<label>@text/config.airzone.thing.zone.id.label</label>
 			<description>@text/config.airzone.thing.zone.id.description</description>
 			<advanced>false</advanced>
