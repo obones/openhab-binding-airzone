@@ -12,7 +12,7 @@
  */
 /**
  *
- * Generic utility classes (might not be limited to the Velux binding).
+ * Generic utility classes (might not be limited to the Airzone binding).
  *
  * @author Olivier Sannier - Initial contribution
  */
