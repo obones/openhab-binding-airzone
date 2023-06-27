@@ -16,7 +16,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.core.config.core.Configuration;
+import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.thing.Bridge;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
@@ -27,12 +31,17 @@ import org.openhab.core.thing.binding.BaseThingHandler;
 import org.openhab.core.thing.binding.BridgeHandler;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.RefreshType;
+import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.obones.binding.airzone.internal.utils.Localization;
+
+import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.AirZoneItemType;
 import com.obones.binding.airzone.internal.api.AirZoneApiManager;
+import com.obones.binding.airzone.internal.api.model.AirZoneZone;
+import com.obones.binding.airzone.internal.config.AirZoneThingConfiguration;
 
 /***
  * The{@link AirZoneThingHandler} is responsible for handling commands, which are
@@ -106,27 +115,32 @@ public class AirZoneThingHandler extends BaseThingHandler {
                 AirZoneApiManager apiManager = bridgeHandler.getApiManager();
                 Thing thing = getThing();
 
-                switch (itemType) {
-                    case ZONE_NAME:
-                        apiManager.setZoneName(thing, command);
-                        break;
+                if (command instanceof RefreshType) {
+                    if (!refreshChannel(thing, channelUID, apiManager))
+                       bridgeHandler.handleCommand(channelUID, command); 
+                } else {
+                    switch (itemType) {
+                        case ZONE_NAME:
+                            apiManager.setZoneName(thing, command);
+                            break;
 
-                    case ZONE_ON_OFF:
-                        apiManager.setZoneOnOff(thing, command);
-                        break;
+                        case ZONE_ON_OFF:
+                            apiManager.setZoneOnOff(thing, command);
+                            break;
 
-                    case ZONE_SETPOINT:
-                        apiManager.setZoneSetPoint(thing, command);
-                        break;
-                        
-                    case ZONE_MODE:
-                        break;
-                        
-                    case ZONE_FAN_SPEED:
-                        break;
-                        
-                    default:
-                        handler.handleCommand(channelUID, command);
+                        case ZONE_SETPOINT:
+                            apiManager.setZoneSetPoint(thing, command);
+                            break;
+                            
+                        case ZONE_MODE:
+                            break;
+                            
+                        case ZONE_FAN_SPEED:
+                            break;
+                            
+                        default:
+                            handler.handleCommand(channelUID, command);
+                    }
                 }
             }
         }
@@ -172,5 +186,55 @@ public class AirZoneThingHandler extends BaseThingHandler {
      * @throws IllegalStateException if something went wrong.
      */
     public void updateDynamicChannels(AirZoneBridgeHandler bridgeHandler) throws IllegalStateException {
+    }
+
+    public boolean refreshChannel(Thing thing, ChannelUID channelUID, AirZoneApiManager apiManager) {
+        AirZoneThingConfiguration config = thing.getConfiguration().as(AirZoneThingConfiguration.class);
+        AirZoneZone zone = apiManager.getZone(config.systemId, config.zoneId);
+
+        return refreshChannel(thing, channelUID, zone);
+    }
+
+    public boolean refreshChannel(Thing thing, ChannelUID channelUID, @Nullable AirZoneZone zone) {
+        if (zone != null) {
+            State newState = null;
+            String channelId = channelUID.getId();
+            switch (channelId) {
+                case AirZoneBindingConstants.CHANNEL_ZONE_NAME:
+                    newState = new StringType(zone.getName());
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_ON_OFF:
+                    newState = (zone.getOn() != 0 ? OnOffType.ON : OnOffType.OFF);
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_TEMPERATURE:
+                    newState = new DecimalType(zone.getRoomTemp());
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_HUMIDITY:
+                    newState = new DecimalType(zone.getHumidity());
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_SETPOINT:
+                    newState = new DecimalType(zone.getSetpoint());
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_MODE:
+                    newState = new DecimalType(zone.getMode());
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_FAN_SPEED:
+                    newState = new DecimalType(zone.getSpeed());
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_HEAT_STAGE:
+                    newState = new DecimalType(zone.getHeatStage());
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_COLD_STAGE:
+                    newState = new DecimalType(zone.getColdStage());
+                    break;
+            }
+
+            if (newState != null) {
+                updateState(channelUID, newState);
+                return true;
+            }
+        }
+        
+        return false;
     }
 }

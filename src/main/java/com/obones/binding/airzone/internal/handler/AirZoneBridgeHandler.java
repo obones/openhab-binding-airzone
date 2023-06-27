@@ -13,8 +13,6 @@
 package com.obones.binding.airzone.internal.handler;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.time.Duration;
@@ -22,9 +20,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
@@ -36,8 +32,6 @@ import org.openhab.core.common.AbstractUID;
 import org.openhab.core.common.NamedThreadFactory;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
-import org.openhab.core.library.types.PercentType;
-import org.openhab.core.library.types.StringType;
 import org.openhab.core.thing.Bridge;
 import org.openhab.core.thing.Channel;
 import org.openhab.core.thing.ChannelUID;
@@ -47,16 +41,11 @@ import org.openhab.core.thing.ThingStatusDetail;
 import org.openhab.core.thing.ThingTypeUID;
 import org.openhab.core.thing.binding.BaseBridgeHandler;
 import org.openhab.core.thing.binding.ThingHandler;
-import org.openhab.core.thing.binding.ThingHandlerService;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.RefreshType;
 import org.openhab.core.types.State;
-import org.openhab.core.types.UnDefType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 
 import com.obones.binding.airzone.internal.AirZoneBinding;
 import com.obones.binding.airzone.internal.AirZoneBindingConstants;
@@ -469,43 +458,11 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
                     channelUIDs.add(uid);
             }
 
-            if (!channelUIDs.isEmpty()) {
+            AirZoneThingHandler thingHandler = (AirZoneThingHandler) thing.getHandler();
+            if (!channelUIDs.isEmpty() && thingHandler != null) {
                 //logger.warn("Some channels are linked");
                 for (ChannelUID uid : channelUIDs) {
-                    State newState = null;
-                    String channelId = uid.getId();
-                    switch (channelId) {
-                        case AirZoneBindingConstants.CHANNEL_ZONE_NAME:
-                            newState = new StringType(zone.getName());
-                            break;
-                        case AirZoneBindingConstants.CHANNEL_ZONE_ON_OFF:
-                            newState = (zone.getOn() != 0 ? OnOffType.ON : OnOffType.OFF);
-                            break;
-                        case AirZoneBindingConstants.CHANNEL_ZONE_TEMPERATURE:
-                            newState = new DecimalType(zone.getRoomTemp());
-                            break;
-                        case AirZoneBindingConstants.CHANNEL_ZONE_HUMIDITY:
-                            newState = new DecimalType(zone.getHumidity());
-                            break;
-                        case AirZoneBindingConstants.CHANNEL_ZONE_SETPOINT:
-                            newState = new DecimalType(zone.getSetpoint());
-                            break;
-                        case AirZoneBindingConstants.CHANNEL_ZONE_MODE:
-                            newState = new DecimalType(zone.getMode());
-                            break;
-                        case AirZoneBindingConstants.CHANNEL_ZONE_FAN_SPEED:
-                            newState = new DecimalType(zone.getSpeed());
-                            break;
-                        case AirZoneBindingConstants.CHANNEL_ZONE_HEAT_STAGE:
-                            newState = new DecimalType(zone.getHeatStage());
-                            break;
-                        case AirZoneBindingConstants.CHANNEL_ZONE_COLD_STAGE:
-                            newState = new DecimalType(zone.getColdStage());
-                            break;
-                    }
-
-                    if (newState != null)
-                        updateState(uid, newState);
+                    thingHandler.refreshChannel(thing, uid, zone);
                 }
             }
         }            
