@@ -17,14 +17,14 @@
 		<category>HVAC</category>
 		<channels>
 			<channel id="name" typeId="name" />
-			<channel id="on_off" typeId="on_off" />
+			<channel id="onOff" typeId="onOff" />
 			<channel id="temperature" typeId="temperature" />
 			<channel id="humidity" typeId="humidity" />
 			<channel id="setpoint" typeId="setpointTemperature" />
 			<channel id="mode" typeId="mode" />
-			<channel id="fan_speed" typeId="speed" />
-			<channel id="heat_stage" typeId="stage" />
-			<channel id="cold_stage" typeId="stage" />
+			<channel id="fanSpeed" typeId="speed" />
+			<channel id="heatStage" typeId="stage" />
+			<channel id="coldStage" typeId="stage" />
 		</channels>
 		<properties>
 			<property name="vendor">AirZone</property>

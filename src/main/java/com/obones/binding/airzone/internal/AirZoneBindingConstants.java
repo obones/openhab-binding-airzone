@@ -94,14 +94,14 @@ public class AirZoneBindingConstants {
 
     // List of all zone channel/property ids
     public static final String CHANNEL_ZONE_NAME = "name";
-    public static final String CHANNEL_ZONE_ON_OFF = "on_off";
+    public static final String CHANNEL_ZONE_ON_OFF = "onOff";
     public static final String CHANNEL_ZONE_TEMPERATURE = "temperature";
     public static final String CHANNEL_ZONE_HUMIDITY = "humidity";
     public static final String CHANNEL_ZONE_SETPOINT = "setpoint";
     public static final String CHANNEL_ZONE_MODE = "mode";
-    public static final String CHANNEL_ZONE_FAN_SPEED = "fan_speed";
-    public static final String CHANNEL_ZONE_HEAT_STAGE = "heat_stage";
-    public static final String CHANNEL_ZONE_COLD_STAGE = "cold_stage";
+    public static final String CHANNEL_ZONE_FAN_SPEED = "fanSpeed";
+    public static final String CHANNEL_ZONE_HEAT_STAGE = "heatStage";
+    public static final String CHANNEL_ZONE_COLD_STAGE = "coldStage";
 
     public static final String PROPERTY_ZONE_THERMOS_TYPE = "thermosType";
     public static final String PROPERTY_ZONE_THERMOS_FIRMWARE = "thermosFirmware";

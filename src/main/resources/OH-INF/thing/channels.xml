@@ -56,9 +56,9 @@
 		<category>Text</category>
 	</channel-type>
 
-	<channel-type id="on_off">
+	<channel-type id="onOff">
 		<item-type>Switch</item-type>
-		<label>@text/channel-type.airzone.zone.on_off.label</label>
+		<label>@text/channel-type.airzone.zone.onOff.label</label>
 		<category>Switch</category>
 	</channel-type>
 	
