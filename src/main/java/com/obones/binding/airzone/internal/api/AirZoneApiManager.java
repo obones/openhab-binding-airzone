@@ -96,6 +96,9 @@ public class AirZoneApiManager {
     }
 
     public AirZoneZone getZone(int systemId, int zoneId) {
+        if (latestResponse == null)
+            fetchStatus();
+
         return latestZones.get(systemId, zoneId);
     }
 
