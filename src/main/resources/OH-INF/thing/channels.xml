@@ -63,23 +63,35 @@
 	</channel-type>
 	
 	<channel-type id="temperature">
-		<item-type>Number</item-type>
+		<item-type>Number:Temperature</item-type>
 		<label>@text/channel-type.airzone.zone.temperature.label</label>
 		<category>Temperature</category>
+		<tags>
+			<tag>Measurement</tag>
+			<tag>Temperature</tag>
+		</tags>
 		<state pattern="%.1f °C" readOnly="true" />
 	</channel-type>
 
 	<channel-type id="humidity">
-		<item-type>Number</item-type>
+		<item-type>Number:Dimensionless</item-type>
 		<label>@text/channel-type.airzone.zone.humidity.label</label>
 		<category>Humidity</category>
-		<state pattern="%.1f %" readOnly="true" />
+		<tags>
+			<tag>Measurement</tag>
+			<tag>Humidity</tag>
+		</tags>
+		<state pattern="%.1f %%" readOnly="true" />
 	</channel-type>
 
 	<channel-type id="setpointTemperature">
-		<item-type>Number</item-type>
+		<item-type>Number:Temperature</item-type>
 		<label>@text/channel-type.airzone.zone.setpointTemperature.label</label>
 		<category>Temperature</category>
+		<tags>
+			<tag>Setpoint</tag>
+			<tag>Temperature</tag>
+		</tags>
 		<state min="15" max="30" step="0.5" pattern="%.1f °C" readOnly="false" />
 	</channel-type>
 
@@ -87,7 +99,7 @@
 		<item-type>Number</item-type>
 		<label>@text/channel-type.airzone.zone.mode.label</label>
 		<description>@text/channel-type.airzone.zone.mode.description</description>
-		<category>Number</category>
+		<category>settings</category>
 		<state min="1" max="7" />
 	</channel-type>
 	
@@ -95,7 +107,11 @@
 		<item-type>Number</item-type>
 		<label>@text/channel-type.airzone.zone.speed.label</label>
 		<description>@text/channel-type.airzone.zone.speed.description</description>
-		<category>Number</category>
+		<category>Fan</category>
+		<tags>
+			<tag>Control</tag>
+			<tag>Fan</tag>
+		</tags>
 		<state min="0" max="7" />
 	</channel-type>
 	
@@ -103,7 +119,7 @@
 		<item-type>Number</item-type>
 		<label>@text/channel-type.airzone.zone.stage.label</label>
 		<description>@text/channel-type.airzone.zone.stage.description</description>
-		<category>Number</category>
+		<category>settings</category>
 		<state min="1" max="3" />
 	</channel-type>
 
