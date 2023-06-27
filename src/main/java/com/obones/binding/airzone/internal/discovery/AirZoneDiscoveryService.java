@@ -14,6 +14,7 @@ package com.obones.binding.airzone.internal.discovery;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
@@ -241,5 +242,23 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
      */
     public boolean isEmpty() {
         return bridgeHandlers.isEmpty();
+    }
+
+    @Override
+    protected void startBackgroundDiscovery() {
+        logger.trace("startBackgroundDiscovery() called. {}", System.identityHashCode(this));
+        ScheduledFuture<?> task = this.backgroundTask;
+        if (task == null || task.isCancelled()) {
+            this.backgroundTask = scheduler.scheduleWithFixedDelay(this::startScan, 10, 10/*600*/, TimeUnit.SECONDS);
+        }
+    }
+
+    @Override
+    protected void stopBackgroundDiscovery() {
+        logger.trace("stopBackgroundDiscovery() called. {}", System.identityHashCode(this));
+        ScheduledFuture<?> task = this.backgroundTask;
+        if (task != null) {
+            task.cancel(true);
+        }
     }
 }
