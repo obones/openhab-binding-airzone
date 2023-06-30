@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  */
 @NonNullByDefault
 public class AirZoneApiManager {
-    private final Logger logger = LoggerFactory.getLogger(AirZoneApiManager.class);
+    private @NonNullByDefault({}) final Logger logger = LoggerFactory.getLogger(AirZoneApiManager.class);
     private static final Gson gson = new Gson();
 
     private class AirZoneZoneMap extends HashMap<Integer, AirZoneZone> {
@@ -80,13 +80,7 @@ public class AirZoneApiManager {
                 logger.trace("io() cleaned response {}.", jsonResponse);
                 latestResponse = gson.fromJson(jsonResponse, AirZoneResponse.class);
 
-                if (latestResponse != null) {
-                    for (AirZoneSystem system : latestResponse.getSystems()) {
-                        for (AirZoneZone zone : system.getData()) {
-                            latestZones.put(zone.getSystemID(), zone.getZoneID(), zone);
-                        }
-                    }
-                }
+                fillLatestZones(latestResponse);
             }
         } catch (IOException ioe) {
             logger.warn("exception {}", ioe.toString());
@@ -119,6 +113,17 @@ public class AirZoneApiManager {
         setChannelValue(thing, "name", command);
     }
 
+    private void fillLatestZones(@Nullable AirZoneResponse latestResponse)
+    {
+        if (latestResponse != null) {
+            for (AirZoneSystem system : latestResponse.getSystems()) {
+                for (AirZoneZone zone : system.getData()) {
+                    latestZones.put(zone.getSystemID(), zone.getZoneID(), zone);
+                }
+            }
+        }
+    }
+
     private void setChannelValue(Thing thing, String fieldName, Command command) {
         AirZoneThingConfiguration config = thing.getConfiguration().as(AirZoneThingConfiguration.class);
 
@@ -135,11 +140,12 @@ public class AirZoneApiManager {
         }
 
         String content = gson.toJson(json);
-
-        try {
-            executePutUrl(content);
-        } catch (IOException ioe) {
-            logger.warn("exception {}", ioe.toString());
+        if (content != null) {
+            try {
+                executePutUrl(content);
+            } catch (IOException ioe) {
+                logger.warn("exception {}", ioe.toString());
+            }
         }
 
         fetchStatus();

@@ -47,6 +47,7 @@ public class ManifestInformation {
      *
      * @return <B>bundleVersion</B> the resulted bundle version as {@link String}.
      */
+    @SuppressWarnings("null") // unexplained warning on return statement
     public static String getBundleVersion() {
         String osgiBundleVersion = FrameworkUtil.getBundle(ManifestInformation.class).getBundleContext().getBundle()
                 .toString();

@@ -66,6 +66,7 @@ public class AirZoneBindingConstants {
     public static final Set<ThingTypeUID> SUPPORTED_THINGS_ITEMS = new HashSet<>(
             Arrays.asList(THING_TYPE_AIRZONE_ZONE));
 
+    @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
     public static final Set<ThingTypeUID> DISCOVERABLE_THINGS = Set.of(THING_TYPE_AIRZONE_ZONE, THING_TYPE_BINDING,
             THING_TYPE_BRIDGE);
 

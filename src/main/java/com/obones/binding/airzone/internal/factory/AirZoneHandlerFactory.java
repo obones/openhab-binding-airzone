@@ -126,6 +126,7 @@ public class AirZoneHandlerFactory extends BaseThingHandlerFactory {
         });
     }
 
+    @SuppressWarnings("null") // unexplained warnings on Localization constructor
     private void updateLocalization() {
         if (Localization.UNKNOWN.equals(localization) && (localeProvider != null) && (i18nProvider != null)) {
             logger.trace("updateLocalization(): creating Localization based on locale={},translation={}).",

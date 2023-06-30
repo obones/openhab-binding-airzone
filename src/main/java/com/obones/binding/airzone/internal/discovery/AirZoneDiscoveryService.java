@@ -52,6 +52,7 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
     
     // Private
 
+    @SuppressWarnings("null") // unexplained warnings on Localization constructor
     private void updateLocalization() {
         if (Localization.UNKNOWN.equals(localization) && (localeProvider != null) && (i18nProvider != null)) {
             logger.trace("updateLocalization(): creating Localization based on locale={},translation={}).",
@@ -158,27 +159,29 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
     public void discoverZones(@Nullable AirZoneResponse latestResponse, ThingUID bridgeUID) {
         logger.trace("discoverZones(): discovering all zones on bridge {}.", bridgeUID);
 
-        for (var system : latestResponse.getSystems()) {
-            for (var zone : system.getData()) {
-                String zoneName = zone.getName().toString();
-                logger.trace("discoverZones(): found zone {}.", zoneName);
-                
-                String label = "AirZone - ".concat(zoneName.replaceAll("\\P{Alnum}", "_"));
-                logger.trace("discoverZones(): using label {}.", label);
+        if (latestResponse != null) {
+            for (var system : latestResponse.getSystems()) {
+                for (var zone : system.getData()) {
+                    String zoneName = zone.getName().toString();
+                    logger.trace("discoverZones(): found zone {}.", zoneName);
+                    
+                    String label = "AirZone - ".concat(zoneName.replaceAll("\\P{Alnum}", "_"));
+                    logger.trace("discoverZones(): using label {}.", label);
 
-                String zoneUniqueId = AirZoneBridgeHandler.getZoneUniqueId(zone.getSystemID(), zone.getZoneID());
+                    String zoneUniqueId = AirZoneBridgeHandler.getZoneUniqueId(zone.getSystemID(), zone.getZoneID());
 
-                ThingTypeUID thingTypeUID = AirZoneBindingConstants.THING_TYPE_AIRZONE_ZONE;
-                ThingUID thingUID = new ThingUID(thingTypeUID, bridgeUID, zoneUniqueId);
-                DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID).withThingType(thingTypeUID)
-                        .withProperty(AirZoneBindingProperties.PROPERTY_SYSTEM_ID, zone.getSystemID())
-                        .withProperty(AirZoneBindingProperties.PROPERTY_ZONE_ID, zone.getZoneID())
-                        .withProperty(AirZoneBindingProperties.PROPERTY_ZONE_UNIQUE_ID, zoneUniqueId)
-                        .withRepresentationProperty(AirZoneBindingProperties.PROPERTY_ZONE_UNIQUE_ID)
-                        .withBridge(bridgeUID)
-                        .withLabel(label).build();
-                logger.debug("discoverZones(): registering new thing {}.", discoveryResult);
-                thingDiscovered(discoveryResult);
+                    ThingTypeUID thingTypeUID = AirZoneBindingConstants.THING_TYPE_AIRZONE_ZONE;
+                    ThingUID thingUID = new ThingUID(thingTypeUID, bridgeUID, zoneUniqueId);
+                    DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID).withThingType(thingTypeUID)
+                            .withProperty(AirZoneBindingProperties.PROPERTY_SYSTEM_ID, zone.getSystemID())
+                            .withProperty(AirZoneBindingProperties.PROPERTY_ZONE_ID, zone.getZoneID())
+                            .withProperty(AirZoneBindingProperties.PROPERTY_ZONE_UNIQUE_ID, zoneUniqueId)
+                            .withRepresentationProperty(AirZoneBindingProperties.PROPERTY_ZONE_UNIQUE_ID)
+                            .withBridge(bridgeUID)
+                            .withLabel(label).build();
+                    logger.debug("discoverZones(): registering new thing {}.", discoveryResult);
+                    thingDiscovered(discoveryResult);
+                }
             }
         }
         logger.trace("discoverZones() finished.");

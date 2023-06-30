@@ -178,6 +178,7 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
      * @param channelUID for type {@link ChannelUID}.
      * @return thingTypeUID of type {@link ThingTypeUID}.
      */
+    @SuppressWarnings("null") // unexplained warnings on ThingTypeUID constructor
     public ThingTypeUID thingTypeUIDOf(ChannelUID channelUID) {
         String[] segments = channelUID.getAsString().split(AbstractUID.SEPARATOR);
         if (segments.length > 1) {
@@ -358,16 +359,21 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
                 refreshCounter);
         logger.trace("refreshSchedulerJob(): processing of possible HSM messages.");
 
-
-        if (discoveryService != null) {
-            discoveryService.discoverZones(apiManager.getLatestResponse(), getThing().getUID());
-        }
+        doDiscovery();
 
         syncChannelsWithProducts();
 
         logger.debug("refreshSchedulerJob() initiated by {} finished cycle {}.", Thread.currentThread(),
                 refreshCounter);
         refreshCounter++;
+    }
+
+    @SuppressWarnings("null") // unexplainable warning on discoveryService despite null check right before the call
+    private void doDiscovery()
+    {
+        if (discoveryService != null) {
+            discoveryService.discoverZones(apiManager.getLatestResponse(), getThing().getUID());
+        }
     }
 
     /**
@@ -379,23 +385,25 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
             AirZoneThingConfiguration config = thing.getConfiguration().as(AirZoneThingConfiguration.class);
             AirZoneZone zone = apiManager.getZone(config.systemId, config.zoneId);
 
-            thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_TYPE, Integer.toString(zone.getThermosType()));
-            thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_FIRMWARE, zone.getThermosFirmware());
-            thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_RADIO, Integer.toString(zone.getThermosRadio()));
-            thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_MASTER_ZONE_ID, Integer.toString(zone.getMasterZoneID()));
+            if (zone != null) {
+                thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_TYPE, Integer.toString(zone.getThermosType()));
+                thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_FIRMWARE, zone.getThermosFirmware());
+                thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_RADIO, Integer.toString(zone.getThermosRadio()));
+                thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_MASTER_ZONE_ID, Integer.toString(zone.getMasterZoneID()));
 
-            Set<ChannelUID> channelUIDs = new HashSet<>();
-            for (Channel channel : thing.getChannels()) {
-                ChannelUID uid = channel.getUID();
-                if (isLinked(uid)) 
-                    channelUIDs.add(uid);
-            }
+                Set<ChannelUID> channelUIDs = new HashSet<>();
+                for (Channel channel : thing.getChannels()) {
+                    ChannelUID uid = channel.getUID();
+                    if (isLinked(uid)) 
+                        channelUIDs.add(uid);
+                }
 
-            AirZoneThingHandler thingHandler = (AirZoneThingHandler) thing.getHandler();
-            if (!channelUIDs.isEmpty() && thingHandler != null) {
-                //logger.warn("Some channels are linked");
-                for (ChannelUID uid : channelUIDs) {
-                    thingHandler.refreshChannel(thing, uid, zone);
+                AirZoneThingHandler thingHandler = (AirZoneThingHandler) thing.getHandler();
+                if (!channelUIDs.isEmpty() && thingHandler != null) {
+                    //logger.warn("Some channels are linked");
+                    for (ChannelUID uid : channelUIDs) {
+                        thingHandler.refreshChannel(thing, uid, zone);
+                    }
                 }
             }
         }
