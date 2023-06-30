@@ -145,7 +145,7 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
     private AirZoneApiManager apiManager = new AirZoneApiManager(airZoneBridgeConfiguration);
 
 
-    private Duration offlineDelay = Duration.ofMinutes(5);
+    private @NonNullByDefault({}) Duration offlineDelay = Duration.ofMinutes(5);
     private int initializeRetriesDone = 0;
 
     /*
@@ -216,28 +216,6 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
     public AirZoneBridgeConfiguration airZoneBridgeConfiguration() {
         return airZoneBridgeConfiguration;
     };
-
-    /**
-     * Information retrieved by {@link AirZoneBridgeScenes#getScenes}
-     */
-/*    @Override
-    public AirZoneExistingScenes existingScenes() {
-        return bridgeParameters.scenes.getChannel().existingScenes;
-    }*/
-
-    // Objects and Methods for interface AirZoneBridgeProvider *****
-
-/*    @Override
-    public boolean bridgeCommunicate(BridgeCommunicationProtocol communication) {
-        logger.warn("bridgeCommunicate() called. Should never be called (as implemented by protocol-specific layers).");
-        return false;
-    }
-
-    @Override
-    public @Nullable BridgeAPI bridgeAPI() {
-        logger.warn("bridgeAPI() called. Should never be called (as implemented by protocol-specific layers).");
-        return null;
-    }*/
 
     // Provisioning/Deprovisioning methods *****
 
@@ -423,8 +401,6 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
             return;
         }
 
-        updateDynamicChannels();
-
         airZoneBridgeConfiguration.hasChanged = false;
         logger.debug("AirZone airZoneBridge is online, now.");
         updateStatus(ThingStatus.ONLINE);
@@ -438,18 +414,23 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
                 refreshCounter);
         logger.trace("refreshSchedulerJob(): processing of possible HSM messages.");
 
-        // Background execution of bridge related I/O
-        /*submitCommunicationsJob(() -> {
-            getHouseStatusCommsJob();
-        });*/
-
-        apiManager.fetchStatus();
 
         if (discoveryService != null) {
             discoveryService.discoverZones(this);
         }
 
-        //BridgeChannels.getAllLinkedChannelUIDs(this);
+        syncChannelsWithProducts();
+
+        logger.debug("refreshSchedulerJob() initiated by {} finished cycle {}.", Thread.currentThread(),
+                refreshCounter);
+        refreshCounter++;
+    }
+
+    /**
+     * In case of recognized changes in the real world, the method will
+     * update the corresponding states via openHAB event bus.
+     */
+    private void syncChannelsWithProducts() {
         for (Thing thing : getThing().getThings()) {
             AirZoneThingConfiguration config = thing.getConfiguration().as(AirZoneThingConfiguration.class);
             AirZoneZone zone = apiManager.getZone(config.systemId, config.zoneId);
@@ -473,94 +454,7 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
                     thingHandler.refreshChannel(thing, uid, zone);
                 }
             }
-        }            
-
-        /*logger.trace(
-                "refreshSchedulerJob(): loop through all (child things and bridge) linked channels needing a refresh");
-        for (ChannelUID channelUID : BridgeChannels.getAllLinkedChannelUIDs(this)) {
-            if (AirZoneItemType.isToBeRefreshedNow(refreshCounter, thingTypeUIDOf(channelUID), channelUID.getId())) {
-                logger.trace("refreshSchedulerJob(): refreshing channel {}.", channelUID);
-                handleCommand(channelUID, RefreshType.REFRESH);
-            }
-        }*/
-
-        /*logger.trace("refreshSchedulerJob(): loop through properties needing a refresh");
-        for (AirZoneItemType airZoneItem : AirZoneItemType.getPropertyEntriesByThing(getThing().getThingTypeUID())) {
-            if (AirZoneItemType.isToBeRefreshedNow(refreshCounter, getThing().getThingTypeUID(),
-                    airZoneItem.getIdentifier())) {
-                logger.trace("refreshSchedulerJob(): refreshing property {}.", airZoneItem.getIdentifier());
-                handleCommand(new ChannelUID(getThing().getUID(), airZoneItem.getIdentifier()), RefreshType.REFRESH);
-            }
-        }*/
-        logger.debug("refreshSchedulerJob() initiated by {} finished cycle {}.", Thread.currentThread(),
-                refreshCounter);
-        refreshCounter++;
-    }
-
-    /*private void getHouseStatusCommsJob() {
-        logger.trace("getHouseStatusCommsJob() initiated by {} will process HouseStatus.", Thread.currentThread());
-        if (new AirZoneBridgeGetHouseStatus().evaluateState(thisBridge)) {
-            logger.trace("getHouseStatusCommsJob(): => GetHouseStatus() => updates received => synchronizing");
-            syncChannelsWithProducts();
-        } else {
-            logger.trace("getHouseStatusCommsJob(): => GetHouseStatus() => no updates");
         }
-        logger.trace("getHouseStatusCommsJob() initiated by {} has finished.", Thread.currentThread());
-    }*/
-
-    /**
-     * In case of recognized changes in the real world, the method will
-     * update the corresponding states via openHAB event bus.
-     */
-    private void syncChannelsWithProducts() {
-        /*if (!bridgeParameters.actuators.getChannel().existingProducts.isDirty()) {
-            logger.trace("syncChannelsWithProducts(): no existing products with changed parameters.");
-            return;
-        }
-        logger.trace("syncChannelsWithProducts(): there are some existing products with changed parameters.");
-        for (AirZoneProduct product : bridgeParameters.actuators.getChannel().existingProducts.valuesOfModified()) {
-            logger.trace("syncChannelsWithProducts(): actuator {} has changed values.", product.getProductName());
-            ProductBridgeIndex productPbi = product.getBridgeProductIndex();
-            logger.trace("syncChannelsWithProducts(): bridge index is {}.", productPbi);
-            for (ChannelUID channelUID : BridgeChannels.getAllLinkedChannelUIDs(this)) {
-                if (!channel2AirZoneActuator.containsKey(channelUID)) {
-                    logger.trace("syncChannelsWithProducts(): channel {} not found.", channelUID);
-                    continue;
-                }
-                Thing2AirZoneActuator actuator = channel2AirZoneActuator.get(channelUID);
-                if (actuator == null || !actuator.isKnown()) {
-                    logger.trace("syncChannelsWithProducts(): channel {} not registered on bridge.", channelUID);
-                    continue;
-                }
-                ProductBridgeIndex channelPbi = actuator.getProductBridgeIndex();
-                if (!channelPbi.equals(productPbi)) {
-                    continue;
-                }
-                boolean isInverted;
-                AirZoneProductPosition position;
-                if (channelUID.getId().equals(AirZoneBindingConstants.CHANNEL_VANE_POSITION)) {
-                    isInverted = false;
-                    position = new AirZoneProductPosition(product.getVanePosition());
-                } else {
-                    // Handle value inversion
-                    isInverted = actuator.isInverted();
-                    logger.trace("syncChannelsWithProducts(): isInverted is {}.", isInverted);
-                    position = new AirZoneProductPosition(product.getDisplayPosition());
-                }
-                if (position.isValid()) {
-                    PercentType positionAsPercent = position.getPositionAsPercentType(isInverted);
-                    logger.debug("syncChannelsWithProducts(): updating channel {} to position {}%.", channelUID,
-                            positionAsPercent);
-                    updateState(channelUID, positionAsPercent);
-                    continue;
-                }
-                logger.trace("syncChannelsWithProducts(): updating channel {} to 'UNDEFINED'.", channelUID);
-                updateState(channelUID, UnDefType.UNDEF);
-                continue;
-            }
-        }
-        logger.trace("syncChannelsWithProducts(): resetting dirty flag.");
-        bridgeParameters.actuators.getChannel().existingProducts.resetDirtyFlag();*/
         logger.trace("syncChannelsWithProducts() done.");
     }
 
@@ -615,11 +509,6 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
             return;
         }
 
-        // Build cache
-        /*if (!channel2AirZoneActuator.containsKey(channelUID)) {
-            channel2AirZoneActuator.put(channelUID, new Thing2AirZoneActuator(this, channelUID));
-        }*/
-
         if (airZoneBridgeConfiguration.hasChanged) {
             logger.trace("handleCommandCommsJob(): work on updated bridge configuration parameters.");
             bridgeParamsUpdated();
@@ -647,9 +536,6 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
                             newState = new DecimalType(
                                     thisBridge.lastCommunication() - thisBridge.lastSuccessfulCommunication());
                             break;
-                        /*case BRIDGE_SCENES:
-                            newState = ChannelBridgeScenes.handleRefresh(channelUID, channelId, this);
-                            break;*/
 
                         default:
                             logger.warn("{} Cannot handle REFRESH on channel {} as it is of type {}.",
@@ -729,14 +615,6 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
     }
 
     /**
-     * Register the exported actions
-     */
-    /*@Override
-    public Collection<Class<? extends ThingHandlerService>> getServices() {
-        return Set.of(AirZoneActions.class);
-    }*/
-
-    /**
      * If necessary initialize the communications job executor. Then check if the executor is shut down. And if it is
      * not shut down, then submit the given communications job for execution.
      */
@@ -779,17 +657,5 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
             .concat(Integer.toString(systemId))
             .concat("-")
             .concat(Integer.toString(zoneId)); 
-    }
-
-    /**
-     * Ask all things in the hub to initialize their dynamic vane position channel if they support it.
-     */
-    private void updateDynamicChannels() {
-        getThing().getThings().stream().forEach(thing -> {
-            ThingHandler thingHandler = thing.getHandler();
-            if (thingHandler instanceof AirZoneThingHandler) {
-                ((AirZoneThingHandler) thingHandler).updateDynamicChannels(this);
-            }
-        });
     }
 }

@@ -189,15 +189,6 @@ public class AirZoneThingHandler extends BaseThingHandler {
         }
     }
 
-    /**
-     * Update dynamic channels.
-     *
-     * @param bridgeHandler the calling bridge handler.
-     * @throws IllegalStateException if something went wrong.
-     */
-    public void updateDynamicChannels(AirZoneBridgeHandler bridgeHandler) throws IllegalStateException {
-    }
-
     public boolean refreshChannel(Thing thing, ChannelUID channelUID, AirZoneApiManager apiManager) {
         AirZoneThingConfiguration config = thing.getConfiguration().as(AirZoneThingConfiguration.class);
         AirZoneZone zone = apiManager.getZone(config.systemId, config.zoneId);
