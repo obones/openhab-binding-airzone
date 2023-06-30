@@ -55,6 +55,7 @@ import com.obones.binding.airzone.internal.api.model.AirZoneZone;
 import com.obones.binding.airzone.internal.bridge.AirZoneBridge;
 import com.obones.binding.airzone.internal.config.AirZoneBridgeConfiguration;
 import com.obones.binding.airzone.internal.config.AirZoneThingConfiguration;
+import com.obones.binding.airzone.internal.discovery.AirZoneDiscoveryService;
 import com.obones.binding.airzone.internal.factory.AirZoneHandlerFactory;
 import com.obones.binding.airzone.internal.handler.utils.ThingProperty;
 import com.obones.binding.airzone.internal.utils.Localization;
@@ -117,6 +118,7 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
      */
     private @Nullable ExecutorService communicationsJobExecutor = null;
     private @Nullable NamedThreadFactory threadFactory = null;
+    private @Nullable AirZoneDiscoveryService discoveryService = null;
 
     private AirZoneBridge myJsonBridge = new /*Json*/AirZoneBridge(this);
     private boolean disposing = false;
@@ -400,6 +402,10 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
         logger.trace("channelUnlinked({}) called.", channelUID.getAsString());
     }
 
+    public void setDiscoveryService(AirZoneDiscoveryService discoveryService) {
+        this.discoveryService = discoveryService;
+    }
+
     // Reconfiguration methods
 
     private void bridgeParamsUpdated() {
@@ -438,6 +444,10 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
         });*/
 
         apiManager.fetchStatus();
+
+        if (discoveryService != null) {
+            discoveryService.discoverZones(this);
+        }
 
         //BridgeChannels.getAllLinkedChannelUIDs(this);
         for (Thing thing : getThing().getThings()) {

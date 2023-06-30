@@ -78,7 +78,7 @@ public class AirZoneHandlerFactory extends BaseThingHandlerFactory {
         if (discoveryService == null) {
             discoveryService = this.discoveryService = new AirZoneDiscoveryService(localization);
         }
-        discoveryService.addBridge(bridgeHandler);
+        bridgeHandler.setDiscoveryService(discoveryService);
         if (discoveryServiceRegistration == null) {
             discoveryServiceRegistration = bundleContext.registerService(DiscoveryService.class.getName(),
                     discoveryService, new Hashtable<>());
@@ -90,13 +90,10 @@ public class AirZoneHandlerFactory extends BaseThingHandlerFactory {
 
         AirZoneDiscoveryService discoveryService = this.discoveryService;
         if (discoveryService != null) {
-            discoveryService.removeBridge(bridgeHandler);
-            if (discoveryService.isEmpty()) {
-                ServiceRegistration<?> discoveryServiceRegistration = this.discoveryServiceRegistration;
-                if (discoveryServiceRegistration != null) {
-                    discoveryServiceRegistration.unregister();
-                    this.discoveryServiceRegistration = null;
-                }
+            ServiceRegistration<?> discoveryServiceRegistration = this.discoveryServiceRegistration;
+            if (discoveryServiceRegistration != null) {
+                discoveryServiceRegistration.unregister();
+                this.discoveryServiceRegistration = null;
             }
         }
     }

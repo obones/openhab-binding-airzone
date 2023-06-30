@@ -11,23 +11,15 @@
  */
 package com.obones.binding.airzone.internal.discovery;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.core.config.discovery.AbstractDiscoveryService;
 import org.openhab.core.config.discovery.DiscoveryResult;
 import org.openhab.core.config.discovery.DiscoveryResultBuilder;
-import org.openhab.core.config.discovery.DiscoveryService;
 import org.openhab.core.i18n.LocaleProvider;
 import org.openhab.core.i18n.LocationProvider;
 import org.openhab.core.i18n.TranslationProvider;
 import org.openhab.core.thing.ThingTypeUID;
 import org.openhab.core.thing.ThingUID;
-import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,23 +37,18 @@ import com.obones.binding.airzone.internal.utils.ManifestInformation;
  * @author Olivier Sannier - Initial contribution.
  */
 @NonNullByDefault
-@Component(service = DiscoveryService.class, configurationPid = "discovery.airzone")
 public class AirZoneDiscoveryService extends AbstractDiscoveryService implements Runnable {
     
-    private final Logger logger = LoggerFactory.getLogger(AirZoneDiscoveryService.class);
+    private @NonNullByDefault({}) final Logger logger = LoggerFactory.getLogger(AirZoneDiscoveryService.class);
 
     // Class internal
 
-    private static final int DISCOVER_TIMEOUT_SECONDS = 60;
+    private static final int DISCOVER_TIMEOUT_SECONDS = 10;
 
     private @NonNullByDefault({}) LocaleProvider localeProvider;
     private @NonNullByDefault({}) TranslationProvider i18nProvider;
     private Localization localization = Localization.UNKNOWN;
-    private final Set<AirZoneBridgeHandler> bridgeHandlers = new HashSet<>();
-
-    @Nullable
-    private ScheduledFuture<?> backgroundTask = null;
-
+    
     // Private
 
     private void updateLocalization() {
@@ -79,7 +66,7 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
      */
     public AirZoneDiscoveryService() {
         super(AirZoneBindingConstants.DISCOVERABLE_THINGS, DISCOVER_TIMEOUT_SECONDS);
-        logger.trace("AirZoneDiscoveryService(without Bridge) just initialized.");
+        logger.warn("AirZoneDiscoveryService(without Bridge) just initialized. {}", System.identityHashCode(this));
     }
 
     @Reference
@@ -106,7 +93,7 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
      */
     public AirZoneDiscoveryService(Localization localizationHandler) {
         super(AirZoneBindingConstants.DISCOVERABLE_THINGS, DISCOVER_TIMEOUT_SECONDS);
-        logger.trace("AirZoneDiscoveryService(locale={},i18n={}) just initialized.", localeProvider, i18nProvider);
+        logger.warn("AirZoneDiscoveryService(locale={},i18n={}) just initialized. {}", localeProvider, i18nProvider, System.identityHashCode(this));
         localization = localizationHandler;
     }
 
@@ -123,12 +110,12 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
     public AirZoneDiscoveryService(LocationProvider locationProvider, LocaleProvider localeProvider,
             TranslationProvider i18nProvider) {
         this(new Localization(localeProvider, i18nProvider));
-        logger.trace("AirZoneDiscoveryService(locale={},i18n={}) finished.", localeProvider, i18nProvider);
+        logger.warn("AirZoneDiscoveryService(locale={},i18n={}) finished. {}", localeProvider, i18nProvider, System.identityHashCode(this));
     }
 
     @Override
     public void deactivate() {
-        logger.trace("deactivate() called.");
+        logger.warn("deactivate() called. {}", System.identityHashCode(this));
         super.deactivate();
     }
 
@@ -149,13 +136,6 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
         /*scheduler.execute(() -> {
             discoverBridges();
         });*/
-
-        if (bridgeHandlers.isEmpty()) {
-            logger.debug("startScan(): AirZoneDiscoveryService cannot proceed due to missing AirZone bridge(s).");
-        } else {
-            logger.debug("startScan(): Starting AirZone discovery scan for zones and actuators.");
-            discoverZones();
-        }
         logger.trace("startScan() done.");
     }
 
@@ -174,91 +154,37 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
     /**
      * Discover the registered zones.
      */
-    private void discoverZones() {
+    public void discoverZones(AirZoneBridgeHandler bridgeHandler) {
         logger.trace("discoverZones() called.");
-        for (AirZoneBridgeHandler bridgeHandler : bridgeHandlers) {
-            ThingUID bridgeUID = bridgeHandler.getThing().getUID();
-            logger.debug("discoverZones(): discovering all zones on bridge {}.", bridgeUID);
 
-            AirZoneApiManager apiManager = bridgeHandler.getApiManager();
-            apiManager.fetchStatus();
-            for (var system : apiManager.getLatestResponse().getSystems()) {
-                for (var zone : system.getData()) {
-                    String zoneName = zone.getName().toString();
-                    logger.trace("discoverZones(): found zone {}.", zoneName);
-                    
-                    String label = zoneName.replaceAll("\\P{Alnum}", "_");
-                    logger.trace("discoverZones(): using label {}.", label);
+        ThingUID bridgeUID = bridgeHandler.getThing().getUID();
+        logger.trace("discoverZones(): discovering all zones on bridge {}.", bridgeUID);
 
-                    String zoneUniqueId = bridgeHandler.getZoneUniqueId(zone.getSystemID(), zone.getZoneID());
+        AirZoneApiManager apiManager = bridgeHandler.getApiManager();
+        apiManager.fetchStatus();
+        for (var system : apiManager.getLatestResponse().getSystems()) {
+            for (var zone : system.getData()) {
+                String zoneName = zone.getName().toString();
+                logger.trace("discoverZones(): found zone {}.", zoneName);
+                
+                String label = "AirZone - ".concat(zoneName.replaceAll("\\P{Alnum}", "_"));
+                logger.trace("discoverZones(): using label {}.", label);
 
-                    ThingTypeUID thingTypeUID = AirZoneBindingConstants.THING_TYPE_AIRZONE_ZONE;
-                    ThingUID thingUID = new ThingUID(thingTypeUID, bridgeUID, zoneUniqueId);
-                    DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID).withThingType(thingTypeUID)
-                            .withProperty(AirZoneBindingProperties.PROPERTY_SYSTEM_ID, zone.getSystemID())
-                            .withProperty(AirZoneBindingProperties.PROPERTY_ZONE_ID, zone.getZoneID())
-                            .withProperty(AirZoneBindingProperties.PROPERTY_ZONE_UNIQUE_ID, zoneUniqueId)
-                            .withRepresentationProperty(AirZoneBindingProperties.PROPERTY_ZONE_UNIQUE_ID)
-                            .withBridge(bridgeUID)
-                            .withLabel(label).build();
-                    logger.debug("discoverZones(): registering new thing {}.", discoveryResult);
-                    thingDiscovered(discoveryResult);
-                }
+                String zoneUniqueId = bridgeHandler.getZoneUniqueId(zone.getSystemID(), zone.getZoneID());
+
+                ThingTypeUID thingTypeUID = AirZoneBindingConstants.THING_TYPE_AIRZONE_ZONE;
+                ThingUID thingUID = new ThingUID(thingTypeUID, bridgeUID, zoneUniqueId);
+                DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID).withThingType(thingTypeUID)
+                        .withProperty(AirZoneBindingProperties.PROPERTY_SYSTEM_ID, zone.getSystemID())
+                        .withProperty(AirZoneBindingProperties.PROPERTY_ZONE_ID, zone.getZoneID())
+                        .withProperty(AirZoneBindingProperties.PROPERTY_ZONE_UNIQUE_ID, zoneUniqueId)
+                        .withRepresentationProperty(AirZoneBindingProperties.PROPERTY_ZONE_UNIQUE_ID)
+                        .withBridge(bridgeUID)
+                        .withLabel(label).build();
+                logger.debug("discoverZones(): registering new thing {}.", discoveryResult);
+                thingDiscovered(discoveryResult);
             }
         }
         logger.trace("discoverZones() finished.");
-    }
-
-    /**
-     * Add a {@link AirZoneBridgeHandler} to the {@link AirZoneDiscoveryService}
-     *
-     * @param bridge AirZone bridge handler.
-     * @return true if the bridge was added, or false if it was already present
-     */
-    public boolean addBridge(AirZoneBridgeHandler bridge) {
-        if (!bridgeHandlers.contains(bridge)) {
-            logger.trace("AirZoneDiscoveryService(): registering bridge {} for discovery.", bridge);
-            bridgeHandlers.add(bridge);
-            return true;
-        }
-        logger.trace("AirZoneDiscoveryService(): bridge {} already registered for discovery.", bridge);
-        return false;
-    }
-
-    /**
-     * Remove a {@link AirZoneBridgeHandler} from the {@link AirZoneDiscoveryService}
-     *
-     * @param bridge AirZone bridge handler.
-     * @return true if the bridge was removed, or false if it was not present
-     */
-    public boolean removeBridge(AirZoneBridgeHandler bridge) {
-        return bridgeHandlers.remove(bridge);
-    }
-
-    /**
-     * Check if the {@link AirZoneDiscoveryService} list of {@link AirZoneBridgeHandler} is empty
-     *
-     * @return true if empty
-     */
-    public boolean isEmpty() {
-        return bridgeHandlers.isEmpty();
-    }
-
-    @Override
-    protected void startBackgroundDiscovery() {
-        logger.trace("startBackgroundDiscovery() called. {}", System.identityHashCode(this));
-        ScheduledFuture<?> task = this.backgroundTask;
-        if (task == null || task.isCancelled()) {
-            this.backgroundTask = scheduler.scheduleWithFixedDelay(this::startScan, 10, 10/*600*/, TimeUnit.SECONDS);
-        }
-    }
-
-    @Override
-    protected void stopBackgroundDiscovery() {
-        logger.trace("stopBackgroundDiscovery() called. {}", System.identityHashCode(this));
-        ScheduledFuture<?> task = this.backgroundTask;
-        if (task != null) {
-            task.cancel(true);
-        }
     }
 }
