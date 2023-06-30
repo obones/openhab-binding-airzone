@@ -54,7 +54,6 @@ import com.obones.binding.airzone.internal.config.AirZoneBridgeConfiguration;
 import com.obones.binding.airzone.internal.config.AirZoneThingConfiguration;
 import com.obones.binding.airzone.internal.discovery.AirZoneDiscoveryService;
 import com.obones.binding.airzone.internal.factory.AirZoneHandlerFactory;
-import com.obones.binding.airzone.internal.handler.utils.ThingProperty;
 import com.obones.binding.airzone.internal.utils.Localization;
 
 /**
@@ -552,7 +551,7 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
                             val = null;
                         }
                         logger.debug("handleCommandCommsJob(): updating property {} to {}.", channelUID, val);
-                        ThingProperty.setValue(this, itemType.getIdentifier(), val);
+                        getThing().setProperty(itemType.getIdentifier(), val);
                     }
                 } else {
                     logger.warn("handleCommandCommsJob({},{}): updating of item {} (type {}) failed.",
@@ -603,10 +602,8 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
             }
         }
 
-        ThingProperty.setValue(this, AirZoneBindingConstants.PROPERTY_BRIDGE_TIMESTAMP_ATTEMPT,
-                lastCommunication.toString());
-        ThingProperty.setValue(this, AirZoneBindingConstants.PROPERTY_BRIDGE_TIMESTAMP_SUCCESS,
-                lastSuccessfulCommunication.toString());
+        getThing().setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_TIMESTAMP_ATTEMPT, lastCommunication.toString());
+        getThing().setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_TIMESTAMP_SUCCESS, lastSuccessfulCommunication.toString());
 
         logger.trace("handleCommandCommsJob({}) done.", Thread.currentThread());
     }

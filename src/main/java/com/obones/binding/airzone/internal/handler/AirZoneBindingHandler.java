@@ -30,7 +30,6 @@ import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.AirZoneBindingProperties;
 import com.obones.binding.airzone.internal.AirZoneItemType;
 import com.obones.binding.airzone.internal.handler.utils.StateUtils;
-import com.obones.binding.airzone.internal.handler.utils.ThingProperty;
 import com.obones.binding.airzone.internal.utils.Localization;
 import com.obones.binding.airzone.internal.utils.ManifestInformation;
 
@@ -125,12 +124,9 @@ public class AirZoneBindingHandler extends BaseThingHandler {
      */
     private void updateVisibleInformation() {
         logger.trace("updateVisibleInformation(): updating properties.");
-        ThingProperty.setValue(thing, AirZoneBindingProperties.PROPERTY_BINDING_BUNDLEVERSION,
-                ManifestInformation.getBundleVersion());
-        ThingProperty.setValue(thing, AirZoneBindingProperties.PROPERTY_BINDING_NOOFBRIDGES,
-                currentNumberOfBridges.toString());
-        ThingProperty.setValue(thing, AirZoneBindingProperties.PROPERTY_BINDING_NOOFTHINGS,
-                currentNumberOfThings.toString());
+        thing.setProperty(AirZoneBindingProperties.PROPERTY_BINDING_BUNDLEVERSION, ManifestInformation.getBundleVersion());
+        thing.setProperty(AirZoneBindingProperties.PROPERTY_BINDING_NOOFBRIDGES, currentNumberOfBridges.toString());
+        thing.setProperty(AirZoneBindingProperties.PROPERTY_BINDING_NOOFTHINGS, currentNumberOfThings.toString());
 
         // BaseThingHandler is sensitive during initialization phase. Therefore, to avoid (wrong) warnings about:
         // "tried updating the thing status although the handler was already disposed."
