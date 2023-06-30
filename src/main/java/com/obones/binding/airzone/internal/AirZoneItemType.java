@@ -415,7 +415,7 @@ public enum AirZoneItemType {
      *
      * @param thingIdentifier as name of requested Thing of type String.
      *
-     * @return <b>listOfairZoneItemType</b> of type List of AirZoneItemType containing all similar enum entries.
+     * @return <b>listOfAirZoneItemType</b> of type List of AirZoneItemType containing all similar enum entries.
      */
     public static List<AirZoneItemType> getPropertyEntriesByThing(ThingTypeUID thingIdentifier) {
         List<AirZoneItemType> list = new ArrayList<>();

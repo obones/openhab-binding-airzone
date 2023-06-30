@@ -13,6 +13,7 @@
 package com.obones.binding.airzone.internal.api.model;
 
 public class AirZoneZone {
+    /* spell-checker:disable */
     private int systemID;
     private int zoneID;
     private String name = "";
@@ -149,5 +150,6 @@ public class AirZoneZone {
     public int getMasterZoneID() {
         return master_zoneID;
     };
+    /* spell-checker:enanle */
 
 }

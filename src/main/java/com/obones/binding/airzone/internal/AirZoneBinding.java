@@ -33,7 +33,7 @@ import com.obones.binding.airzone.internal.config.AirZoneBridgeConfiguration;
  */
 @NonNullByDefault
 public class AirZoneBinding extends AirZoneBridgeConfiguration {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private @NonNullByDefault({}) final Logger logger = LoggerFactory.getLogger(getClass());
 
     /***
      *** Startup methods

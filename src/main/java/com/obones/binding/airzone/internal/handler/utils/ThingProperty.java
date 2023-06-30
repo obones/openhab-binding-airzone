@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  */
 @NonNullByDefault
 public class ThingProperty {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ThingProperty.class);
+    private @NonNullByDefault({}) static final Logger LOGGER = LoggerFactory.getLogger(ThingProperty.class);
 
     /*
      * ************************
