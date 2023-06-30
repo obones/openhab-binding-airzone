@@ -12,6 +12,7 @@
 package com.obones.binding.airzone.internal.discovery;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.core.config.discovery.AbstractDiscoveryService;
 import org.openhab.core.config.discovery.DiscoveryResult;
 import org.openhab.core.config.discovery.DiscoveryResultBuilder;
@@ -154,7 +155,7 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
     /**
      * Discover the registered zones.
      */
-    public void discoverZones(AirZoneResponse latestResponse, ThingUID bridgeUID) {
+    public void discoverZones(@Nullable AirZoneResponse latestResponse, ThingUID bridgeUID) {
         logger.trace("discoverZones(): discovering all zones on bridge {}.", bridgeUID);
 
         for (var system : latestResponse.getSystems()) {
