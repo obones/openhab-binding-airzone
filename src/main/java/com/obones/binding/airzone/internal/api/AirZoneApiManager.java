@@ -24,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Properties;
 
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.core.io.net.http.HttpUtil;
 import org.openhab.core.library.types.DecimalType;
@@ -41,6 +42,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Olivier Sannier - Initial contribution
  */
+@NonNullByDefault
 public class AirZoneApiManager {
     private final Logger logger = LoggerFactory.getLogger(AirZoneApiManager.class);
     private static final Gson gson = new Gson();
