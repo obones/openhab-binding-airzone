@@ -39,7 +39,6 @@ import com.obones.binding.airzone.internal.utils.Localization;
 
 import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.AirZoneBindingProperties;
-import com.obones.binding.airzone.internal.AirZoneItemType;
 import com.obones.binding.airzone.internal.api.AirZoneApiManager;
 import com.obones.binding.airzone.internal.api.model.AirZoneZone;
 import com.obones.binding.airzone.internal.config.AirZoneThingConfiguration;
@@ -121,7 +120,6 @@ public class AirZoneThingHandler extends BaseThingHandler {
                 logger.trace("handleCommand() nothing yet to do as thing is not initialized.");
             } else {
                 AirZoneBridgeHandler bridgeHandler = (AirZoneBridgeHandler) handler;
-                AirZoneItemType itemType = AirZoneItemType.getByThingAndChannel(bridgeHandler.thingTypeUIDOf(channelUID), channelUID.getId());
                 AirZoneApiManager apiManager = bridgeHandler.getApiManager();
                 Thing thing = getThing();
 
@@ -129,23 +127,24 @@ public class AirZoneThingHandler extends BaseThingHandler {
                     if (!refreshChannel(thing, channelUID, apiManager))
                        bridgeHandler.handleCommand(channelUID, command); 
                 } else {
-                    switch (itemType) {
-                        case ZONE_NAME:
+                    String channelId = channelUID.getId();
+                    switch (channelId) {
+                        case AirZoneBindingConstants.CHANNEL_ZONE_NAME:
                             apiManager.setZoneName(thing, command);
                             break;
 
-                        case ZONE_ON_OFF:
+                        case AirZoneBindingConstants.CHANNEL_ZONE_ON_OFF:
                             apiManager.setZoneOnOff(thing, command);
                             break;
 
-                        case ZONE_SETPOINT:
+                        case AirZoneBindingConstants.CHANNEL_ZONE_SETPOINT:
                             apiManager.setZoneSetPoint(thing, command);
                             break;
                             
-                        case ZONE_MODE:
+                        case AirZoneBindingConstants.CHANNEL_ZONE_MODE:
                             break;
                             
-                        case ZONE_FAN_SPEED:
+                        case AirZoneBindingConstants.CHANNEL_ZONE_FAN_SPEED:
                             break;
                             
                         default:
