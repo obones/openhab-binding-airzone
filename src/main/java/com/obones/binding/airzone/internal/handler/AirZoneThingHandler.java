@@ -87,7 +87,7 @@ public class AirZoneThingHandler extends BaseThingHandler {
             if (bridgeHandler != null) {
                 AirZoneThingConfiguration config = getConfigAs(AirZoneThingConfiguration.class);
 
-                thing.setProperty(AirZoneBindingProperties.PROPERTY_ZONE_UNIQUE_ID, bridgeHandler.getZoneUniqueId(config.systemId, config.zoneId));
+                thing.setProperty(AirZoneBindingProperties.PROPERTY_ZONE_UNIQUE_ID, AirZoneBridgeHandler.getZoneUniqueId(config.systemId, config.zoneId));
             }
         }
         logger.trace("initializeProperties() done.");

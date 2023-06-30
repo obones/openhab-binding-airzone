@@ -416,7 +416,7 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
 
 
         if (discoveryService != null) {
-            discoveryService.discoverZones(this);
+            discoveryService.discoverZones(apiManager.getLatestResponse(), getThing().getUID());
         }
 
         syncChannelsWithProducts();
@@ -650,12 +650,7 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
         return disposing;
     }
 
-    public String getZoneUniqueId(int systemId, int zoneId) {
-        return airZoneBridgeConfiguration.ipAddress
-            .replace(".", "_")
-            .concat("-")
-            .concat(Integer.toString(systemId))
-            .concat("-")
-            .concat(Integer.toString(zoneId)); 
+    public static String getZoneUniqueId(int systemId, int zoneId) {
+        return "s" + systemId + "-z" + zoneId; 
     }
 }

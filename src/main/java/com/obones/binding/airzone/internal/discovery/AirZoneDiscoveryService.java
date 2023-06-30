@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.AirZoneBindingProperties;
 import com.obones.binding.airzone.internal.api.AirZoneApiManager;
+import com.obones.binding.airzone.internal.api.model.AirZoneResponse;
 import com.obones.binding.airzone.internal.handler.AirZoneBridgeHandler;
 import com.obones.binding.airzone.internal.utils.Localization;
 import com.obones.binding.airzone.internal.utils.ManifestInformation;
@@ -154,15 +155,10 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
     /**
      * Discover the registered zones.
      */
-    public void discoverZones(AirZoneBridgeHandler bridgeHandler) {
-        logger.trace("discoverZones() called.");
-
-        ThingUID bridgeUID = bridgeHandler.getThing().getUID();
+    public void discoverZones(AirZoneResponse latestResponse, ThingUID bridgeUID) {
         logger.trace("discoverZones(): discovering all zones on bridge {}.", bridgeUID);
 
-        AirZoneApiManager apiManager = bridgeHandler.getApiManager();
-        apiManager.fetchStatus();
-        for (var system : apiManager.getLatestResponse().getSystems()) {
+        for (var system : latestResponse.getSystems()) {
             for (var zone : system.getData()) {
                 String zoneName = zone.getName().toString();
                 logger.trace("discoverZones(): found zone {}.", zoneName);
@@ -170,7 +166,7 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
                 String label = "AirZone - ".concat(zoneName.replaceAll("\\P{Alnum}", "_"));
                 logger.trace("discoverZones(): using label {}.", label);
 
-                String zoneUniqueId = bridgeHandler.getZoneUniqueId(zone.getSystemID(), zone.getZoneID());
+                String zoneUniqueId = AirZoneBridgeHandler.getZoneUniqueId(zone.getSystemID(), zone.getZoneID());
 
                 ThingTypeUID thingTypeUID = AirZoneBindingConstants.THING_TYPE_AIRZONE_ZONE;
                 ThingUID thingUID = new ThingUID(thingTypeUID, bridgeUID, zoneUniqueId);
