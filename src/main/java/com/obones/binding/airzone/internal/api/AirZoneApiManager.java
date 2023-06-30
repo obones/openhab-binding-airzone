@@ -21,6 +21,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Properties;
 
@@ -101,6 +102,12 @@ public class AirZoneApiManager {
         return latestZones.get(systemId, zoneId);
     }
 
+    private @Nullable AirZoneZone getZone(Thing thing) {
+        AirZoneThingConfiguration config = thing.getConfiguration().as(AirZoneThingConfiguration.class);
+
+        return latestZones.get(config.systemId, config.zoneId);
+    }
+
     public void setZoneOnOff(Thing thing, Command command) {
         setChannelValue(thing, "on", command);
     }
@@ -111,6 +118,46 @@ public class AirZoneApiManager {
 
     public void setZoneName(Thing thing, Command command) {
         setChannelValue(thing, "name", command);
+    }
+
+    public void setZoneMode(Thing thing, Command command) {
+        if (command instanceof DecimalType) {
+            AirZoneZone zone = getZone(thing);
+            if (zone != null) {
+                int value = ((DecimalType) command).intValue();
+                int[] allowedModes = zone.getModes();
+                Arrays.sort(allowedModes);
+                if (Arrays.binarySearch(allowedModes, value) >= 0) {
+                    setChannelValue(thing, "mode", command);
+                } else {
+                    logger.warn("Unsupported mode {} for zone {}, allowed modes are {}", value, thing.getUID(), allowedModes);
+                }
+            } else {
+                logger.warn("No zone values for {}", thing.getUID());
+            }
+        } else {
+            logger.warn("Only DecimalType command is supported on zone mode, received {}", command.getClass().getName());
+        }
+    }
+
+    public void setZoneSpeed(Thing thing, Command command) {
+        if (command instanceof DecimalType) {
+            AirZoneZone zone = getZone(thing);
+            if (zone != null) {
+                int value = ((DecimalType) command).intValue();
+                int[] allowedSpeeds = zone.getSpeeds();
+                Arrays.sort(allowedSpeeds);
+                if (Arrays.binarySearch(allowedSpeeds, value) >= 0) {
+                    setChannelValue(thing, "speed", command);
+                } else {
+                    logger.warn("Unsupported speed {} for zone {}, allowed speeds are {}", value, thing.getUID(), allowedSpeeds);
+                }
+            } else {
+                logger.warn("No zone values for {}", thing.getUID());
+            }
+        } else {
+            logger.warn("Only DecimalType command is supported on zone speed, received {}", command.getClass().getName());
+        }
     }
 
     private void fillLatestZones(@Nullable AirZoneResponse latestResponse)

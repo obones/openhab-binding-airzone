@@ -142,9 +142,11 @@ public class AirZoneThingHandler extends BaseThingHandler {
                             break;
                             
                         case AirZoneBindingConstants.CHANNEL_ZONE_MODE:
+                            apiManager.setZoneMode(thing, command);
                             break;
                             
                         case AirZoneBindingConstants.CHANNEL_ZONE_FAN_SPEED:
+                            apiManager.setZoneSpeed(thing, command);
                             break;
                             
                         default:

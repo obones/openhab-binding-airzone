@@ -44,9 +44,9 @@ public class AirZoneZone {
     private int sleep;
     @SuppressWarnings("unused")
     private double temp_step;
-    @SuppressWarnings("unused")
     private int[] modes = {};
     private int mode;
+    private int[] speeds = {};
     private int speed;
     private int coldStage;
     private int heatStage;
@@ -123,9 +123,17 @@ public class AirZoneZone {
         return sleep;
     };
 
+    public int[] getModes() {
+        return modes;
+    }
+
     public int getMode() {
         return mode;
     };
+
+    public int[] getSpeeds() {
+        return speeds;
+    }
 
     public int getSpeed() {
         return speed;
