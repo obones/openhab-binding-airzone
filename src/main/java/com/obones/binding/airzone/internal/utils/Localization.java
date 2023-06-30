@@ -44,8 +44,8 @@ public class Localization {
      * ***************************
      * ***** Private Objects *****
      */
-    private static final String OPENBRACKET = "(";
-    private static final String CLOSEBRACKET = ")";
+    private static final String OPEN_BRACKET = "(";
+    private static final String CLOSE_BRACKET = ")";
     private LocaleProvider localeProvider;
     private @NonNullByDefault({}) TranslationProvider i18nProvider;
 
@@ -103,7 +103,7 @@ public class Localization {
         }
         Bundle bundle = FrameworkUtil.getBundle(this.getClass()).getBundleContext().getBundle();
         Locale locale = localeProvider.getLocale();
-        String defaultText = OPENBRACKET.concat(key).concat(CLOSEBRACKET);
+        String defaultText = OPEN_BRACKET.concat(key).concat(CLOSE_BRACKET);
 
         String text = i18nProvider.getText(bundle, key, defaultText, locale, arguments);
         if (text == null) {
