@@ -12,13 +12,11 @@
 package com.obones.binding.airzone.internal.handler;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.openhab.core.common.AbstractUID;
 import org.openhab.core.thing.Channel;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingStatus;
 import org.openhab.core.thing.ThingStatusDetail;
-import org.openhab.core.thing.ThingTypeUID;
 import org.openhab.core.thing.binding.BaseThingHandler;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.RefreshType;
@@ -28,7 +26,6 @@ import org.slf4j.LoggerFactory;
 
 import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.AirZoneBindingProperties;
-import com.obones.binding.airzone.internal.AirZoneItemType;
 import com.obones.binding.airzone.internal.handler.utils.StateUtils;
 import com.obones.binding.airzone.internal.utils.Localization;
 import com.obones.binding.airzone.internal.utils.ManifestInformation;
@@ -73,24 +70,6 @@ public class AirZoneBindingHandler extends BaseThingHandler {
      * ***************************
      * ***** Private Methods *****
      */
-
-    /**
-     * Provide the ThingType for a given Channel.
-     * <P>
-     * Separated into this private method to deal with the deprecated method.
-     * </P>
-     *
-     * @param channelUID for type {@link ChannelUID}.
-     * @return thingTypeUID of type {@link ThingTypeUID}.
-     */
-    private ThingTypeUID thingTypeUIDOf(ChannelUID channelUID) {
-        String[] segments = channelUID.getAsString().split(AbstractUID.SEPARATOR);
-        if (segments.length > 1) {
-            return new ThingTypeUID(segments[0], segments[1]);
-        }
-        logger.warn("thingTypeUIDOf({}) failed.", channelUID);
-        return new ThingTypeUID(AirZoneBindingConstants.BINDING_ID, AirZoneBindingConstants.UNKNOWN_THING_TYPE_ID);
-    }
 
     /**
      * Returns a human-readable representation of the binding state. This should help especially unexperienced user to
@@ -181,7 +160,6 @@ public class AirZoneBindingHandler extends BaseThingHandler {
         String channelId = channelUID.getId();
         State newState = null;
         String itemName = channelUID.getAsString();
-        AirZoneItemType itemType = AirZoneItemType.getByThingAndChannel(thingTypeUIDOf(channelUID), channelUID.getId());
 
         if (command instanceof RefreshType) {
             /*
@@ -189,8 +167,8 @@ public class AirZoneBindingHandler extends BaseThingHandler {
              * Refresh part
              */
             logger.trace("handleCommand(): refreshing item {}.", itemName);
-            switch (itemType) {
-                case BINDING_INFORMATION:
+            switch (channelId) {
+                case AirZoneBindingConstants.CHANNEL_BINDING_INFORMATION:
                     newState = StateUtils.createState(bridgeCountToString());
                     break;
                 default:
@@ -211,8 +189,7 @@ public class AirZoneBindingHandler extends BaseThingHandler {
              */
             switch (channelId) {
                 default:
-                    logger.warn("handleCommand() cannot handle command {} on channel {} (type {}).", command, itemName,
-                            itemType);
+                    logger.warn("handleCommand() cannot handle command {} on channel {}.", command, itemName);
             }
         }
         logger.trace("handleCommand() done.");

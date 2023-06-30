@@ -23,9 +23,6 @@ import org.openhab.core.thing.ThingTypeUID;
  * The {@link AirZoneBindingConstants} class defines common constants, which are
  * used across the whole binding.
  * <P>
- * For an in-depth view of the available Item types with description of parameters, take a look onto
- * {@link com.obones.binding.airzone.internal.AirZoneItemType AirZoneItemType}.
- * </P>
  * This class contains the Thing identifications:
  * <UL>
  * <LI>{@link #THING_AIRZONE_BRIDGE} for the bridge itself,</LI>
