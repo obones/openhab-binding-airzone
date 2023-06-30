@@ -15,8 +15,6 @@ package com.obones.binding.airzone.internal.handler;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -28,8 +26,6 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.core.common.AbstractUID;
 import org.openhab.core.common.NamedThreadFactory;
-import org.openhab.core.library.types.DecimalType;
-import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.thing.Bridge;
 import org.openhab.core.thing.Channel;
 import org.openhab.core.thing.ChannelUID;
@@ -40,16 +36,13 @@ import org.openhab.core.thing.ThingTypeUID;
 import org.openhab.core.thing.binding.BaseBridgeHandler;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.RefreshType;
-import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.obones.binding.airzone.internal.AirZoneBinding;
 import com.obones.binding.airzone.internal.AirZoneBindingConstants;
-import com.obones.binding.airzone.internal.AirZoneItemType;
 import com.obones.binding.airzone.internal.api.AirZoneApiManager;
 import com.obones.binding.airzone.internal.api.model.AirZoneZone;
-import com.obones.binding.airzone.internal.bridge.AirZoneBridge;
 import com.obones.binding.airzone.internal.config.AirZoneBridgeConfiguration;
 import com.obones.binding.airzone.internal.config.AirZoneThingConfiguration;
 import com.obones.binding.airzone.internal.discovery.AirZoneDiscoveryService;
@@ -78,11 +71,6 @@ import com.obones.binding.airzone.internal.utils.Localization;
  */
 @NonNullByDefault
 public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZoneBridgeInstance, AirZoneBridgeProvider */{
-
-    /*
-     * timeout to ensure that the binding shutdown will not block and stall the shutdown of OH itself
-     */
-    private static final int COMMUNICATION_TASK_MAX_WAIT_SECS = 10;
 
     /*
      * a modifier string to avoid the (small) risk of other tasks (outside this binding) locking on the same ip address
@@ -116,7 +104,6 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
     private @Nullable NamedThreadFactory threadFactory = null;
     private @Nullable AirZoneDiscoveryService discoveryService = null;
 
-    private AirZoneBridge myJsonBridge = new /*Json*/AirZoneBridge(this);
     private boolean disposing = false;
 
     /*
@@ -124,7 +111,6 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
      * ***** Default visibility Objects *****
      */
 
-    public AirZoneBridge thisBridge =  myJsonBridge;
     public BridgeParameters bridgeParameters = new BridgeParameters();
     public Localization localization;
 
@@ -140,8 +126,6 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
 
     private AirZoneApiManager apiManager = new AirZoneApiManager(airZoneBridgeConfiguration);
 
-
-    private @NonNullByDefault({}) Duration offlineDelay = Duration.ofMinutes(5);
     private int initializeRetriesDone = 0;
 
     /*
@@ -230,17 +214,6 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
         airZoneBridgeConfiguration = new AirZoneBinding(getConfigAs(AirZoneBridgeConfiguration.class)).checked();
         apiManager = new AirZoneApiManager(airZoneBridgeConfiguration);
 
-        /*
-         * When a binding call to the hub fails with a communication error, it will retry the call for a maximum of
-         * airZoneBridgeConfiguration.retries times, where the interval between retry attempts increases on each attempt
-         * calculated as airZoneBridgeConfiguration.refreshMSecs * 2^retry (i.e. 1, 2, 4, 8, 16, 32 etc.) so a complete
-         * retry series takes (airZoneBridgeConfiguration.refreshMSecs * ((2^(airZoneBridgeConfiguration.retries + 1)) - 1)
-         * milliseconds. So we have to let this full retry series to have been tried (and failed), before we consider
-         * the thing to be actually offline.
-         */
-        offlineDelay = Duration.ofMillis(
-                ((long) Math.pow(2, airZoneBridgeConfiguration.retries + 1) - 1) * airZoneBridgeConfiguration.refreshMSecs);
-
         initializeRetriesDone = 0;
 
         scheduler.execute(() -> {
@@ -320,36 +293,13 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
                  * remove un-started communication tasks from the execution queue; and stop accepting more tasks
                  */
                 commsJobExecutor.shutdownNow();
-                /*
-                 * if the last bridge communication was OK, wait for already started task(s) to complete (so the bridge
-                 * won't lock up); but to prevent stalling the OH shutdown process, time out after
-                 * MAX_COMMUNICATION_TASK_WAIT_TIME_SECS
-                 */
-                if (thisBridge.lastCommunicationOk()) {
-                    try {
-                        if (!commsJobExecutor.awaitTermination(COMMUNICATION_TASK_MAX_WAIT_SECS, TimeUnit.SECONDS)) {
-                            logger.warn("disposeSchedulerJob(): unexpected awaitTermination() timeout.");
-                        }
-                    } catch (InterruptedException e) {
-                        logger.warn("disposeSchedulerJob(): unexpected exception awaitTermination() '{}'.",
-                                e.getMessage());
-                    }
-                }
             }
 
             /*
-             * if the last bridge communication was OK, deactivate HSM to prevent queueing more HSM events
-             */
-            /*if (thisBridge.lastCommunicationOk()
-                    && (new AirZoneBridgeSetHouseStatusMonitor().modifyHSM(thisBridge, false))) {
-                logger.trace("disposeSchedulerJob(): HSM deactivated.");
-            }*/
-
             /*
              * finally clean up everything else
              */
             logger.trace("disposeSchedulerJob(): shut down JSON connection interface.");
-            myJsonBridge.shutdown();
             AirZoneHandlerFactory.refreshBindingInfo();
             logger.debug("AirZone Bridge '{}' is shut down.", getThing().getUID());
         }
@@ -384,8 +334,6 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
 
     private void bridgeParamsUpdated() {
         logger.debug("bridgeParamsUpdated() called.");
-
-        thisBridge = myJsonBridge;
 
         // do not use InetAddress.isReachable, the AirZone server does not respond to ping
         try (Socket soc = new Socket())
@@ -490,19 +438,7 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
          */
 
         if (airZoneBridgeConfiguration.isProtocolTraceEnabled) {
-            //Threads.findDeadlocked();
-        }
-
-        String channelId = channelUID.getId();
-        State newState = null;
-        String itemName = channelUID.getAsString();
-        AirZoneItemType itemType = AirZoneItemType.getByThingAndChannel(thingTypeUIDOf(channelUID), channelUID.getId());
-
-        if (itemType == AirZoneItemType.UNKNOWN) {
-            logger.warn("{} Cannot determine type of Channel {}, ignoring command {}.",
-                    AirZoneBindingConstants.LOGGING_CONTACT, channelUID, command);
-            logger.trace("handleCommandCommsJob() aborting.");
-            return;
+            // Threads.findDeadlocked();
         }
 
         if (airZoneBridgeConfiguration.hasChanged) {
@@ -513,97 +449,12 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
         syncChannelsWithProducts();
 
         if (command instanceof RefreshType) {
-            /*
-             * ===========================================================
-             * Refresh part
-             */
-            logger.trace("handleCommandCommsJob(): work on refresh.");
-            if (!itemType.isReadable()) {
-                logger.debug("handleCommandCommsJob(): received a Refresh command for a non-readable item.");
-            } else {
-                logger.trace("handleCommandCommsJob(): refreshing item {} (type {}).", itemName, itemType);
-                try { // expecting an IllegalArgumentException for unknown AirZone device
-                    switch (itemType) {
-                        // Bridge channels
-                        case BRIDGE_STATUS:
-                            //newState = ChannelBridgeStatus.handleRefresh(channelUID, channelId, this);
-                            break;
-                        case BRIDGE_DOWNTIME:
-                            newState = new DecimalType(
-                                    thisBridge.lastCommunication() - thisBridge.lastSuccessfulCommunication());
-                            break;
-
-                        default:
-                            logger.warn("{} Cannot handle REFRESH on channel {} as it is of type {}.",
-                                    AirZoneBindingConstants.LOGGING_CONTACT, itemName, channelId);
-                    }
-                } catch (IllegalArgumentException e) {
-                    logger.warn("Cannot handle REFRESH on channel {} as it isn't (yet) known to the bridge.", itemName);
-                }
-                if (newState != null) {
-                    if (itemType.isChannel()) {
-                        logger.debug("handleCommandCommsJob(): updating channel {} to {}.", channelUID, newState);
-                        updateState(channelUID, newState);
-                    } else if (itemType.isProperty()) {
-                        // if property value is 'unknown', null it completely
-                        String val = newState.toString();
-                        if (AirZoneBindingConstants.UNKNOWN.equals(val)) {
-                            val = null;
-                        }
-                        logger.debug("handleCommandCommsJob(): updating property {} to {}.", channelUID, val);
-                        getThing().setProperty(itemType.getIdentifier(), val);
-                    }
-                } else {
-                    logger.warn("handleCommandCommsJob({},{}): updating of item {} (type {}) failed.",
-                            channelUID.getAsString(), command, itemName, itemType);
-                }
-            }
+            // The bridge has no channels to refresh
         } else {
-            /*
-             * ===========================================================
-             * Modification part
-             */
-            logger.trace("handleCommandCommsJob(): working on item {} (type {}) with COMMAND {}.", itemName, itemType,
-                    command);
-            try { // expecting an IllegalArgumentException for unknown AirZone device
-                switch (itemType) {
-                    // Bridge channels
-                    case BRIDGE_RELOAD:
-                        if (command == OnOffType.ON) {
-                            logger.trace("handleCommandCommsJob(): about to reload information from AirZone bridge.");
-                            bridgeParamsUpdated();
-                        } else {
-                            logger.trace("handleCommandCommsJob(): ignoring OFF command.");
-                        }
-                        break;
-                        
-                    default:
-                        logger.warn("{} Cannot handle command {} on channel {} (type {}).",
-                                AirZoneBindingConstants.LOGGING_CONTACT, command, itemName, itemType);
-                }
-            } catch (IllegalArgumentException e) {
-                logger.warn("Cannot handle command on channel {} as it isn't (yet) known to the bridge.", itemName);
-            }
+            // The bridge has no channels to handle a command for
         }
 
-        Instant lastCommunication = Instant.ofEpochMilli(thisBridge.lastCommunication());
-        Instant lastSuccessfulCommunication = Instant.ofEpochMilli(thisBridge.lastSuccessfulCommunication());
-        boolean lastCommunicationSucceeded = lastSuccessfulCommunication.equals(lastCommunication);
-        ThingStatus thingStatus = getThing().getStatus();
-
-        if (lastCommunicationSucceeded) {
-            if (thingStatus == ThingStatus.OFFLINE || thingStatus == ThingStatus.UNKNOWN) {
-                updateStatus(ThingStatus.ONLINE);
-            }
-        } else {
-            if ((thingStatus == ThingStatus.ONLINE || thingStatus == ThingStatus.UNKNOWN)
-                    && lastSuccessfulCommunication.plus(offlineDelay).isBefore(lastCommunication)) {
-                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR);
-            }
-        }
-
-        getThing().setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_TIMESTAMP_ATTEMPT, lastCommunication.toString());
-        getThing().setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_TIMESTAMP_SUCCESS, lastSuccessfulCommunication.toString());
+        updateStatus(ThingStatus.ONLINE);
 
         logger.trace("handleCommandCommsJob({}) done.", Thread.currentThread());
     }
