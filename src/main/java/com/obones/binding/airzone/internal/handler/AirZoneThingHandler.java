@@ -15,12 +15,19 @@ package com.obones.binding.airzone.internal.handler;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.measure.Unit;
+import javax.measure.quantity.Temperature;
+
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.core.config.core.Configuration;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.QuantityType;
 import org.openhab.core.library.types.StringType;
+import org.openhab.core.library.unit.ImperialUnits;
+import org.openhab.core.library.unit.SIUnits;
+import org.openhab.core.library.unit.Units;
 import org.openhab.core.thing.Bridge;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
@@ -199,6 +206,8 @@ public class AirZoneThingHandler extends BaseThingHandler {
 
     public boolean refreshChannel(Thing thing, ChannelUID channelUID, @Nullable AirZoneZone zone) {
         if (zone != null) {
+            Unit<Temperature> temperatureUnit = (zone.getUnits() == 0 ? SIUnits.CELSIUS : ImperialUnits.FAHRENHEIT);
+
             State newState = null;
             String channelId = channelUID.getId();
             switch (channelId) {
@@ -209,13 +218,13 @@ public class AirZoneThingHandler extends BaseThingHandler {
                     newState = (zone.getOn() != 0 ? OnOffType.ON : OnOffType.OFF);
                     break;
                 case AirZoneBindingConstants.CHANNEL_ZONE_TEMPERATURE:
-                    newState = new DecimalType(zone.getRoomTemp());
+                    newState = new QuantityType<>(zone.getRoomTemp(), temperatureUnit);
                     break;
                 case AirZoneBindingConstants.CHANNEL_ZONE_HUMIDITY:
-                    newState = new DecimalType(zone.getHumidity() / 100);
+                    newState = new QuantityType<>(zone.getHumidity(), Units.PERCENT);
                     break;
                 case AirZoneBindingConstants.CHANNEL_ZONE_SETPOINT:
-                    newState = new DecimalType(zone.getSetpoint());
+                    newState = new QuantityType<>(zone.getSetpoint(), temperatureUnit);
                     break;
                 case AirZoneBindingConstants.CHANNEL_ZONE_MODE:
                     newState = new DecimalType(zone.getMode());

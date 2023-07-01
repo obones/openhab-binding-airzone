@@ -151,6 +151,10 @@ public class AirZoneZone {
         return humidity;
     };
 
+    public int getUnits() {
+        return units;
+    }
+
     public double getAqQuality() {
         return aq_quality;
     };
