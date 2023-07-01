@@ -212,7 +212,7 @@ public class AirZoneThingHandler extends BaseThingHandler {
                     newState = new DecimalType(zone.getRoomTemp());
                     break;
                 case AirZoneBindingConstants.CHANNEL_ZONE_HUMIDITY:
-                    newState = new DecimalType(zone.getHumidity());
+                    newState = new DecimalType(zone.getHumidity() / 100);
                     break;
                 case AirZoneBindingConstants.CHANNEL_ZONE_SETPOINT:
                     newState = new DecimalType(zone.getSetpoint());
