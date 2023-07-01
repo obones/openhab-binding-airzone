@@ -100,6 +100,9 @@
 		<label>@text/channel-type.airzone.zone.mode.label</label>
 		<description>@text/channel-type.airzone.zone.mode.description</description>
 		<category>settings</category>
+		<tags>
+			<tag>Control</tag>
+		</tags>
 		<state min="1" max="7" />
 	</channel-type>
 	
