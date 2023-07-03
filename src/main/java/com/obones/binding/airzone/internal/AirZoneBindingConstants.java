@@ -106,6 +106,10 @@ public class AirZoneBindingConstants {
     public static final String PROPERTY_ZONE_THERMOS_FIRMWARE = "thermosFirmware";
     public static final String PROPERTY_ZONE_THERMOS_RADIO = "thermosRadio";
     public static final String PROPERTY_ZONE_MASTER_ZONE_ID = "masterZoneId";
+    public static final String PROPERTY_ZONE_AVAILABLE_MODES = "availableModes";
+    public static final String PROPERTY_ZONE_AVAILABLE_SPEEDS = "availableSpeeds";
+    public static final String PROPERTY_ZONE_AVAILABLE_COLD_STAGES = "availableColdStages";
+    public static final String PROPERTY_ZONE_AVAILABLE_HEAT_STAGES = "availableHeatStages";
 
     // Helper definitions
     public static final String BINDING_VALUES_SEPARATOR = ",";
@@ -164,4 +168,14 @@ public class AirZoneBindingConstants {
         ZONE_STAGE_RADIANT, 2,
         ZONE_STAGE_COMBINED, 3
     );
+
+    // thermostat type property
+    public static final String ZONE_THERMOSTAT_TYPE_BLUEFACE = "Blueface";
+    public static final String ZONE_THERMOSTAT_TYPE_BLUEFACE_ZERO = "Blueface Zero";
+    public static final String ZONE_THERMOSTAT_TYPE_LITE = "Lite";
+    public static final String ZONE_THERMOSTAT_TYPE_THINK = "Think";
+
+    // thermostat radio property
+    public static final String ZONE_THERMOSTAT_RADIO_CABLE = "Cable";
+    public static final String ZONE_THERMOSTAT_RADIO_RADIO = "Radio";
 }

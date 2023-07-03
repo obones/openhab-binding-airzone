@@ -12,6 +12,9 @@
  */
 package com.obones.binding.airzone.internal.handler;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -256,4 +259,55 @@ public class AirZoneThingHandler extends BaseThingHandler {
 
         return false;
     }
+
+    public void refreshProperties(Thing thing, @Nullable AirZoneZone zone) {
+        if (zone != null) {
+            int thermostatType = zone.getThermosType();
+            String thermostatTypeDesc = String.format("Unknown thermostat type: %d", thermostatType);
+            switch (thermostatType) {
+                case 1:
+                    thermostatTypeDesc = AirZoneBindingConstants.ZONE_THERMOSTAT_TYPE_BLUEFACE;
+                    break;
+                case 2:
+                    thermostatTypeDesc = AirZoneBindingConstants.ZONE_THERMOSTAT_TYPE_BLUEFACE_ZERO;
+                    break;
+                case 3:
+                    thermostatTypeDesc = AirZoneBindingConstants.ZONE_THERMOSTAT_TYPE_LITE;
+                    break;
+                case 4:
+                    thermostatTypeDesc = AirZoneBindingConstants.ZONE_THERMOSTAT_TYPE_THINK;
+                    break;
+            }
+
+            int thermostatRadio = zone.getThermosRadio();
+            String thermostatRadioDesc = String.format("Unknown thermostat radio: %d", thermostatRadio);
+            switch (thermostatRadio) {
+                case 0:
+                    thermostatRadioDesc = AirZoneBindingConstants.ZONE_THERMOSTAT_RADIO_CABLE;
+                    break;
+                case 1:
+                    thermostatRadioDesc = AirZoneBindingConstants.ZONE_THERMOSTAT_RADIO_RADIO;
+                    break;
+            }
+
+            List<@Nullable String> allowedModes = new ArrayList<@Nullable String>();
+            for (int allowedMode: zone.getModes()) {
+                @Nullable String modeName = AirZoneBindingConstants.IntToZoneMode.get(allowedMode);
+                if (modeName != null)
+                    allowedModes.add(modeName);
+                else 
+                    allowedModes.add(Integer.toString(allowedMode));
+            }
+
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_TYPE, thermostatTypeDesc);
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_FIRMWARE, zone.getThermosFirmware());
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_RADIO, thermostatRadioDesc);
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_MASTER_ZONE_ID, Integer.toString(zone.getMasterZoneID()));
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_AVAILABLE_MODES, allowedModes.toString());
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_AVAILABLE_SPEEDS, Arrays.toString(zone.getSpeeds()));
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_AVAILABLE_COLD_STAGES, AirZoneBindingConstants.IntToStage.get(zone.getColdStages()));
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_AVAILABLE_HEAT_STAGES, AirZoneBindingConstants.IntToStage.get(zone.getHeatStages()));
+        }
+
+   }
 }

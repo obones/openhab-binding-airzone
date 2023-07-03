@@ -36,6 +36,10 @@
 			<property name="thermosFirmware" />
 			<property name="thermosRadio" />
 			<property name="masterZoneId" />
+			<property name="availableModes" />
+			<property name="availableSpeeds" />
+			<property name="availableColdStages" />
+			<property name="availableHeatStages" />
 		</properties>
 		<representation-property>zoneUniqueId</representation-property>
 		<config-description-ref uri="thing-type:airzone:zone"/>
