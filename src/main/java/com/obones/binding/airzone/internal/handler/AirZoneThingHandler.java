@@ -155,6 +155,14 @@ public class AirZoneThingHandler extends BaseThingHandler {
                         case AirZoneBindingConstants.CHANNEL_ZONE_FAN_SPEED:
                             apiManager.setZoneSpeed(thing, command);
                             break;
+
+                        case AirZoneBindingConstants.CHANNEL_ZONE_COLD_STAGE:
+                            apiManager.setZoneColdStage(thing, command);
+                            break;
+                            
+                        case AirZoneBindingConstants.CHANNEL_ZONE_HEAT_STAGE:
+                            apiManager.setZoneHeatStage(thing, command);
+                            break;
                             
                         default:
                             handler.handleCommand(channelUID, command);
@@ -233,10 +241,10 @@ public class AirZoneThingHandler extends BaseThingHandler {
                     newState = new DecimalType(zone.getSpeed());
                     break;
                 case AirZoneBindingConstants.CHANNEL_ZONE_HEAT_STAGE:
-                    newState = new DecimalType(zone.getHeatStage());
+                    newState = new StringType(AirZoneBindingConstants.IntToStage.get(zone.getHeatStage()));
                     break;
                 case AirZoneBindingConstants.CHANNEL_ZONE_COLD_STAGE:
-                    newState = new DecimalType(zone.getColdStage());
+                    newState = new StringType(AirZoneBindingConstants.IntToStage.get(zone.getColdStage()));
                     break;
             }
 

@@ -50,9 +50,7 @@ public class AirZoneZone {
     private int speed;
     private int coldStage;
     private int heatStage;
-    @SuppressWarnings("unused")
     private int coldStages;
-    @SuppressWarnings("unused")
     private int heatStages;
     private double humidity;
     private int units;
@@ -145,6 +143,14 @@ public class AirZoneZone {
 
     public int getHeatStage() {
         return heatStage;
+    };
+
+    public int getColdStages() {
+        return coldStages;
+    };
+
+    public int getHeatStages() {
+        return heatStages;
     };
 
     public double getHumidity() {

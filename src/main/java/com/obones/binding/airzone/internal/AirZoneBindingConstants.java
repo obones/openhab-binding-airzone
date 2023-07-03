@@ -145,4 +145,23 @@ public class AirZoneBindingConstants {
         ZONE_MODE_DRY, 5,
         ZONE_MODE_AUTO, 7
     );
+
+    // stage channel values
+    public static final String ZONE_STAGE_AIR = "AIR";
+    public static final String ZONE_STAGE_RADIANT = "RADIANT";
+    public static final String ZONE_STAGE_COMBINED = "COMBINED";
+
+    @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
+    public static final Map<Integer, String> IntToStage = Map.of(
+        1, ZONE_STAGE_AIR,
+        2, ZONE_STAGE_RADIANT,
+        3, ZONE_STAGE_COMBINED
+    );
+
+    @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
+    public static final Map<String, Integer> ZoneStageToInt = Map.of(
+        ZONE_STAGE_AIR, 1,
+        ZONE_STAGE_RADIANT, 2,
+        ZONE_STAGE_COMBINED, 3
+    );
 }

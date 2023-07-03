@@ -138,11 +138,27 @@
 	</channel-type>
 	
 	<channel-type id="stage" advanced="true">
-		<item-type>Number</item-type>
+		<item-type>String</item-type>
 		<label>@text/channel-type.airzone.zone.stage.label</label>
 		<description>@text/channel-type.airzone.zone.stage.description</description>
 		<category>settings</category>
-		<state min="1" max="3" />
+		<tags>
+			<tag>Control</tag>
+		</tags>
+		<state>
+			<options>
+				<option value="AIR">Air</option>
+				<option value="RADIANT">Radiant</option>
+				<option value="COMBINED">Combined</option>
+			</options>
+		</state>
+		<command>
+			<options>
+				<option value="AIR">Air</option>
+				<option value="RADIANT">Radiant</option>
+				<option value="COMBINED">Combined</option>
+			</options>
+		</command>
 	</channel-type>
 
 </thing:thing-descriptions>

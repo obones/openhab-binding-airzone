@@ -164,6 +164,35 @@ public class AirZoneApiManager {
         }
     }
 
+    public void setZoneColdStage(Thing thing, Command command) {
+        setZoneStage(thing, command, "cold");
+    }
+
+    public void setZoneHeatStage(Thing thing, Command command) {
+        setZoneStage(thing, command, "heat");
+    }
+
+    private void setZoneStage(Thing thing, Command command, String prefix) {
+        if (command instanceof StringType) {
+            AirZoneZone zone = getZone(thing);
+            if (zone != null) {
+                int allowedStages = (prefix == "cold" ? zone.getColdStages() : zone.getHeatStages());
+                @Nullable Integer value = AirZoneBindingConstants.ZoneStageToInt.get(((StringType) command).toString());
+                if (value != null) {
+                    if (value == allowedStages) {
+                        setChannelValue(thing, prefix + "stage", new DecimalType(value));
+                    } else {
+                        logger.warn("Unsupported {} stage {} for zone {}, allowed stages are {}", prefix, value, thing.getUID(), allowedStages);
+                    }
+                }
+            } else {
+                logger.warn("No zone values for {}", thing.getUID());
+            }
+        } else {
+            logger.warn("Only StringType command is supported on zone stage, received {}", command.getClass().getName());
+        }
+    }
+
     private void fillLatestZones(@Nullable AirZoneResponse latestResponse)
     {
         if (latestResponse != null) {
