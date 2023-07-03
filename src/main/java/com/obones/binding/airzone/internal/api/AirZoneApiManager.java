@@ -11,13 +11,6 @@
  */
 package com.obones.binding.airzone.internal.api;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.obones.binding.airzone.internal.AirZoneBindingConstants;
-import com.obones.binding.airzone.internal.api.model.*;
-import com.obones.binding.airzone.internal.config.AirZoneBridgeConfiguration;
-import com.obones.binding.airzone.internal.config.AirZoneThingConfiguration;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,6 +32,13 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.obones.binding.airzone.internal.AirZoneBindingConstants;
+import com.obones.binding.airzone.internal.api.model.*;
+import com.obones.binding.airzone.internal.config.AirZoneBridgeConfiguration;
+import com.obones.binding.airzone.internal.config.AirZoneThingConfiguration;
+
 /**
  * The {@link AirZoneApiManager} is responsible for the communication with the AirZone web server.
  * It implements the different HTTP API calls provided by the AirZone web server
@@ -52,7 +52,8 @@ public class AirZoneApiManager {
 
     private class AirZoneZoneMap extends HashMap<Integer, AirZoneZone> {
         private Integer getKey(int systemId, int zoneId) {
-            return 1000 * systemId + zoneId;  // doc says each values goes from 1 to 32 so multiplying by 1000 should be safe for a long time while being human readable.
+            return 1000 * systemId + zoneId; // doc says each values goes from 1 to 32 so multiplying by 1000 should be
+                                             // safe for a long time while being human readable.
         }
 
         public @Nullable AirZoneZone put(int systemId, int zoneId, AirZoneZone zone) {
@@ -64,7 +65,7 @@ public class AirZoneApiManager {
         }
     }
 
-    @Nullable 
+    @Nullable
     private AirZoneResponse latestResponse = null;
     private AirZoneZoneMap latestZones = new AirZoneZoneMap();
     private AirZoneBridgeConfiguration airZoneBridgeConfiguration;
@@ -126,14 +127,16 @@ public class AirZoneApiManager {
         if (command instanceof StringType) {
             AirZoneZone zone = getZone(thing);
             if (zone != null) {
-                @Nullable Integer value = AirZoneBindingConstants.ZoneModeToInt.get(((StringType) command).toString());
+                @Nullable
+                Integer value = AirZoneBindingConstants.ZoneModeToInt.get(((StringType) command).toString());
                 if (value != null) {
                     int[] allowedModes = zone.getModes();
                     Arrays.sort(allowedModes);
                     if (Arrays.binarySearch(allowedModes, value) >= 0) {
                         setChannelValue(thing, "mode", new DecimalType(value));
                     } else {
-                        logger.warn("Unsupported mode {} for zone {}, allowed modes are {}", value, thing.getUID(), allowedModes);
+                        logger.warn("Unsupported mode {} for zone {}, allowed modes are {}", value, thing.getUID(),
+                                allowedModes);
                     }
                 }
             } else {
@@ -154,13 +157,15 @@ public class AirZoneApiManager {
                 if (Arrays.binarySearch(allowedSpeeds, value) >= 0) {
                     setChannelValue(thing, "speed", command);
                 } else {
-                    logger.warn("Unsupported speed {} for zone {}, allowed speeds are {}", value, thing.getUID(), allowedSpeeds);
+                    logger.warn("Unsupported speed {} for zone {}, allowed speeds are {}", value, thing.getUID(),
+                            allowedSpeeds);
                 }
             } else {
                 logger.warn("No zone values for {}", thing.getUID());
             }
         } else {
-            logger.warn("Only DecimalType command is supported on zone speed, received {}", command.getClass().getName());
+            logger.warn("Only DecimalType command is supported on zone speed, received {}",
+                    command.getClass().getName());
         }
     }
 
@@ -177,24 +182,26 @@ public class AirZoneApiManager {
             AirZoneZone zone = getZone(thing);
             if (zone != null) {
                 int allowedStages = (prefix == "cold" ? zone.getColdStages() : zone.getHeatStages());
-                @Nullable Integer value = AirZoneBindingConstants.ZoneStageToInt.get(((StringType) command).toString());
+                @Nullable
+                Integer value = AirZoneBindingConstants.ZoneStageToInt.get(((StringType) command).toString());
                 if (value != null) {
                     if (value == allowedStages) {
                         setChannelValue(thing, prefix + "stage", new DecimalType(value));
                     } else {
-                        logger.warn("Unsupported {} stage {} for zone {}, allowed stages are {}", prefix, value, thing.getUID(), allowedStages);
+                        logger.warn("Unsupported {} stage {} for zone {}, allowed stages are {}", prefix, value,
+                                thing.getUID(), allowedStages);
                     }
                 }
             } else {
                 logger.warn("No zone values for {}", thing.getUID());
             }
         } else {
-            logger.warn("Only StringType command is supported on zone stage, received {}", command.getClass().getName());
+            logger.warn("Only StringType command is supported on zone stage, received {}",
+                    command.getClass().getName());
         }
     }
 
-    private void fillLatestZones(@Nullable AirZoneResponse latestResponse)
-    {
+    private void fillLatestZones(@Nullable AirZoneResponse latestResponse) {
         if (latestResponse != null) {
             for (AirZoneSystem system : latestResponse.getSystems()) {
                 for (AirZoneZone zone : system.getData()) {
@@ -240,10 +247,10 @@ public class AirZoneApiManager {
     }
 
     private @Nullable String executeUrl(String httpMethod, String requestContent) throws IOException {
-        String url = "http://".concat(airZoneBridgeConfiguration.ipAddress).concat(":").concat(Integer.toString(airZoneBridgeConfiguration.tcpPort)).concat("/api/v1/hvac");
+        String url = "http://".concat(airZoneBridgeConfiguration.ipAddress).concat(":")
+                .concat(Integer.toString(airZoneBridgeConfiguration.tcpPort)).concat("/api/v1/hvac");
         Properties headerItems = new Properties();
         InputStream content = new ByteArrayInputStream(requestContent.getBytes(StandardCharsets.UTF_8));
-        //logger.warn("calling {}", url);
         String jsonResponse = HttpUtil.executeUrl(httpMethod, url, headerItems, content, "application/json",
                 airZoneBridgeConfiguration.timeoutMsecs);
         if (jsonResponse == null)

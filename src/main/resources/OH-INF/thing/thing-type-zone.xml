@@ -16,15 +16,15 @@
 		<description>@text/thing-type.airzone.zone.description</description>
 		<category>HVAC</category>
 		<channels>
-			<channel id="name" typeId="name" />
-			<channel id="onOff" typeId="onOff" />
-			<channel id="temperature" typeId="temperature" />
-			<channel id="humidity" typeId="humidity" />
-			<channel id="setpoint" typeId="setpointTemperature" />
-			<channel id="mode" typeId="mode" />
-			<channel id="fanSpeed" typeId="speed" />
+			<channel id="name" typeId="name"/>
+			<channel id="onOff" typeId="onOff"/>
+			<channel id="temperature" typeId="temperature"/>
+			<channel id="humidity" typeId="humidity"/>
+			<channel id="setpoint" typeId="setpointTemperature"/>
+			<channel id="mode" typeId="mode"/>
+			<channel id="fanSpeed" typeId="speed"/>
 			<channel id="heatStage" typeId="stage">
-				<label>@text/channel-type.airzone.zone.heatStage.label</label> 
+				<label>@text/channel-type.airzone.zone.heatStage.label</label>
 			</channel>
 			<channel id="coldStage" typeId="stage">
 				<label>@text/channel-type.airzone.zone.coldStage.label</label>
@@ -32,14 +32,14 @@
 		</channels>
 		<properties>
 			<property name="vendor">AirZone</property>
-			<property name="thermosType" />
-			<property name="thermosFirmware" />
-			<property name="thermosRadio" />
-			<property name="masterZoneId" />
-			<property name="availableModes" />
-			<property name="availableSpeeds" />
-			<property name="availableColdStages" />
-			<property name="availableHeatStages" />
+			<property name="thermosType"/>
+			<property name="thermosFirmware"/>
+			<property name="thermosRadio"/>
+			<property name="masterZoneId"/>
+			<property name="availableModes"/>
+			<property name="availableSpeeds"/>
+			<property name="availableColdStages"/>
+			<property name="availableHeatStages"/>
 		</properties>
 		<representation-property>zoneUniqueId</representation-property>
 		<config-description-ref uri="thing-type:airzone:zone"/>

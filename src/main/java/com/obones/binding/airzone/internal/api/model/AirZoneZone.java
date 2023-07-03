@@ -168,6 +168,5 @@ public class AirZoneZone {
     public int getMasterZoneID() {
         return master_zoneID;
     };
-    /* spell-checker:enanle */
-
+    /* spell-checker:enable */
 }

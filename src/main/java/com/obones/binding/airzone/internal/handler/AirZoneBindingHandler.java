@@ -103,7 +103,8 @@ public class AirZoneBindingHandler extends BaseThingHandler {
      */
     private void updateVisibleInformation() {
         logger.trace("updateVisibleInformation(): updating properties.");
-        thing.setProperty(AirZoneBindingProperties.PROPERTY_BINDING_BUNDLEVERSION, ManifestInformation.getBundleVersion());
+        thing.setProperty(AirZoneBindingProperties.PROPERTY_BINDING_BUNDLEVERSION,
+                ManifestInformation.getBundleVersion());
         thing.setProperty(AirZoneBindingProperties.PROPERTY_BINDING_NOOFBRIDGES, currentNumberOfBridges.toString());
         thing.setProperty(AirZoneBindingProperties.PROPERTY_BINDING_NOOFTHINGS, currentNumberOfThings.toString());
 

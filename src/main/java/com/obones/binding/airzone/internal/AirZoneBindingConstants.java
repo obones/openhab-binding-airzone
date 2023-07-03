@@ -130,6 +130,7 @@ public class AirZoneBindingConstants {
     public static final String ZONE_MODE_DRY = "DRY";
     public static final String ZONE_MODE_AUTO = "AUTO";
 
+    // @formatter:off
     @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
     public static final Map<Integer, String> IntToZoneMode = Map.of(
         1, ZONE_MODE_STOP,
@@ -149,12 +150,14 @@ public class AirZoneBindingConstants {
         ZONE_MODE_DRY, 5,
         ZONE_MODE_AUTO, 7
     );
+    // @formatter:on
 
     // stage channel values
     public static final String ZONE_STAGE_AIR = "AIR";
     public static final String ZONE_STAGE_RADIANT = "RADIANT";
     public static final String ZONE_STAGE_COMBINED = "COMBINED";
 
+    // @formatter:off
     @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
     public static final Map<Integer, String> IntToStage = Map.of(
         1, ZONE_STAGE_AIR,
@@ -168,6 +171,7 @@ public class AirZoneBindingConstants {
         ZONE_STAGE_RADIANT, 2,
         ZONE_STAGE_COMBINED, 3
     );
+    // @formatter:on
 
     // thermostat type property
     public static final String ZONE_THERMOSTAT_TYPE_BLUEFACE = "Blueface";

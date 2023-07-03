@@ -39,7 +39,7 @@ import com.obones.binding.airzone.internal.utils.ManifestInformation;
  */
 @NonNullByDefault
 public class AirZoneDiscoveryService extends AbstractDiscoveryService implements Runnable {
-    
+
     private @NonNullByDefault({}) final Logger logger = LoggerFactory.getLogger(AirZoneDiscoveryService.class);
 
     // Class internal
@@ -49,7 +49,7 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
     private @NonNullByDefault({}) LocaleProvider localeProvider;
     private @NonNullByDefault({}) TranslationProvider i18nProvider;
     private Localization localization = Localization.UNKNOWN;
-    
+
     // Private
 
     @SuppressWarnings("null") // unexplained warnings on Localization constructor
@@ -95,7 +95,8 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
      */
     public AirZoneDiscoveryService(Localization localizationHandler) {
         super(AirZoneBindingConstants.DISCOVERABLE_THINGS, DISCOVER_TIMEOUT_SECONDS);
-        logger.warn("AirZoneDiscoveryService(locale={},i18n={}) just initialized. {}", localeProvider, i18nProvider, System.identityHashCode(this));
+        logger.warn("AirZoneDiscoveryService(locale={},i18n={}) just initialized. {}", localeProvider, i18nProvider,
+                System.identityHashCode(this));
         localization = localizationHandler;
     }
 
@@ -112,7 +113,8 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
     public AirZoneDiscoveryService(LocationProvider locationProvider, LocaleProvider localeProvider,
             TranslationProvider i18nProvider) {
         this(new Localization(localeProvider, i18nProvider));
-        logger.warn("AirZoneDiscoveryService(locale={},i18n={}) finished. {}", localeProvider, i18nProvider, System.identityHashCode(this));
+        logger.warn("AirZoneDiscoveryService(locale={},i18n={}) finished. {}", localeProvider, i18nProvider,
+                System.identityHashCode(this));
     }
 
     @Override
@@ -135,9 +137,8 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
         logger.debug("startScan(): registering new thing {}.", discoveryResult);
         thingDiscovered(discoveryResult);
 
-        /*scheduler.execute(() -> {
-            discoverBridges();
-        });*/
+        // Here would be the place to discover bridges, maybe via posting a method to scheduler.execute(()
+
         logger.trace("startScan() done.");
     }
 
@@ -164,7 +165,7 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
                 for (var zone : system.getData()) {
                     String zoneName = zone.getName().toString();
                     logger.trace("discoverZones(): found zone {}.", zoneName);
-                    
+
                     String label = "AirZone - ".concat(zoneName.replaceAll("\\P{Alnum}", "_"));
                     logger.trace("discoverZones(): using label {}.", label);
 
@@ -172,13 +173,13 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
 
                     ThingTypeUID thingTypeUID = AirZoneBindingConstants.THING_TYPE_AIRZONE_ZONE;
                     ThingUID thingUID = new ThingUID(thingTypeUID, bridgeUID, zoneUniqueId);
-                    DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID).withThingType(thingTypeUID)
+                    DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID)
+                            .withThingType(thingTypeUID)
                             .withProperty(AirZoneBindingProperties.PROPERTY_SYSTEM_ID, zone.getSystemID())
                             .withProperty(AirZoneBindingProperties.PROPERTY_ZONE_ID, zone.getZoneID())
                             .withProperty(AirZoneBindingProperties.PROPERTY_ZONE_UNIQUE_ID, zoneUniqueId)
                             .withRepresentationProperty(AirZoneBindingProperties.PROPERTY_ZONE_UNIQUE_ID)
-                            .withBridge(bridgeUID)
-                            .withLabel(label).build();
+                            .withBridge(bridgeUID).withLabel(label).build();
                     logger.debug("discoverZones(): registering new thing {}.", discoveryResult);
                     thingDiscovered(discoveryResult);
                 }

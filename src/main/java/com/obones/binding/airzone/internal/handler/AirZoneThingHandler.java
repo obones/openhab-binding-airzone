@@ -45,13 +45,12 @@ import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.obones.binding.airzone.internal.utils.Localization;
-
 import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.AirZoneBindingProperties;
 import com.obones.binding.airzone.internal.api.AirZoneApiManager;
 import com.obones.binding.airzone.internal.api.model.AirZoneZone;
 import com.obones.binding.airzone.internal.config.AirZoneThingConfiguration;
+import com.obones.binding.airzone.internal.utils.Localization;
 
 /***
  * The{@link AirZoneThingHandler} is responsible for handling commands, which are
@@ -96,7 +95,8 @@ public class AirZoneThingHandler extends BaseThingHandler {
             if (bridgeHandler != null) {
                 AirZoneThingConfiguration config = getConfigAs(AirZoneThingConfiguration.class);
 
-                thing.setProperty(AirZoneBindingProperties.PROPERTY_ZONE_UNIQUE_ID, AirZoneBridgeHandler.getZoneUniqueId(config.systemId, config.zoneId));
+                thing.setProperty(AirZoneBindingProperties.PROPERTY_ZONE_UNIQUE_ID,
+                        AirZoneBridgeHandler.getZoneUniqueId(config.systemId, config.zoneId));
             }
         }
         logger.trace("initializeProperties() done.");
@@ -135,7 +135,7 @@ public class AirZoneThingHandler extends BaseThingHandler {
 
                 if (command instanceof RefreshType) {
                     if (!refreshChannel(thing, channelUID, apiManager))
-                       bridgeHandler.handleCommand(channelUID, command); 
+                        bridgeHandler.handleCommand(channelUID, command);
                 } else {
                     String channelId = channelUID.getId();
                     switch (channelId) {
@@ -150,11 +150,11 @@ public class AirZoneThingHandler extends BaseThingHandler {
                         case AirZoneBindingConstants.CHANNEL_ZONE_SETPOINT:
                             apiManager.setZoneSetPoint(thing, command);
                             break;
-                            
+
                         case AirZoneBindingConstants.CHANNEL_ZONE_MODE:
                             apiManager.setZoneMode(thing, command);
                             break;
-                            
+
                         case AirZoneBindingConstants.CHANNEL_ZONE_FAN_SPEED:
                             apiManager.setZoneSpeed(thing, command);
                             break;
@@ -162,11 +162,11 @@ public class AirZoneThingHandler extends BaseThingHandler {
                         case AirZoneBindingConstants.CHANNEL_ZONE_COLD_STAGE:
                             apiManager.setZoneColdStage(thing, command);
                             break;
-                            
+
                         case AirZoneBindingConstants.CHANNEL_ZONE_HEAT_STAGE:
                             apiManager.setZoneHeatStage(thing, command);
                             break;
-                            
+
                         default:
                             handler.handleCommand(channelUID, command);
                     }
@@ -197,12 +197,15 @@ public class AirZoneThingHandler extends BaseThingHandler {
 
     @Override
     public void bridgeStatusChanged(ThingStatusInfo info) {
-        switch (info.getStatus())
-        {
+        switch (info.getStatus()) {
             case OFFLINE:
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.BRIDGE_OFFLINE);
+                break;
+
             case ONLINE:
                 updateStatus(ThingStatus.ONLINE, ThingStatusDetail.NONE);
+                break;
+
             default:
                 super.bridgeStatusChanged(info);
         }
@@ -291,23 +294,27 @@ public class AirZoneThingHandler extends BaseThingHandler {
             }
 
             List<@Nullable String> allowedModes = new ArrayList<@Nullable String>();
-            for (int allowedMode: zone.getModes()) {
-                @Nullable String modeName = AirZoneBindingConstants.IntToZoneMode.get(allowedMode);
+            for (int allowedMode : zone.getModes()) {
+                @Nullable
+                String modeName = AirZoneBindingConstants.IntToZoneMode.get(allowedMode);
                 if (modeName != null)
                     allowedModes.add(modeName);
-                else 
+                else
                     allowedModes.add(Integer.toString(allowedMode));
             }
 
             thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_TYPE, thermostatTypeDesc);
             thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_FIRMWARE, zone.getThermosFirmware());
             thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_RADIO, thermostatRadioDesc);
-            thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_MASTER_ZONE_ID, Integer.toString(zone.getMasterZoneID()));
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_MASTER_ZONE_ID,
+                    Integer.toString(zone.getMasterZoneID()));
             thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_AVAILABLE_MODES, allowedModes.toString());
-            thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_AVAILABLE_SPEEDS, Arrays.toString(zone.getSpeeds()));
-            thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_AVAILABLE_COLD_STAGES, AirZoneBindingConstants.IntToStage.get(zone.getColdStages()));
-            thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_AVAILABLE_HEAT_STAGES, AirZoneBindingConstants.IntToStage.get(zone.getHeatStages()));
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_AVAILABLE_SPEEDS,
+                    Arrays.toString(zone.getSpeeds()));
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_AVAILABLE_COLD_STAGES,
+                    AirZoneBindingConstants.IntToStage.get(zone.getColdStages()));
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_AVAILABLE_HEAT_STAGES,
+                    AirZoneBindingConstants.IntToStage.get(zone.getHeatStages()));
         }
-
-   }
+    }
 }
