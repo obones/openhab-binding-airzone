@@ -39,7 +39,7 @@ import com.obones.binding.airzone.internal.handler.AirZoneBridgeHandler;
  * @author Olivier Sannier - Initial contribution.
  */
 @NonNullByDefault
-public /*abstract*/ class AirZoneBridge {
+public class AirZoneBridge {
     private @NonNullByDefault({}) final Logger logger = LoggerFactory.getLogger(AirZoneBridge.class);
 
     /**
@@ -81,21 +81,6 @@ public /*abstract*/ class AirZoneBridge {
     }
 
     /**
-     * Initializes a client/server communication towards <b>AirZone</b> bridge
-     * based on the Basic I/O interface {@link AirZoneBridge} and parameters
-     * passed as arguments (see below) and provided by AirZoneBridgeConfiguration.
-     *
-     * @param communication the intended communication,
-     *            that is request and response interactions as well as appropriate URL definition.
-     * @return true if communication was successful, and false otherwise.
-     */
-    /*private synchronized boolean bridgeCommunicate(BridgeCommunicationProtocol communication) {
-        logger.trace("bridgeCommunicate({}) called.", communication.name());
-
-        return bridgeDirectCommunicate(communication);
-    }*/
-
-    /**
      * Returns the timestamp in milliseconds since Unix epoch
      * of last communication.
      * <P>
@@ -122,21 +107,6 @@ public /*abstract*/ class AirZoneBridge {
         logger.trace("lastSuccessfulCommunication() returns zero.");
         return 0L;
     }
-
-    /**
-     * Initializes a client/server communication towards <b>AirZone</b> airZoneBridge
-     * based on the protocol-specific implementations with common parameters
-     * passed as arguments (see below) and provided by AirZoneBridgeConfiguration.
-     * <P>
-     * For protocol-specific implementations this method has to be overwritten along the inheritance i.e.
-     * with the protocol-specific class implementations.
-     *
-     * @param communication Structure of interface type {@link BridgeCommunicationProtocol} describing the
-     *            intended communication.
-     * @param useAuthentication boolean flag to decide whether to use authenticated communication.
-     * @return <b>success</b> of type boolean which signals the success of the communication.
-     */
-    //protected abstract boolean bridgeDirectCommunicate(BridgeCommunicationProtocol communication);
 
     /**
      * Check is the last communication was a good one
