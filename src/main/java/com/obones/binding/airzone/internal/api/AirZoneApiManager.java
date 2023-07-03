@@ -182,8 +182,8 @@ public class AirZoneApiManager {
         json.getAsJsonObject().addProperty("systemID", config.systemId);
         json.getAsJsonObject().addProperty("zoneID", config.zoneId);
 
-        if (command instanceof DecimalType) {
-            json.getAsJsonObject().addProperty(fieldName, ((DecimalType) command).doubleValue());
+        if (command instanceof Number) {
+            json.getAsJsonObject().addProperty(fieldName, ((Number) command).doubleValue());
         } else if (command instanceof OnOffType) {
             json.getAsJsonObject().addProperty(fieldName, (command == OnOffType.ON) ? 1 : 0);
         } else {
