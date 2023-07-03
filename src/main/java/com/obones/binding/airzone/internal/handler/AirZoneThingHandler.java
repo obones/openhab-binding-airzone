@@ -227,7 +227,7 @@ public class AirZoneThingHandler extends BaseThingHandler {
                     newState = new QuantityType<>(zone.getSetpoint(), temperatureUnit);
                     break;
                 case AirZoneBindingConstants.CHANNEL_ZONE_MODE:
-                    newState = new DecimalType(zone.getMode());
+                    newState = new StringType(AirZoneBindingConstants.IntToZoneMode.get(zone.getMode()));
                     break;
                 case AirZoneBindingConstants.CHANNEL_ZONE_FAN_SPEED:
                     newState = new DecimalType(zone.getSpeed());

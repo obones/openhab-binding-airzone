@@ -13,6 +13,7 @@ package com.obones.binding.airzone.internal.api;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.api.model.*;
 import com.obones.binding.airzone.internal.config.AirZoneBridgeConfiguration;
 import com.obones.binding.airzone.internal.config.AirZoneThingConfiguration;
@@ -30,6 +31,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.core.io.net.http.HttpUtil;
 import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.thing.Thing;
 import org.openhab.core.types.Command;
 import org.osgi.service.component.annotations.Activate;
@@ -121,22 +123,24 @@ public class AirZoneApiManager {
     }
 
     public void setZoneMode(Thing thing, Command command) {
-        if (command instanceof DecimalType) {
+        if (command instanceof StringType) {
             AirZoneZone zone = getZone(thing);
             if (zone != null) {
-                int value = ((DecimalType) command).intValue();
-                int[] allowedModes = zone.getModes();
-                Arrays.sort(allowedModes);
-                if (Arrays.binarySearch(allowedModes, value) >= 0) {
-                    setChannelValue(thing, "mode", command);
-                } else {
-                    logger.warn("Unsupported mode {} for zone {}, allowed modes are {}", value, thing.getUID(), allowedModes);
+                @Nullable Integer value = AirZoneBindingConstants.ZoneModeToInt.get(((StringType) command).toString());
+                if (value != null) {
+                    int[] allowedModes = zone.getModes();
+                    Arrays.sort(allowedModes);
+                    if (Arrays.binarySearch(allowedModes, value) >= 0) {
+                        setChannelValue(thing, "mode", new DecimalType(value));
+                    } else {
+                        logger.warn("Unsupported mode {} for zone {}, allowed modes are {}", value, thing.getUID(), allowedModes);
+                    }
                 }
             } else {
                 logger.warn("No zone values for {}", thing.getUID());
             }
         } else {
-            logger.warn("Only DecimalType command is supported on zone mode, received {}", command.getClass().getName());
+            logger.warn("Only StringType command is supported on zone mode, received {}", command.getClass().getName());
         }
     }
 

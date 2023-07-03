@@ -14,6 +14,7 @@ package com.obones.binding.airzone.internal;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -116,4 +117,32 @@ public class AirZoneBindingConstants {
 
     public static final String UNKNOWN_THING_TYPE_ID = "FAILED";
     public static final String UNKNOWN_IP_ADDRESS = "xxx.xxx.xxx.xxx";
+
+    // mode channel values
+    public static final String ZONE_MODE_STOP = "STOP";
+    public static final String ZONE_MODE_COOLING = "COOLING";
+    public static final String ZONE_MODE_HEATING = "HEATING";
+    public static final String ZONE_MODE_FAN = "FAN";
+    public static final String ZONE_MODE_DRY = "DRY";
+    public static final String ZONE_MODE_AUTO = "AUTO";
+
+    @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
+    public static final Map<Integer, String> IntToZoneMode = Map.of(
+        1, ZONE_MODE_STOP,
+        2, ZONE_MODE_COOLING,
+        3, ZONE_MODE_HEATING,
+        4, ZONE_MODE_FAN,
+        5, ZONE_MODE_DRY,
+        7, ZONE_MODE_AUTO
+    );
+
+    @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
+    public static final Map<String, Integer> ZoneModeToInt = Map.of(
+        ZONE_MODE_STOP, 1,
+        ZONE_MODE_COOLING, 2,
+        ZONE_MODE_HEATING, 3,
+        ZONE_MODE_FAN, 4,
+        ZONE_MODE_DRY, 5,
+        ZONE_MODE_AUTO, 7
+    );
 }

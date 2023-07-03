@@ -96,14 +96,33 @@
 	</channel-type>
 
 	<channel-type id="mode">
-		<item-type>Number</item-type>
+		<item-type>String</item-type>
 		<label>@text/channel-type.airzone.zone.mode.label</label>
 		<description>@text/channel-type.airzone.zone.mode.description</description>
 		<category>settings</category>
 		<tags>
 			<tag>Control</tag>
 		</tags>
-		<state min="1" max="7" />
+		<state>
+			<options>
+				<option value="STOP">Stop</option>
+				<option value="COOLING">Cooling</option>
+				<option value="HEATING">Heating</option>
+				<option value="FAN">Fan</option>
+				<option value="DRY">Dry</option>
+				<option value="AUTO">Auto</option>
+			</options>
+		</state>
+		<command>
+			<options>
+				<option value="STOP">Stop</option>
+				<option value="COOLING">Cooling</option>
+				<option value="HEATING">Heating</option>
+				<option value="FAN">Fan</option>
+				<option value="DRY">Dry</option>
+				<option value="AUTO">Auto</option>
+			</options>
+		</command>
 	</channel-type>
 	
 	<channel-type id="speed">
