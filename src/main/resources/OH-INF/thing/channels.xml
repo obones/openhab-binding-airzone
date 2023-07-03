@@ -161,4 +161,30 @@
 		</command>
 	</channel-type>
 
+	<channel-type id="sleep">
+		<item-type>String</item-type>
+		<label>@text/channel-type.airzone.zone.sleep.label</label>
+		<description>@text/channel-type.airzone.zone.sleep.description</description>
+		<category>time</category>
+		<tags>
+			<tag>Control</tag>
+		</tags>
+		<state>
+			<options>
+				<option value="OFF">Off</option>
+				<option value="THIRTY">30</option>
+				<option value="SIXTY">60</option>
+				<option value="NINETY">90</option>
+			</options>
+		</state>
+		<command>
+			<options>
+				<option value="OFF">Off</option>
+				<option value="THIRTY">30</option>
+				<option value="SIXTY">60</option>
+				<option value="NINETY">90</option>
+			</options>
+		</command>
+	</channel-type>
+
 </thing:thing-descriptions>

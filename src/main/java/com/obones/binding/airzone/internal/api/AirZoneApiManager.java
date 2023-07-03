@@ -192,6 +192,23 @@ public class AirZoneApiManager {
         setZoneStage(thing, command, "heat");
     }
 
+    public void setZoneSleep(Thing thing, Command command) {
+        if (command instanceof StringType) {
+            AirZoneZone zone = getZone(thing);
+            if (zone != null) {
+                @Nullable
+                Integer value = AirZoneBindingConstants.ZoneSleepToInt.get(((StringType) command).toString());
+                if (value != null) {
+                    setChannelValue(thing, "sleep", new DecimalType(value));
+                }
+            } else {
+                logger.warn("No zone values for {}", thing.getUID());
+            }
+        } else {
+            logger.warn("Only StringType command is supported on zone mode, received {}", command.getClass().getName());
+        }
+    }
+
     private void setZoneStage(Thing thing, Command command, String prefix) {
         if (command instanceof StringType) {
             AirZoneZone zone = getZone(thing);

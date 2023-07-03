@@ -167,6 +167,10 @@ public class AirZoneThingHandler extends BaseThingHandler {
                             apiManager.setZoneHeatStage(thing, command);
                             break;
 
+                        case AirZoneBindingConstants.CHANNEL_ZONE_SLEEP:
+                            apiManager.setZoneSleep(thing, command);
+                            break;
+
                         default:
                             handler.handleCommand(channelUID, command);
                     }
@@ -251,6 +255,9 @@ public class AirZoneThingHandler extends BaseThingHandler {
                     break;
                 case AirZoneBindingConstants.CHANNEL_ZONE_COLD_STAGE:
                     newState = new StringType(AirZoneBindingConstants.IntToStage.get(zone.getColdStage()));
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_SLEEP:
+                    newState = new StringType(AirZoneBindingConstants.IntToSleep.get(zone.getSleep()));
                     break;
             }
 

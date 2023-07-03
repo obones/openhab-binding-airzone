@@ -108,6 +108,7 @@ public class AirZoneBindingConstants {
     public static final String CHANNEL_ZONE_FAN_SPEED = "fanSpeed";
     public static final String CHANNEL_ZONE_HEAT_STAGE = "heatStage";
     public static final String CHANNEL_ZONE_COLD_STAGE = "coldStage";
+    public static final String CHANNEL_ZONE_SLEEP = "sleep";
 
     public static final String PROPERTY_ZONE_THERMOS_TYPE = "thermosType";
     public static final String PROPERTY_ZONE_THERMOS_FIRMWARE = "thermosFirmware";
@@ -177,6 +178,30 @@ public class AirZoneBindingConstants {
         ZONE_STAGE_AIR, 1,
         ZONE_STAGE_RADIANT, 2,
         ZONE_STAGE_COMBINED, 3
+    );
+    // @formatter:on
+
+    // sleep channel values
+    public static final String ZONE_SLEEP_OFF = "OFF";
+    public static final String ZONE_SLEEP_THIRTY = "THIRTY";
+    public static final String ZONE_SLEEP_SIXTY = "SIXTY";
+    public static final String ZONE_SLEEP_NINETY = "NINETY";
+
+    // @formatter:off
+    @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
+    public static final Map<Integer, String> IntToSleep = Map.of(
+        0, ZONE_SLEEP_OFF,
+        30, ZONE_SLEEP_THIRTY,
+        60, ZONE_SLEEP_SIXTY,
+        90, ZONE_SLEEP_NINETY
+    );
+
+    @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
+    public static final Map<String, Integer> ZoneSleepToInt = Map.of(
+        ZONE_SLEEP_OFF, 0,
+        ZONE_SLEEP_THIRTY, 30,
+        ZONE_SLEEP_SIXTY, 60,
+        ZONE_SLEEP_NINETY, 90
     );
     // @formatter:on
 
