@@ -346,6 +346,8 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
             return;
         }
 
+        resetProperties();
+
         airZoneBridgeConfiguration.hasChanged = false;
         logger.debug("AirZone airZoneBridge is online, now.");
         updateStatus(ThingStatus.ONLINE);
@@ -360,6 +362,8 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
         logger.trace("refreshSchedulerJob(): processing of possible HSM messages.");
 
         doDiscovery();
+
+        refreshProperties();
 
         syncChannelsWithProducts();
 
@@ -407,6 +411,25 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
             }
         }
         logger.trace("syncChannelsWithProducts() done.");
+    }
+
+    private void resetProperties() {
+        thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_MAC, null);
+    }
+
+    @SuppressWarnings("unused")  // really, we just set the value to null in the code above, so the code is definitely not dead...
+    private void refreshProperties() {
+        if (thing.getProperties().get(AirZoneBindingConstants.PROPERTY_BRIDGE_MAC) == null) {
+            var props = apiManager.getServerProperties();
+
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_MAC, props.getMac());
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_WIFI_CHANNEL, ((Integer)props.getWifiChannel()).toString());
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_WIFI_QUALITY, ((Integer)props.getWifiQuality()).toString());
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_WIFI_RSSI, ((Integer)props.getWifiRssi()).toString());
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_INTERFACE, props.getInterface());
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_FIRMWARE, props.getFirmware());
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_TYPE, props.getType());
+        }
     }
 
     // Processing of openHAB events

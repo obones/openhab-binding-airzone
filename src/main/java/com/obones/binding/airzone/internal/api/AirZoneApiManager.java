@@ -77,7 +77,7 @@ public class AirZoneApiManager {
 
     public void fetchStatus() {
         try {
-            String jsonResponse = executePostUrl("{\"systemID\":0,\"zoneID\":0}");
+            String jsonResponse = executeHvacPostUrl("{\"systemID\":0,\"zoneID\":0}");
 
             if (jsonResponse != null) {
                 jsonResponse = jsonResponse.replaceAll("^.+,\n", "");
@@ -103,6 +103,21 @@ public class AirZoneApiManager {
             fetchStatus();
 
         return latestZones.get(systemId, zoneId);
+    }
+
+    public @Nullable AirZoneWebServerResponse getServerProperties() {
+        try {
+            String jsonResponse = executePostUrl("webserver", "");
+
+            if (jsonResponse != null) {
+                jsonResponse = jsonResponse.replaceAll("^.+,\n", "");
+                logger.trace("io() cleaned response {}.", jsonResponse);
+                return gson.fromJson(jsonResponse, AirZoneWebServerResponse.class);
+            }
+        } catch (IOException ioe) {
+            logger.warn("exception {}", ioe.toString());
+        }
+        return null;
     }
 
     private @Nullable AirZoneZone getZone(Thing thing) {
@@ -229,7 +244,7 @@ public class AirZoneApiManager {
         String content = gson.toJson(json);
         if (content != null) {
             try {
-                executePutUrl(content);
+                executeHvacPutUrl(content);
             } catch (IOException ioe) {
                 logger.warn("exception {}", ioe.toString());
             }
@@ -238,17 +253,25 @@ public class AirZoneApiManager {
         fetchStatus();
     }
 
-    private @Nullable String executePostUrl(String requestContent) throws IOException {
-        return executeUrl("POST", requestContent);
+    private @Nullable String executeHvacPostUrl(String requestContent) throws IOException {
+        return executePostUrl("hvac", requestContent);
     }
 
-    private @Nullable String executePutUrl(String requestContent) throws IOException {
-        return executeUrl("PUT", requestContent);
+    private @Nullable String executePostUrl(String resourceName, String requestContent) throws IOException {
+        return executeUrl("POST", resourceName, requestContent);
     }
 
-    private @Nullable String executeUrl(String httpMethod, String requestContent) throws IOException {
+    private @Nullable String executeHvacPutUrl(String requestContent) throws IOException {
+        return executePutUrl("hvac", requestContent);
+    }
+
+    private @Nullable String executePutUrl(String resourceName, String requestContent) throws IOException {
+        return executeUrl("PUT", resourceName, requestContent);
+    }
+
+    private @Nullable String executeUrl(String httpMethod, String resourceName, String requestContent) throws IOException {
         String url = "http://".concat(airZoneBridgeConfiguration.ipAddress).concat(":")
-                .concat(Integer.toString(airZoneBridgeConfiguration.tcpPort)).concat("/api/v1/hvac");
+                .concat(Integer.toString(airZoneBridgeConfiguration.tcpPort)).concat("/api/v1/").concat(resourceName);
         Properties headerItems = new Properties();
         InputStream content = new ByteArrayInputStream(requestContent.getBytes(StandardCharsets.UTF_8));
         String jsonResponse = HttpUtil.executeUrl(httpMethod, url, headerItems, content, "application/json",

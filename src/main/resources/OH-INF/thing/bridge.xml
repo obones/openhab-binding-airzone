@@ -15,6 +15,13 @@
 
 		<properties>
 			<property name="vendor">AirZone</property>
+			<property name="mac"/>
+			<property name="wifiChannel"/>
+			<property name="wifiQuality"/>
+			<property name="wifiRSSI"/>
+			<property name="interface"/>
+			<property name="firmware"/>
+			<property name="type"/>
 		</properties>
 
 		<config-description-ref uri="bridge-type:airzone:bridge"/>

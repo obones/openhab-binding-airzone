@@ -90,6 +90,13 @@ public class AirZoneBindingConstants {
     public static final String PROPERTY_BRIDGE_TIMESTAMP_ATTEMPT = "connectionAttempt";
 
     public static final String PROPERTY_BRIDGE_SCENES = "zones";
+    public static final String PROPERTY_BRIDGE_MAC = "mac";
+    public static final String PROPERTY_BRIDGE_WIFI_CHANNEL = "wifiChannel";
+    public static final String PROPERTY_BRIDGE_WIFI_QUALITY = "wifiQuality";
+    public static final String PROPERTY_BRIDGE_WIFI_RSSI = "wifiRSSI";
+    public static final String PROPERTY_BRIDGE_INTERFACE = "interface";
+    public static final String PROPERTY_BRIDGE_FIRMWARE = "firmware";
+    public static final String PROPERTY_BRIDGE_TYPE = "type";
 
     // List of all zone channel/property ids
     public static final String CHANNEL_ZONE_NAME = "name";
