@@ -330,15 +330,7 @@ public class AirZoneThingHandler extends BaseThingHandler {
                     break;
             }
 
-            List<@Nullable String> allowedModes = new ArrayList<@Nullable String>();
-            for (int allowedMode : zone.getModes()) {
-                @Nullable
-                String modeName = AirZoneBindingConstants.IntToZoneMode.get(allowedMode);
-                if (modeName != null)
-                    allowedModes.add(modeName);
-                else
-                    allowedModes.add(Integer.toString(allowedMode));
-            }
+            List<@Nullable String> allowedModes = getAllowedModes(zone);
 
             thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_TYPE, thermostatTypeDesc);
             thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_FIRMWARE, zone.getThermosFirmware());
@@ -353,5 +345,20 @@ public class AirZoneThingHandler extends BaseThingHandler {
             thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_AVAILABLE_HEAT_STAGES,
                     AirZoneBindingConstants.IntToStage.get(zone.getHeatStages()));
         }
+    }
+
+    @SuppressWarnings("unused") // the code in the else part is definitely used but the IDE insist on saying it is dead...
+    private List<@Nullable String> getAllowedModes(AirZoneZone zone) {
+        List<@Nullable String> result = new ArrayList<@Nullable String>();
+        for (int allowedMode : zone.getModes()) {
+            @Nullable
+            String modeName = AirZoneBindingConstants.IntToZoneMode.get(allowedMode);
+            if (modeName != null)
+                result.add(modeName);
+            else
+                result.add(Integer.toString(allowedMode));
+        }
+
+        return result;
     }
 }

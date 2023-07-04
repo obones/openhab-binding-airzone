@@ -30,6 +30,7 @@ public class AirZoneDetailedErrors {
     /**
      * Returns the detailed message associated to the given error code, if any.
      */
+    @SuppressWarnings("unused") // the code in the else part is definitely used but the IDE insist on saying it is dead...
     public static @Nullable String getDetailedErrorMessage(@Nullable String errorCode, Localization localization) {
         if (errorCode == null)
             return null;
