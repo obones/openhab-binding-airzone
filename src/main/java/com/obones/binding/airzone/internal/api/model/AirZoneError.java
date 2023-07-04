@@ -14,13 +14,13 @@ package com.obones.binding.airzone.internal.api.model;
 
 public class AirZoneError {
     private String Zone;
-    private String System;
+    private String system;
 
     public String getZone() {
         return Zone;
     }
 
     public String getSystem() {
-        return System;
+        return system;
     }
 }
