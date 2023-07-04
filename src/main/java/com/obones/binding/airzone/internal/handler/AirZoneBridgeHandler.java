@@ -361,6 +361,8 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
                 refreshCounter);
         logger.trace("refreshSchedulerJob(): processing of possible HSM messages.");
 
+        apiManager.fetchStatus();
+
         doDiscovery();
 
         refreshProperties();
