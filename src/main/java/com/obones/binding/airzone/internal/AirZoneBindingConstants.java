@@ -97,6 +97,7 @@ public class AirZoneBindingConstants {
     public static final String PROPERTY_BRIDGE_INTERFACE = "interface";
     public static final String PROPERTY_BRIDGE_FIRMWARE = "firmware";
     public static final String PROPERTY_BRIDGE_TYPE = "type";
+    public static final String PROPERTY_BRIDGE_API_VERSION = "apiVersion";
 
     // List of all zone channel/property ids
     public static final String CHANNEL_ZONE_NAME = "name";

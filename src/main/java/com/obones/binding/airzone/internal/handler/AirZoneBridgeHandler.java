@@ -431,6 +431,9 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
             thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_INTERFACE, props.getInterface());
             thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_FIRMWARE, props.getFirmware());
             thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_TYPE, props.getType());
+
+            var apiVersion = apiManager.getApiVersion();
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_API_VERSION, apiVersion);
         }
     }
 

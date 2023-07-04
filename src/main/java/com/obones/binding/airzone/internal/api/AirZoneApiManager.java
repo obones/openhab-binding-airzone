@@ -120,6 +120,22 @@ public class AirZoneApiManager {
         return null;
     }
 
+    public @Nullable String getApiVersion() {
+        try {
+            String jsonResponse = executePostUrl("version", "");
+
+            if (jsonResponse != null) {
+                @Nullable
+                AirZoneApiVersionResponse apiVersionResponse = gson.fromJson(jsonResponse, AirZoneApiVersionResponse.class);
+                if (apiVersionResponse != null)
+                    return apiVersionResponse.getVersion();
+            }
+        } catch (IOException ioe) {
+            logger.warn("exception {}", ioe.toString());
+        }
+        return null;
+    }
+
     private @Nullable AirZoneZone getZone(Thing thing) {
         AirZoneThingConfiguration config = thing.getConfiguration().as(AirZoneThingConfiguration.class);
 

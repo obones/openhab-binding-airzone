@@ -22,6 +22,7 @@
 			<property name="interface"/>
 			<property name="firmware"/>
 			<property name="type"/>
+			<property name="apiVersion"/>
 		</properties>
 
 		<config-description-ref uri="bridge-type:airzone:bridge"/>
