@@ -21,15 +21,12 @@ public class AirZoneZone {
     private String thermos_firmware = "";
     private int thermos_radio;
     private int on;
-    @SuppressWarnings("unused")
-    private double double_sp;
-    @SuppressWarnings("unused")
+    private int double_sp;
     private double coolsetpoint;
     @SuppressWarnings("unused")
     private double coolmaxtemp;
     @SuppressWarnings("unused")
     private double coolmintemp;
-    @SuppressWarnings("unused")
     private double heatsetpoint;
     @SuppressWarnings("unused")
     private double heatmaxtemp;
@@ -107,6 +104,18 @@ public class AirZoneZone {
     public int getOn() {
         return on;
     };
+
+    public int getDoubleSetpoint() {
+        return double_sp;
+    }
+
+    public double getCoolSetpoint() {
+        return coolsetpoint;
+    }
+
+    public double getHeatSetpoint() {
+        return heatsetpoint;
+    }
 
     public double getSetpoint() {
         return setpoint;

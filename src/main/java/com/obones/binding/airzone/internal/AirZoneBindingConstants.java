@@ -105,6 +105,8 @@ public class AirZoneBindingConstants {
     public static final String CHANNEL_ZONE_TEMPERATURE = "temperature";
     public static final String CHANNEL_ZONE_HUMIDITY = "humidity";
     public static final String CHANNEL_ZONE_SETPOINT = "setpoint";
+    public static final String CHANNEL_ZONE_HEAT_SETPOINT = "heatSetpoint";
+    public static final String CHANNEL_ZONE_COOL_SETPOINT = "coolSetpoint";
     public static final String CHANNEL_ZONE_MODE = "mode";
     public static final String CHANNEL_ZONE_FAN_SPEED = "fanSpeed";
     public static final String CHANNEL_ZONE_HEAT_STAGE = "heatStage";
@@ -123,6 +125,7 @@ public class AirZoneBindingConstants {
 
     // dynamic channel type ids
     public static final String CHANNEL_TYPE_ZONE_SPEED = "speed";
+    public static final String CHANNEL_TYPE_ZONE_SETPOINT_TEMPERATURE = "setpointTemperature";
 
     // Helper definitions
     public static final String BINDING_VALUES_SEPARATOR = ",";

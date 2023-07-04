@@ -134,7 +134,6 @@ public class AirZoneThingHandler extends BaseThingHandler {
                 return;
             }                    
 
-            boolean mustUpdateThing = false;
             ThingBuilder builder = editThing();
 
             // create speed channel if it can be set to any value
@@ -145,13 +144,32 @@ public class AirZoneThingHandler extends BaseThingHandler {
                 Channel channel = channelBuilder.build();
 
                 builder.withChannel(channel);
-
-                mustUpdateThing = true;
             }
 
-            if (mustUpdateThing) {
-                updateThing(builder.build());
+            // create one or two setpoint channels depending on the zone capabilities
+            ChannelTypeUID channelSetpointTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID, AirZoneBindingConstants.CHANNEL_TYPE_ZONE_SETPOINT_TEMPERATURE);
+            if (zone.getDoubleSetpoint() == 0) {
+                ChannelUID channelUID = new ChannelUID(thing.getUID(), AirZoneBindingConstants.CHANNEL_ZONE_SETPOINT);
+                ChannelBuilder channelBuilder = callback.createChannelBuilder(channelUID, channelSetpointTypeUID);
+                Channel channel = channelBuilder.build();
+                builder.withChannel(channel);
+            } else {
+                ChannelUID channelCoolUID = new ChannelUID(thing.getUID(), AirZoneBindingConstants.CHANNEL_ZONE_COOL_SETPOINT);
+                ChannelBuilder channelCoolBuilder = callback.createChannelBuilder(channelCoolUID, channelSetpointTypeUID);
+                channelCoolBuilder.withLabel(localization.getText("channel-type.airzone.zone.coolSetpoint.label"));
+                channelCoolBuilder.withDescription(localization.getText("channel-type.airzone.zone.coolSetpoint.description"));
+                Channel channelCool = channelCoolBuilder.build();
+                builder.withChannel(channelCool);
+
+                ChannelUID channelHeatUID = new ChannelUID(thing.getUID(), AirZoneBindingConstants.CHANNEL_ZONE_HEAT_SETPOINT);
+                ChannelBuilder channelHeatBuilder = callback.createChannelBuilder(channelHeatUID, channelSetpointTypeUID);
+                channelHeatBuilder.withLabel(localization.getText("channel-type.airzone.zone.heatSetpoint.label"));
+                channelHeatBuilder.withDescription(localization.getText("channel-type.airzone.zone.heatSetpoint.description"));
+                Channel channelHeat = channelHeatBuilder.build();
+                builder.withChannel(channelHeat);
             }
+
+            updateThing(builder.build());
         }
     }
 
@@ -202,6 +220,14 @@ public class AirZoneThingHandler extends BaseThingHandler {
 
                         case AirZoneBindingConstants.CHANNEL_ZONE_SETPOINT:
                             apiManager.setZoneSetPoint(thing, command);
+                            break;
+
+                        case AirZoneBindingConstants.CHANNEL_ZONE_COOL_SETPOINT:
+                            apiManager.setZoneCoolSetPoint(thing, command);
+                            break;
+
+                        case AirZoneBindingConstants.CHANNEL_ZONE_HEAT_SETPOINT:
+                            apiManager.setZoneHeatSetPoint(thing, command);
                             break;
 
                         case AirZoneBindingConstants.CHANNEL_ZONE_MODE:
@@ -296,6 +322,12 @@ public class AirZoneThingHandler extends BaseThingHandler {
                     break;
                 case AirZoneBindingConstants.CHANNEL_ZONE_SETPOINT:
                     newState = new QuantityType<>(zone.getSetpoint(), temperatureUnit);
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_HEAT_SETPOINT:
+                    newState = new QuantityType<>(zone.getHeatSetpoint(), temperatureUnit);
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_COOL_SETPOINT:
+                    newState = new QuantityType<>(zone.getCoolSetpoint(), temperatureUnit);
                     break;
                 case AirZoneBindingConstants.CHANNEL_ZONE_MODE:
                     newState = new StringType(AirZoneBindingConstants.IntToZoneMode.get(zone.getMode()));

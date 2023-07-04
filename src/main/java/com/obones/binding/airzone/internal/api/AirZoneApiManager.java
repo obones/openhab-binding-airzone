@@ -150,6 +150,14 @@ public class AirZoneApiManager {
         setChannelValue(thing, "setpoint", command);
     }
 
+    public void setZoneCoolSetPoint(Thing thing, Command command) {
+        setChannelValue(thing, "coolsetpoint", command);
+    }
+
+    public void setZoneHeatSetPoint(Thing thing, Command command) {
+        setChannelValue(thing, "heatsetpoint", command);
+    }
+
     public void setZoneName(Thing thing, Command command) {
         setChannelValue(thing, "name", command);
     }
