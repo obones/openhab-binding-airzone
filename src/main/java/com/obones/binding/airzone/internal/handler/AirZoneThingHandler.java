@@ -32,6 +32,7 @@ import org.openhab.core.library.unit.ImperialUnits;
 import org.openhab.core.library.unit.SIUnits;
 import org.openhab.core.library.unit.Units;
 import org.openhab.core.thing.Bridge;
+import org.openhab.core.thing.Channel;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingStatus;
@@ -39,6 +40,10 @@ import org.openhab.core.thing.ThingStatusDetail;
 import org.openhab.core.thing.ThingStatusInfo;
 import org.openhab.core.thing.binding.BaseThingHandler;
 import org.openhab.core.thing.binding.BridgeHandler;
+import org.openhab.core.thing.binding.ThingHandlerCallback;
+import org.openhab.core.thing.binding.builder.ChannelBuilder;
+import org.openhab.core.thing.binding.builder.ThingBuilder;
+import org.openhab.core.thing.type.ChannelTypeUID;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.RefreshType;
 import org.openhab.core.types.State;
@@ -84,8 +89,9 @@ public class AirZoneThingHandler extends BaseThingHandler {
 
         } else if (thisBridge.getStatus() == ThingStatus.ONLINE) {
             logger.trace("initialize() updating ThingStatus to ONLINE.");
-            updateStatus(ThingStatus.ONLINE);
+            createOptionalChannels();
             initializeProperties();
+            updateStatus(ThingStatus.ONLINE);
         } else {
             logger.trace("initialize() updating ThingStatus to OFFLINE/BRIDGE_OFFLINE.");
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.BRIDGE_OFFLINE);
@@ -105,6 +111,48 @@ public class AirZoneThingHandler extends BaseThingHandler {
             }
         }
         logger.trace("initializeProperties() done.");
+    }
+    private synchronized void createOptionalChannels() {
+        Bridge bridge = getBridge();
+        if (bridge != null) {
+            AirZoneBridgeHandler bridgeHandler = (AirZoneBridgeHandler) bridge.getHandler();
+            if (bridgeHandler == null) {
+                logger.warn("createOptionalChannels: Could not get bridge handler");
+                return;
+            }
+            AirZoneThingConfiguration config = getConfigAs(AirZoneThingConfiguration.class);
+
+            AirZoneZone zone = bridgeHandler.getApiManager().getZone(config.systemId, config.zoneId);
+            if (zone == null) {
+                logger.warn("createOptionalChannels: No zone data for {} - {}", config.systemId, config.zoneId);
+                return;
+            }
+
+            ThingHandlerCallback callback = getCallback();
+            if (callback == null) {
+                logger.warn("createOptionalChannels: Could not get callback.");
+                return;
+            }                    
+
+            boolean mustUpdateThing = false;
+            ThingBuilder builder = editThing();
+
+            // create speed channel if it can be set to any value
+            if (zone.getSpeeds().length > 0) {
+                ChannelUID channelUID = new ChannelUID(thing.getUID(), AirZoneBindingConstants.CHANNEL_ZONE_FAN_SPEED);
+                ChannelTypeUID channelTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID, AirZoneBindingConstants.CHANNEL_TYPE_ZONE_SPEED);
+                ChannelBuilder channelBuilder = callback.createChannelBuilder(channelUID, channelTypeUID);
+                Channel channel = channelBuilder.build();
+
+                builder.withChannel(channel);
+
+                mustUpdateThing = true;
+            }
+
+            if (mustUpdateThing) {
+                updateThing(builder.build());
+            }
+        }
     }
 
     @Override

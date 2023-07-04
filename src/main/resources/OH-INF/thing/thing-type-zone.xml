@@ -22,7 +22,6 @@
 			<channel id="humidity" typeId="humidity"/>
 			<channel id="setpoint" typeId="setpointTemperature"/>
 			<channel id="mode" typeId="mode"/>
-			<channel id="fanSpeed" typeId="speed"/>
 			<channel id="heatStage" typeId="stage">
 				<label>@text/channel-type.airzone.zone.heatStage.label</label>
 			</channel>

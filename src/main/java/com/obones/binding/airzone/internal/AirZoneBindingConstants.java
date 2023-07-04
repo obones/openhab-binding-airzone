@@ -121,6 +121,9 @@ public class AirZoneBindingConstants {
     public static final String PROPERTY_ZONE_AVAILABLE_COLD_STAGES = "availableColdStages";
     public static final String PROPERTY_ZONE_AVAILABLE_HEAT_STAGES = "availableHeatStages";
 
+    // dynamic channel type ids
+    public static final String CHANNEL_TYPE_ZONE_SPEED = "speed";
+
     // Helper definitions
     public static final String BINDING_VALUES_SEPARATOR = ",";
     public static final String OUTPUT_VALUE_SEPARATOR = ",";
