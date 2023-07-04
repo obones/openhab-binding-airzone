@@ -187,4 +187,12 @@
 		</command>
 	</channel-type>
 
+	<channel-type id="errors">
+		<item-type>StringList</item-type>
+		<label>@text/channel-type.airzone.zone.errors.label</label>
+		<description>@text/channel-type.airzone.zone.errors.description</description>
+		<category>error</category>
+		<state readOnly="true"/>
+	</channel-type>
+
 </thing:thing-descriptions>
