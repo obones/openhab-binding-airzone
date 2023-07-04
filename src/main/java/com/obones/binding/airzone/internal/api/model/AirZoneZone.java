@@ -54,8 +54,7 @@ public class AirZoneZone {
     private int heatStages;
     private double humidity;
     private int units;
-    @SuppressWarnings("unused")
-    private String[] errors = {};
+    private AirZoneError[] errors = {};
     @SuppressWarnings("unused")
     private int air_demand;
     @SuppressWarnings("unused")
@@ -159,6 +158,10 @@ public class AirZoneZone {
 
     public int getUnits() {
         return units;
+    }
+
+    public AirZoneError[] getErrors() {
+        return errors;
     }
 
     public double getAqQuality() {

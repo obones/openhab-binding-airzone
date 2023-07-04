@@ -48,6 +48,7 @@ import org.slf4j.LoggerFactory;
 import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.AirZoneBindingProperties;
 import com.obones.binding.airzone.internal.api.AirZoneApiManager;
+import com.obones.binding.airzone.internal.api.AirZoneDetailedErrors;
 import com.obones.binding.airzone.internal.api.model.AirZoneZone;
 import com.obones.binding.airzone.internal.config.AirZoneThingConfiguration;
 import com.obones.binding.airzone.internal.utils.Localization;
@@ -61,9 +62,11 @@ import com.obones.binding.airzone.internal.utils.Localization;
 @NonNullByDefault
 public class AirZoneThingHandler extends BaseThingHandler {
     private @NonNullByDefault({}) final Logger logger = LoggerFactory.getLogger(AirZoneThingHandler.class);
+    private Localization localization;
 
     public AirZoneThingHandler(Thing thing, Localization localization) {
         super(thing);
+        this.localization = localization;
         logger.trace("AirZoneThingHandler(thing={},localization={}) constructor called.", thing, localization);
     }
 
@@ -258,6 +261,30 @@ public class AirZoneThingHandler extends BaseThingHandler {
                     break;
                 case AirZoneBindingConstants.CHANNEL_ZONE_SLEEP:
                     newState = new StringType(AirZoneBindingConstants.IntToSleep.get(zone.getSleep()));
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_ERRORS:
+                    var errors = new ArrayList<String>();
+
+                    for(var zoneError : zone.getErrors()) {
+                        String systemValue = zoneError.getSystem();
+                        String zoneValue = zoneError.getZone();
+
+                        boolean isSystem = systemValue != null;
+                        boolean isZone = zoneValue != null;
+
+                        String originName = isSystem ? "System" : (isZone ? "Zone" : "unknown");
+                        String errorCode = isSystem ? systemValue : (isZone ? zoneValue : "unexpected");
+
+                        String errorMessage = originName + ": " + errorCode;
+
+                        @Nullable 
+                        String detailedErrorMessage = AirZoneDetailedErrors.getDetailedErrorMessage(errorCode, localization);
+                        if (detailedErrorMessage != null)
+                            errorMessage += " - " + detailedErrorMessage;
+
+                        errors.add(errorMessage);
+                    }
+                    newState = new StringType(errors.toString());
                     break;
             }
 

@@ -109,6 +109,7 @@ public class AirZoneBindingConstants {
     public static final String CHANNEL_ZONE_HEAT_STAGE = "heatStage";
     public static final String CHANNEL_ZONE_COLD_STAGE = "coldStage";
     public static final String CHANNEL_ZONE_SLEEP = "sleep";
+    public static final String CHANNEL_ZONE_ERRORS = "errors";
 
     public static final String PROPERTY_ZONE_THERMOS_TYPE = "thermosType";
     public static final String PROPERTY_ZONE_THERMOS_FIRMWARE = "thermosFirmware";

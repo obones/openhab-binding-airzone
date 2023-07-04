@@ -30,6 +30,7 @@
 				<label>@text/channel-type.airzone.zone.coldStage.label</label>
 			</channel>
 			<channel id="sleep" typeId="sleep"/>
+			<channel id="errors" typeId="errors"/>
 		</channels>
 		<properties>
 			<property name="vendor">AirZone</property>

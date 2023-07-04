@@ -188,7 +188,7 @@
 	</channel-type>
 
 	<channel-type id="errors">
-		<item-type>StringList</item-type>
+		<item-type>String</item-type>
 		<label>@text/channel-type.airzone.zone.errors.label</label>
 		<description>@text/channel-type.airzone.zone.errors.description</description>
 		<category>error</category>
