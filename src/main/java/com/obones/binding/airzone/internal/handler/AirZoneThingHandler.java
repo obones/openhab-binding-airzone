@@ -45,6 +45,7 @@ import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
 import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.AirZoneBindingProperties;
 import com.obones.binding.airzone.internal.api.AirZoneApiManager;
@@ -63,6 +64,7 @@ import com.obones.binding.airzone.internal.utils.Localization;
 public class AirZoneThingHandler extends BaseThingHandler {
     private @NonNullByDefault({}) final Logger logger = LoggerFactory.getLogger(AirZoneThingHandler.class);
     private Localization localization;
+    private static final Gson gson = new Gson();
 
     public AirZoneThingHandler(Thing thing, Localization localization) {
         super(thing);
@@ -284,7 +286,8 @@ public class AirZoneThingHandler extends BaseThingHandler {
 
                         errors.add(errorMessage);
                     }
-                    newState = new StringType(errors.toString());
+
+                    newState = new StringType(gson.toJson(errors.toArray()));
                     break;
             }
 
