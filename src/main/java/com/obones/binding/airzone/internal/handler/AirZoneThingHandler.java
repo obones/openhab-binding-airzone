@@ -12,6 +12,7 @@
  */
 package com.obones.binding.airzone.internal.handler;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,6 +48,7 @@ import org.openhab.core.thing.type.ChannelTypeUID;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.RefreshType;
 import org.openhab.core.types.State;
+import org.openhab.core.types.StateDescriptionFragmentBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -132,7 +134,7 @@ public class AirZoneThingHandler extends BaseThingHandler {
             if (callback == null) {
                 logger.warn("createOptionalChannels: Could not get callback.");
                 return;
-            }                    
+            }
 
             ThingBuilder builder = editThing();
 
@@ -440,5 +442,32 @@ public class AirZoneThingHandler extends BaseThingHandler {
         }
 
         return result;
+    }
+
+    public @Nullable StateDescriptionFragmentBuilder adjustChannelState(ChannelTypeUID channelTypeUID, StateDescriptionFragmentBuilder builder) {
+        switch (channelTypeUID.getId())
+        {
+            case AirZoneBindingConstants.CHANNEL_TYPE_ZONE_SETPOINT_TEMPERATURE:
+                Bridge bridge = getBridge();
+                if (bridge == null) {
+                    return null;
+                }
+
+                AirZoneBridgeHandler bridgeHandler = (AirZoneBridgeHandler) bridge.getHandler();
+                if (bridgeHandler == null) {
+                    return null;
+                }
+
+                AirZoneThingConfiguration config = getConfigAs(AirZoneThingConfiguration.class);
+
+                AirZoneZone zone = bridgeHandler.getApiManager().getZone(config.systemId, config.zoneId);
+                if (zone == null) {
+                    return null;
+                }
+
+                return builder.withStep(new BigDecimal(zone.getTempStep()));
+            default:
+                return null;
+        }
     }
 }

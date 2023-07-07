@@ -39,7 +39,6 @@ public class AirZoneZone {
     private double setpoint;
     private double roomTemp;
     private int sleep;
-    @SuppressWarnings("unused")
     private double temp_step;
     private int[] modes = {};
     private int mode;
@@ -128,6 +127,10 @@ public class AirZoneZone {
     public int getSleep() {
         return sleep;
     };
+
+    public double getTempStep() {
+        return temp_step;
+    }
 
     public int[] getModes() {
         return modes;
