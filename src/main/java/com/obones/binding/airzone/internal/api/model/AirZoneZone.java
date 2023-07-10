@@ -70,6 +70,8 @@ public class AirZoneZone {
     private String eco_adapt = "";
     @SuppressWarnings("unused")
     private int antifreeze;*/
+    private @Nullable Integer slats_vswing;
+    private @Nullable Integer slats_hswing;
 
     public int getSystemID() {
         return systemID;
@@ -206,5 +208,13 @@ public class AirZoneZone {
     public int getMasterZoneID() {
         return master_zoneID;
     };
+
+    public @Nullable Integer getSlatsVSwing() {
+        return slats_vswing;
+    }
+
+    public @Nullable Integer getSlatsHSwing() {
+        return slats_hswing;
+    }
     /* spell-checker:enable */
 }

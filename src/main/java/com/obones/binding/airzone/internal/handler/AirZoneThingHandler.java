@@ -240,6 +240,25 @@ public class AirZoneThingHandler extends BaseThingHandler {
                 builder.withChannel(channelAirQualityHighThreshold);
             }
 
+            ChannelTypeUID channelSlatsSwingTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID, AirZoneBindingConstants.CHANNEL_TYPE_ZONE_SLATS_SWING);
+            if (zone.getSlatsVSwing() != null) {
+                ChannelUID channelSlatsVSwingUID = new ChannelUID(thing.getUID(), AirZoneBindingConstants.CHANNEL_ZONE_SLATS_VERTICAL_SWING);
+                ChannelBuilder channelSlatsVSwingBuilder = callback.createChannelBuilder(channelSlatsVSwingUID, channelSlatsSwingTypeUID);
+                channelSlatsVSwingBuilder.withLabel(localization.getText("channel-type.airzone.zone.slats-vertical-swing.label"));
+                channelSlatsVSwingBuilder.withDescription(localization.getText("channel-type.airzone.zone.slats-vertical-swing.description"));
+                Channel channelSlatsVSwing = channelSlatsVSwingBuilder.build();
+                builder.withChannel(channelSlatsVSwing);
+            }
+
+            if (zone.getSlatsHSwing() != null) {
+                ChannelUID channelSlatsHSwingUID = new ChannelUID(thing.getUID(), AirZoneBindingConstants.CHANNEL_ZONE_SLATS_HORIZONTAL_SWING);
+                ChannelBuilder channelSlatsHSwingBuilder = callback.createChannelBuilder(channelSlatsHSwingUID, channelSlatsSwingTypeUID);
+                channelSlatsHSwingBuilder.withLabel(localization.getText("channel-type.airzone.zone.slats-horizontal-swing.label"));
+                channelSlatsHSwingBuilder.withDescription(localization.getText("channel-type.airzone.zone.slats-horizontal-swing.description"));
+                Channel channelSlatsHSwing = channelSlatsHSwingBuilder.build();
+                builder.withChannel(channelSlatsHSwing);
+            }
+
             updateThing(builder.build());
         }
     }
@@ -331,6 +350,14 @@ public class AirZoneThingHandler extends BaseThingHandler {
 
                         case AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY_HIGH_THRESHOLD:
                             apiManager.setZoneAirQualityHighThreshold(thing, command);
+                            break;
+
+                        case AirZoneBindingConstants.CHANNEL_ZONE_SLATS_VERTICAL_SWING:
+                            apiManager.setZoneVerticalSwing(thing, command);
+                            break;
+
+                        case AirZoneBindingConstants.CHANNEL_ZONE_SLATS_HORIZONTAL_SWING:
+                            apiManager.setZoneHorizontalSwing(thing, command);
                             break;
 
                         default:
@@ -485,6 +512,12 @@ public class AirZoneThingHandler extends BaseThingHandler {
                         newState = new QuantityType<>(thresholdHigh, Units.PERCENT);
                     else
                         newState = UnDefType.NULL;
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_SLATS_VERTICAL_SWING:
+                    newState = zone.getSlatsVSwing() != 1 ? OnOffType.OFF : OnOffType.ON;
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_SLATS_HORIZONTAL_SWING:
+                    newState = zone.getSlatsHSwing() != 1 ? OnOffType.OFF : OnOffType.ON;
                     break;
             }
 

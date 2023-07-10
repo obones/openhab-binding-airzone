@@ -121,6 +121,8 @@ public class AirZoneBindingConstants {
     public static final String CHANNEL_ZONE_AIR_QUALITY_MODE = "air-quality-mode";
     public static final String CHANNEL_ZONE_AIR_QUALITY_LOW_THRESHOLD = "air-quality-low-threshold";
     public static final String CHANNEL_ZONE_AIR_QUALITY_HIGH_THRESHOLD = "air-quality-high-threshold";
+    public static final String CHANNEL_ZONE_SLATS_VERTICAL_SWING = "slats-vertical-swing";
+    public static final String CHANNEL_ZONE_SLATS_HORIZONTAL_SWING = "slats-horizontal-swing";
 
     public static final String PROPERTY_ZONE_THERMOS_TYPE = "thermosType";
     public static final String PROPERTY_ZONE_THERMOS_FIRMWARE = "thermosFirmware";
@@ -138,6 +140,7 @@ public class AirZoneBindingConstants {
     public static final String CHANNEL_TYPE_ZONE_AIR_QUALITY_MODE = "air-quality-mode";
     public static final String CHANNEL_TYPE_ZONE_AIR_QUALITY = "air-quality";
     public static final String CHANNEL_TYPE_ZONE_AIR_QUALITY_THRESHOLD = "air-quality-threshold";
+    public static final String CHANNEL_TYPE_ZONE_SLATS_SWING = "slats-swing";
 
     // List of all system channel/property ids
     public static final String CHANNEL_SYSTEM_POWER = "power";

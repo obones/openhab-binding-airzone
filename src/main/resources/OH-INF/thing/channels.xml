@@ -259,4 +259,10 @@
 		<state pattern="%.1f %%"/>
 	</channel-type>
 
+	<channel-type id="slats-swing">
+		<item-type>Switch</item-type>
+		<label>[ToBeReplaced]</label>
+		<category>Switch</category>
+	</channel-type>
+
 </thing:thing-descriptions>
