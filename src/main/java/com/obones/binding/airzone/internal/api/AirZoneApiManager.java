@@ -233,6 +233,31 @@ public class AirZoneApiManager {
         }
     }
 
+    public void setZoneAirQualityMode(Thing thing, Command command) {
+        if (command instanceof StringType) {
+            AirZoneZone zone = getZone(thing);
+            if (zone != null) {
+                @Nullable
+                Integer value = AirZoneBindingConstants.ZoneAirQualityModeToInt.get(((StringType) command).toString());
+                if (value != null) {
+                    setChannelValue(thing, "aq_mode", new DecimalType(value));
+                }
+            } else {
+                logger.warn("No zone values for {}", thing.getUID());
+            }
+        } else {
+            logger.warn("Only StringType command is supported on zone air quality mode, received {}", command.getClass().getName());
+        }
+    }
+
+    public void setZoneAirQualityLowThreshold(Thing thing, Command command) {
+        setChannelValue(thing, "aq_thrlow", command);
+    }
+
+    public void setZoneAirQualityHighThreshold(Thing thing, Command command) {
+        setChannelValue(thing, "aq_thrhigh", command);
+    }
+
     private void setZoneStage(Thing thing, Command command, String prefix) {
         if (command instanceof StringType) {
             AirZoneZone zone = getZone(thing);

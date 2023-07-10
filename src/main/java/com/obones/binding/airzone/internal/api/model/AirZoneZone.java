@@ -57,17 +57,14 @@ public class AirZoneZone {
     private @Nullable Integer floor_demand;
     private @Nullable Integer cold_demand;
     private @Nullable Integer heat_demand;
-    @SuppressWarnings("unused")
-    private int aq_mode;
-    private double aq_quality;
-    /*@SuppressWarnings("unused")
-    private double aq_thrlow;
-    @SuppressWarnings("unused")
-    private double aq_thrhigh;
+    private @Nullable Integer aq_mode;
+    private @Nullable Integer aq_quality;
+    private @Nullable Double aq_thrlow;
+    private @Nullable Double aq_thrhigh;
     @SuppressWarnings("unused")
     private double heatangle;
     @SuppressWarnings("unused")
-    private double coldangle;*/
+    private double coldangle;
     private int master_zoneID;
     /*@SuppressWarnings("unused")
     private String eco_adapt = "";
@@ -190,8 +187,20 @@ public class AirZoneZone {
         return heat_demand;
     }
     
-    public double getAqQuality() {
+    public @Nullable Integer getAirQuality() {
         return aq_quality;
+    };
+
+    public @Nullable Integer getAirQualityMode() {
+        return aq_mode;
+    }
+
+    public @Nullable Double getAirQualityThresholdLow() {
+        return aq_thrlow;
+    };
+
+    public @Nullable Double getAirQualityThresholdHigh() {
+        return aq_thrhigh;
     };
 
     public int getMasterZoneID() {

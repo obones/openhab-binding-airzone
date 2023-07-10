@@ -49,6 +49,7 @@ import org.openhab.core.types.Command;
 import org.openhab.core.types.RefreshType;
 import org.openhab.core.types.State;
 import org.openhab.core.types.StateDescriptionFragmentBuilder;
+import org.openhab.core.types.UnDefType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -209,6 +210,36 @@ public class AirZoneThingHandler extends BaseThingHandler {
                 builder.withChannel(channelHeatDemand);
             }
 
+            if (zone.getAirQualityMode() != null) {
+                ChannelTypeUID channelAirQualityModeTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID, AirZoneBindingConstants.CHANNEL_TYPE_ZONE_AIR_QUALITY_MODE);
+                ChannelTypeUID channelAirQualityTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID, AirZoneBindingConstants.CHANNEL_TYPE_ZONE_AIR_QUALITY);
+                ChannelTypeUID channelAirQualityThresholdTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID, AirZoneBindingConstants.CHANNEL_TYPE_ZONE_AIR_QUALITY_THRESHOLD);
+
+                ChannelUID channelAirQualityModeUID = new ChannelUID(thing.getUID(), AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY_MODE);
+                ChannelBuilder channelAirQualityModeBuilder = callback.createChannelBuilder(channelAirQualityModeUID, channelAirQualityModeTypeUID);
+                Channel channelAirQualityMode = channelAirQualityModeBuilder.build();
+                builder.withChannel(channelAirQualityMode);
+
+                ChannelUID channelAirQualityUID = new ChannelUID(thing.getUID(), AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY);
+                ChannelBuilder channelAirQualityBuilder = callback.createChannelBuilder(channelAirQualityUID, channelAirQualityTypeUID);
+                Channel channelAirQuality = channelAirQualityBuilder.build();
+                builder.withChannel(channelAirQuality);
+
+                ChannelUID channelAirQualityLowThresholdUID = new ChannelUID(thing.getUID(), AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY_LOW_THRESHOLD);
+                ChannelBuilder channelAirQualityLowThresholdBuilder = callback.createChannelBuilder(channelAirQualityLowThresholdUID, channelAirQualityThresholdTypeUID);
+                channelAirQualityLowThresholdBuilder.withLabel(localization.getText("channel-type.airzone.zone.air-quality-low-threshold.label"));
+                channelAirQualityLowThresholdBuilder.withDescription(localization.getText("channel-type.airzone.zone.air-quality-low-threshold.description"));
+                Channel channelAirQualityLowThreshold = channelAirQualityLowThresholdBuilder.build();
+                builder.withChannel(channelAirQualityLowThreshold);
+
+                ChannelUID channelAirQualityHighThresholdUID = new ChannelUID(thing.getUID(), AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY_HIGH_THRESHOLD);
+                ChannelBuilder channelAirQualityHighThresholdBuilder = callback.createChannelBuilder(channelAirQualityHighThresholdUID, channelAirQualityThresholdTypeUID);
+                channelAirQualityHighThresholdBuilder.withLabel(localization.getText("channel-type.airzone.zone.air-quality-high-threshold.label"));
+                channelAirQualityHighThresholdBuilder.withDescription(localization.getText("channel-type.airzone.zone.air-quality-high-threshold.description"));
+                Channel channelAirQualityHighThreshold = channelAirQualityHighThresholdBuilder.build();
+                builder.withChannel(channelAirQualityHighThreshold);
+            }
+
             updateThing(builder.build());
         }
     }
@@ -288,6 +319,18 @@ public class AirZoneThingHandler extends BaseThingHandler {
 
                         case AirZoneBindingConstants.CHANNEL_ZONE_SLEEP:
                             apiManager.setZoneSleep(thing, command);
+                            break;
+
+                        case AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY_MODE:
+                            apiManager.setZoneAirQualityMode(thing, command);
+                            break;
+
+                        case AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY_LOW_THRESHOLD:
+                            apiManager.setZoneAirQualityLowThreshold(thing, command);
+                            break;
+
+                        case AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY_HIGH_THRESHOLD:
+                            apiManager.setZoneAirQualityHighThreshold(thing, command);
                             break;
 
                         default:
@@ -420,6 +463,28 @@ public class AirZoneThingHandler extends BaseThingHandler {
                     break;
                 case AirZoneBindingConstants.CHANNEL_ZONE_COLD_DEMAND:
                     newState = zone.getColdDemand() != 1 ? OnOffType.OFF : OnOffType.ON;
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY_MODE:
+                    newState = new StringType(AirZoneBindingConstants.IntToAirQualityMode.get(zone.getAirQualityMode()));
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY:
+                    newState = new StringType(AirZoneBindingConstants.IntToAirQuality.get(zone.getAirQuality()));
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY_LOW_THRESHOLD:
+                    @Nullable
+                    Double thresholdLow = zone.getAirQualityThresholdLow();
+                    if (thresholdLow != null)
+                        newState = new QuantityType<>(thresholdLow, Units.PERCENT);
+                    else
+                        newState = UnDefType.NULL;
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY_HIGH_THRESHOLD:
+                    @Nullable
+                    Double thresholdHigh = zone.getAirQualityThresholdHigh();
+                    if (thresholdHigh != null)
+                        newState = new QuantityType<>(thresholdHigh, Units.PERCENT);
+                    else
+                        newState = UnDefType.NULL;
                     break;
             }
 

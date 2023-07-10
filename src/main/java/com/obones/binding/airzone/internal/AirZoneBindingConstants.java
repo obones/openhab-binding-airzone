@@ -117,6 +117,10 @@ public class AirZoneBindingConstants {
     public static final String CHANNEL_ZONE_FLOOR_DEMAND = "floor-demand";
     public static final String CHANNEL_ZONE_HEAT_DEMAND = "heat-demand";
     public static final String CHANNEL_ZONE_COLD_DEMAND = "cold-demand";
+    public static final String CHANNEL_ZONE_AIR_QUALITY = "air-quality";
+    public static final String CHANNEL_ZONE_AIR_QUALITY_MODE = "air-quality-mode";
+    public static final String CHANNEL_ZONE_AIR_QUALITY_LOW_THRESHOLD = "air-quality-low-threshold";
+    public static final String CHANNEL_ZONE_AIR_QUALITY_HIGH_THRESHOLD = "air-quality-high-threshold";
 
     public static final String PROPERTY_ZONE_THERMOS_TYPE = "thermosType";
     public static final String PROPERTY_ZONE_THERMOS_FIRMWARE = "thermosFirmware";
@@ -131,6 +135,9 @@ public class AirZoneBindingConstants {
     public static final String CHANNEL_TYPE_ZONE_SPEED = "speed";
     public static final String CHANNEL_TYPE_ZONE_SETPOINT_TEMPERATURE = "setpointTemperature";
     public static final String CHANNEL_TYPE_ZONE_DEMAND = "demand";
+    public static final String CHANNEL_TYPE_ZONE_AIR_QUALITY_MODE = "air-quality-mode";
+    public static final String CHANNEL_TYPE_ZONE_AIR_QUALITY = "air-quality";
+    public static final String CHANNEL_TYPE_ZONE_AIR_QUALITY_THRESHOLD = "air-quality-threshold";
 
     // List of all system channel/property ids
     public static final String CHANNEL_SYSTEM_POWER = "power";
@@ -233,4 +240,41 @@ public class AirZoneBindingConstants {
     // thermostat radio property
     public static final String ZONE_THERMOSTAT_RADIO_CABLE = "Cable";
     public static final String ZONE_THERMOSTAT_RADIO_RADIO = "Radio";
+
+    // air quality mode channel values
+    public static final String ZONE_AIR_QUALITY_MODE_OFF = "OFF";
+    public static final String ZONE_AIR_QUALITY_MODE_ON = "ON";
+    public static final String ZONE_AIR_QUALITY_MODE_AUTO = "AUTO";
+
+    // @formatter:off
+    @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
+    public static final Map<Integer, String> IntToAirQualityMode = Map.of(
+        0, ZONE_AIR_QUALITY_MODE_OFF,
+        1, ZONE_AIR_QUALITY_MODE_ON,
+        2, ZONE_AIR_QUALITY_MODE_AUTO
+    );
+
+    @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
+    public static final Map<String, Integer> ZoneAirQualityModeToInt = Map.of(
+        ZONE_AIR_QUALITY_MODE_OFF, 0,
+        ZONE_AIR_QUALITY_MODE_ON, 1,
+        ZONE_AIR_QUALITY_MODE_AUTO, 2
+    );
+    // @formatter:on
+
+    // air quality channel values
+    public static final String ZONE_AIR_QUALITY_OFF = "OFF";
+    public static final String ZONE_AIR_QUALITY_GOOD = "GOOD";
+    public static final String ZONE_AIR_QUALITY_MEDIUM = "MEDIUM";
+    public static final String ZONE_AIR_QUALITY_LOW = "LOW";
+
+    // @formatter:off
+    @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
+    public static final Map<Integer, String> IntToAirQuality = Map.of(
+        0, ZONE_AIR_QUALITY_MODE_OFF,
+        1, ZONE_AIR_QUALITY_GOOD,
+        2, ZONE_AIR_QUALITY_MEDIUM,
+        3, ZONE_AIR_QUALITY_LOW
+    );
+    // @formatter:on
 }
