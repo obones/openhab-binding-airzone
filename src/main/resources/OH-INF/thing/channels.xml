@@ -195,4 +195,12 @@
 		<state readOnly="true"/>
 	</channel-type>
 
+	<channel-type id="power">
+		<item-type>Number:Power</item-type>
+		<label>@text/channel-type.airzone.zone.power.label</label>
+		<description>@text/channel-type.airzone.zone.power.description</description>
+		<category>power</category>
+		<state pattern="%.1f kW" readOnly="true"/>
+	</channel-type>
+
 </thing:thing-descriptions>

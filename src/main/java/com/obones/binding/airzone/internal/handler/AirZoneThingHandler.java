@@ -171,6 +171,16 @@ public class AirZoneThingHandler extends BaseThingHandler {
                 builder.withChannel(channelHeat);
             }
 
+            // create "power" channel if provided by the api
+            if ((zone.getPower() != null) && (zone.getMcConnected() != 0))
+            {
+                ChannelTypeUID channelPowerTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID, AirZoneBindingConstants.CHANNEL_TYPE_ZONE_POWER);
+                ChannelUID channelUID = new ChannelUID(thing.getUID(), AirZoneBindingConstants.CHANNEL_ZONE_POWER);
+                ChannelBuilder channelBuilder = callback.createChannelBuilder(channelUID, channelPowerTypeUID);
+                Channel channel = channelBuilder.build();
+                builder.withChannel(channel);
+            }
+
             updateThing(builder.build());
         }
     }

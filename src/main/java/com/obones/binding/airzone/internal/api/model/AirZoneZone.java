@@ -17,6 +17,8 @@ public class AirZoneZone {
     private int systemID;
     private int zoneID;
     private String name = "";
+    private int mc_connected = 0;
+    private Double power = null;
     private int thermos_type;
     private String thermos_firmware = "";
     private int thermos_radio;
@@ -87,6 +89,14 @@ public class AirZoneZone {
     public String getName() {
         return name;
     };
+
+    public int getMcConnected() {
+        return mc_connected;
+    }
+
+    public Double getPower() {
+        return power;
+    }
 
     public int getThermosType() {
         return thermos_type;
