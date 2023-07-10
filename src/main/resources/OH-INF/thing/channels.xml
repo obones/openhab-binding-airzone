@@ -265,4 +265,14 @@
 		<category>Switch</category>
 	</channel-type>
 
+	<channel-type id="slats-position">
+		<item-type>Number</item-type>
+		<label>[ToBeReplaced]</label>
+		<category>movecontrol</category>
+		<tags>
+			<tag>Control</tag>
+		</tags>
+		<state min="0" max="3"/>
+	</channel-type>
+
 </thing:thing-descriptions>

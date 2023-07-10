@@ -222,6 +222,18 @@ public class AirZoneThingHandler extends BaseThingHandler {
                         "channel-type.airzone.zone.slats-horizontal-swing.description");
             }
 
+            ChannelTypeUID channelSlatsPositionTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID, AirZoneBindingConstants.CHANNEL_TYPE_ZONE_SLATS_POSITION);
+            if (zone.getSlatsHorizontal() != null) {
+                createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_SLATS_HORIZONTAL_POSITION,
+                        channelSlatsPositionTypeUID, "channel-type.airzone.zone.slats-horizontal-position.label", null);
+            }
+
+            if (zone.getSlatsVertical() != null) {
+                createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_SLATS_VERTICAL_POSITION,
+                        channelSlatsPositionTypeUID, "channel-type.airzone.zone.slats-horizontal-position.label", null);
+            }
+
+
             updateThing(builder.build());
         }
     }
@@ -335,11 +347,19 @@ public class AirZoneThingHandler extends BaseThingHandler {
                             break;
 
                         case AirZoneBindingConstants.CHANNEL_ZONE_SLATS_VERTICAL_SWING:
-                            apiManager.setZoneVerticalSwing(thing, command);
+                            apiManager.setZoneVerticalSlatsSwing(thing, command);
                             break;
 
                         case AirZoneBindingConstants.CHANNEL_ZONE_SLATS_HORIZONTAL_SWING:
-                            apiManager.setZoneHorizontalSwing(thing, command);
+                            apiManager.setZoneHorizontalSlatsSwing(thing, command);
+                            break;
+
+                        case AirZoneBindingConstants.CHANNEL_ZONE_SLATS_VERTICAL_POSITION:
+                            apiManager.setZoneVerticalSlatsPosition(thing, command);
+                            break;
+
+                        case AirZoneBindingConstants.CHANNEL_ZONE_SLATS_HORIZONTAL_POSITION:
+                            apiManager.setZoneHorizontalSlatsPosition(thing, command);
                             break;
 
                         default:
@@ -500,6 +520,22 @@ public class AirZoneThingHandler extends BaseThingHandler {
                     break;
                 case AirZoneBindingConstants.CHANNEL_ZONE_SLATS_HORIZONTAL_SWING:
                     newState = zone.getSlatsHSwing() != 1 ? OnOffType.OFF : OnOffType.ON;
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_SLATS_VERTICAL_POSITION:
+                    @Nullable
+                    Integer verticalPosition = zone.getSlatsVertical();
+                    if (verticalPosition != null)
+                        newState = new DecimalType(verticalPosition);
+                    else
+                        newState = UnDefType.NULL;
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_SLATS_HORIZONTAL_POSITION:
+                    @Nullable
+                    Integer horizontalPosition = zone.getSlatsHorizontal();
+                    if (horizontalPosition != null)
+                        newState = new DecimalType(horizontalPosition);
+                    else
+                        newState = UnDefType.NULL;
                     break;
             }
 

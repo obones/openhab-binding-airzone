@@ -258,12 +258,20 @@ public class AirZoneApiManager {
         setChannelValue(thing, "aq_thrhigh", command);
     }
 
-    public void setZoneVerticalSwing(Thing thing, Command command) {
+    public void setZoneVerticalSlatsSwing(Thing thing, Command command) {
         setChannelValue(thing, "slats_vswing", command);
     }
 
-    public void setZoneHorizontalSwing(Thing thing, Command command) {
+    public void setZoneHorizontalSlatsSwing(Thing thing, Command command) {
         setChannelValue(thing, "slats_hswing", command);
+    }
+
+    public void setZoneVerticalSlatsPosition(Thing thing, Command command) {
+        setChannelValue(thing, "slats_vertical", command);
+    }
+
+    public void setZoneHorizontalSlatsPosition(Thing thing, Command command) {
+        setChannelValue(thing, "slats_horizontal", command);
     }
 
     private void setZoneStage(Thing thing, Command command, String prefix) {

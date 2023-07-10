@@ -72,6 +72,8 @@ public class AirZoneZone {
     private int antifreeze;*/
     private @Nullable Integer slats_vswing;
     private @Nullable Integer slats_hswing;
+    private @Nullable Integer slats_vertical;
+    private @Nullable Integer slats_horizontal;
 
     public int getSystemID() {
         return systemID;
@@ -215,6 +217,14 @@ public class AirZoneZone {
 
     public @Nullable Integer getSlatsHSwing() {
         return slats_hswing;
+    }
+
+    public @Nullable Integer getSlatsVertical() {
+        return slats_vertical;
+    }
+
+    public @Nullable Integer getSlatsHorizontal() {
+        return slats_horizontal;
     }
     /* spell-checker:enable */
 }
