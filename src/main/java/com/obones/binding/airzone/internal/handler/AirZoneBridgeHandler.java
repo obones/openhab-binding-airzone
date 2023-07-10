@@ -111,13 +111,7 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
      * ***** Default visibility Objects *****
      */
 
-    public BridgeParameters bridgeParameters = new BridgeParameters();
     public Localization localization;
-
-    /**
-     * Mapping from ChannelUID to class Thing2AirZoneActuator, which return AirZone device information, probably cached.
-     */
-    //public final Map<ChannelUID, Thing2AirZoneActuator> channel2AirZoneActuator = new ConcurrentHashMap<>();
 
     /**
      * Information retrieved by {@link AirZoneBinding#AirZoneBinding}.
@@ -141,27 +135,6 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
     }
 
     // Private classes
-
-    /**
-     * <P>
-     * Set of information retrieved from the bridge/gateway:
-     * </P>
-     * <UL>
-     * <LI>{@link #actuators} - Already known actuators,</LI>
-     * <LI>{@link #scenes} - Already on the gateway defined scenes,</LI>
-     * <LI>{@link #gateway} - Current status of the gateway status,</LI>
-     * <LI>{@link #firmware} - Information about the gateway firmware revision,</LI>
-     * <LI>{@link #lanConfig} - Information about the gateway configuration,</LI>
-     * <LI>{@link #wlanConfig} - Information about the gateway configuration.</LI>
-     * </UL>
-     */
-    public class BridgeParameters {
-        /** Information retrieved by {@link AirZoneBridgeActuators#getProducts} */
-        //public AirZoneBridgeActuators actuators = new AirZoneBridgeActuators();
-
-        /** Information retrieved by {@link com.obones.binding.airzone.internal.bridge.AirZoneBridgeScenes#getScenes} */
-        //AirZoneBridgeScenes scenes = new AirZoneBridgeScenes();
-    }
 
     public AirZoneApiManager getApiManager() {
         return apiManager;
