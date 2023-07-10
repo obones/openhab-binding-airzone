@@ -113,6 +113,10 @@ public class AirZoneBindingConstants {
     public static final String CHANNEL_ZONE_COLD_STAGE = "coldStage";
     public static final String CHANNEL_ZONE_SLEEP = "sleep";
     public static final String CHANNEL_ZONE_ERRORS = "errors";
+    public static final String CHANNEL_ZONE_AIR_DEMAND = "air-demand";
+    public static final String CHANNEL_ZONE_FLOOR_DEMAND = "floor-demand";
+    public static final String CHANNEL_ZONE_HEAT_DEMAND = "heat-demand";
+    public static final String CHANNEL_ZONE_COLD_DEMAND = "cold-demand";
 
     public static final String PROPERTY_ZONE_THERMOS_TYPE = "thermosType";
     public static final String PROPERTY_ZONE_THERMOS_FIRMWARE = "thermosFirmware";
@@ -126,6 +130,7 @@ public class AirZoneBindingConstants {
     // dynamic zone channel type ids
     public static final String CHANNEL_TYPE_ZONE_SPEED = "speed";
     public static final String CHANNEL_TYPE_ZONE_SETPOINT_TEMPERATURE = "setpointTemperature";
+    public static final String CHANNEL_TYPE_ZONE_DEMAND = "demand";
 
     // List of all system channel/property ids
     public static final String CHANNEL_SYSTEM_POWER = "power";

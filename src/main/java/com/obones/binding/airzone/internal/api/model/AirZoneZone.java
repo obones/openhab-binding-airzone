@@ -12,6 +12,8 @@
  */
 package com.obones.binding.airzone.internal.api.model;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 public class AirZoneZone {
     /* spell-checker:disable */
     private int systemID;
@@ -51,14 +53,10 @@ public class AirZoneZone {
     private double humidity;
     private int units;
     private AirZoneError[] errors = {};
-    @SuppressWarnings("unused")
-    private int air_demand;
-    @SuppressWarnings("unused")
-    private int floor_demand;
-    @SuppressWarnings("unused")
-    private int cold_demand;
-    @SuppressWarnings("unused")
-    private int heat_demand;
+    private @Nullable Integer air_demand;
+    private @Nullable Integer floor_demand;
+    private @Nullable Integer cold_demand;
+    private @Nullable Integer heat_demand;
     @SuppressWarnings("unused")
     private int aq_mode;
     private double aq_quality;
@@ -176,6 +174,22 @@ public class AirZoneZone {
         return errors;
     }
 
+    public @Nullable Integer getAirDemand() {
+        return air_demand;
+    }
+
+    public @Nullable Integer getFloorDemand() {
+        return floor_demand;
+    }
+    
+    public @Nullable Integer getColdDemand() {
+        return cold_demand;
+    }
+    
+    public @Nullable Integer getHeatDemand() {
+        return heat_demand;
+    }
+    
     public double getAqQuality() {
         return aq_quality;
     };

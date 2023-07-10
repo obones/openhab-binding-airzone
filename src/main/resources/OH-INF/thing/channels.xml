@@ -203,4 +203,10 @@
 		<state pattern="%.1f kW" readOnly="true"/>
 	</channel-type>
 
+	<channel-type id="demand" advanced="true">
+		<item-type>Switch</item-type>
+		<label>[ToBeReplaced]</label>
+		<category>flow</category>
+	</channel-type>
+
 </thing:thing-descriptions>

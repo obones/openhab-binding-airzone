@@ -171,14 +171,42 @@ public class AirZoneThingHandler extends BaseThingHandler {
                 builder.withChannel(channelHeat);
             }
 
-            // create "power" channel if provided by the api
-            if ((zone.getPower() != null) && (zone.getMcConnected() != 0))
+            ChannelTypeUID channelDemandTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID, AirZoneBindingConstants.CHANNEL_TYPE_ZONE_DEMAND);
+            if (zone.getAirDemand() != null)
             {
-                ChannelTypeUID channelPowerTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID, AirZoneBindingConstants.CHANNEL_TYPE_ZONE_POWER);
-                ChannelUID channelUID = new ChannelUID(thing.getUID(), AirZoneBindingConstants.CHANNEL_ZONE_POWER);
-                ChannelBuilder channelBuilder = callback.createChannelBuilder(channelUID, channelPowerTypeUID);
-                Channel channel = channelBuilder.build();
-                builder.withChannel(channel);
+                ChannelUID channelAirDemandUID = new ChannelUID(thing.getUID(), AirZoneBindingConstants.CHANNEL_ZONE_AIR_DEMAND);
+                ChannelBuilder channelAirDemandBuilder = callback.createChannelBuilder(channelAirDemandUID, channelDemandTypeUID);
+                channelAirDemandBuilder.withLabel(localization.getText("channel-type.airzone.zone.airDemand.label"));
+                channelAirDemandBuilder.withDescription(localization.getText("channel-type.airzone.zone.airDemand.description"));
+                Channel channelAirDemand = channelAirDemandBuilder.build();
+                builder.withChannel(channelAirDemand);
+            }
+            if (zone.getFloorDemand() != null)
+            {
+                ChannelUID channelFloorDemandUID = new ChannelUID(thing.getUID(), AirZoneBindingConstants.CHANNEL_ZONE_FLOOR_DEMAND);
+                ChannelBuilder channelFloorDemandBuilder = callback.createChannelBuilder(channelFloorDemandUID, channelDemandTypeUID);
+                channelFloorDemandBuilder.withLabel(localization.getText("channel-type.airzone.zone.floorDemand.label"));
+                channelFloorDemandBuilder.withDescription(localization.getText("channel-type.airzone.zone.floorDemand.description"));
+                Channel channelFloorDemand = channelFloorDemandBuilder.build();
+                builder.withChannel(channelFloorDemand);
+            }
+            if (zone.getFloorDemand() != null)
+            {
+                ChannelUID channelColdDemandUID = new ChannelUID(thing.getUID(), AirZoneBindingConstants.CHANNEL_ZONE_COLD_DEMAND);
+                ChannelBuilder channelColdDemandBuilder = callback.createChannelBuilder(channelColdDemandUID, channelDemandTypeUID);
+                channelColdDemandBuilder.withLabel(localization.getText("channel-type.airzone.zone.coldDemand.label"));
+                channelColdDemandBuilder.withDescription(localization.getText("channel-type.airzone.zone.coldDemand.description"));
+                Channel channelColdDemand = channelColdDemandBuilder.build();
+                builder.withChannel(channelColdDemand);
+            }
+            if (zone.getFloorDemand() != null)
+            {
+                ChannelUID channelHeatDemandUID = new ChannelUID(thing.getUID(), AirZoneBindingConstants.CHANNEL_ZONE_HEAT_DEMAND);
+                ChannelBuilder channelHeatDemandBuilder = callback.createChannelBuilder(channelHeatDemandUID, channelDemandTypeUID);
+                channelHeatDemandBuilder.withLabel(localization.getText("channel-type.airzone.zone.heatDemand.label"));
+                channelHeatDemandBuilder.withDescription(localization.getText("channel-type.airzone.zone.heatDemand.description"));
+                Channel channelHeatDemand = channelHeatDemandBuilder.build();
+                builder.withChannel(channelHeatDemand);
             }
 
             updateThing(builder.build());
@@ -380,6 +408,18 @@ public class AirZoneThingHandler extends BaseThingHandler {
                     }
 
                     newState = new StringType(gson.toJson(errors.toArray()));
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_AIR_DEMAND:
+                    newState = zone.getAirDemand() != 1 ? OnOffType.OFF : OnOffType.ON;
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_FLOOR_DEMAND:
+                    newState = zone.getFloorDemand() != 1 ? OnOffType.OFF : OnOffType.ON;
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_HEAT_DEMAND:
+                    newState = zone.getHeatDemand() != 1 ? OnOffType.OFF : OnOffType.ON;
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_COLD_DEMAND:
+                    newState = zone.getColdDemand() != 1 ? OnOffType.OFF : OnOffType.ON;
                     break;
             }
 
