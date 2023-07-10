@@ -238,7 +238,7 @@
 		<label>@text/channel-type.airzone.zone.air-quality.label</label>
 		<description>@text/channel-type.airzone.zone.air-quality.description</description>
 		<category>carbondioxide</category>
-		<state>
+		<state readOnly="true">
 			<options>
 				<option value="OFF">Off</option>
 				<option value="GOOD">Good</option>
