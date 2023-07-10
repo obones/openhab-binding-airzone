@@ -126,7 +126,8 @@ public class AirZoneApiManager {
 
             if (jsonResponse != null) {
                 @Nullable
-                AirZoneApiVersionResponse apiVersionResponse = gson.fromJson(jsonResponse, AirZoneApiVersionResponse.class);
+                AirZoneApiVersionResponse apiVersionResponse = gson.fromJson(jsonResponse,
+                        AirZoneApiVersionResponse.class);
                 if (apiVersionResponse != null)
                     return apiVersionResponse.getVersion();
             }
@@ -246,7 +247,8 @@ public class AirZoneApiManager {
                 logger.warn("No zone values for {}", thing.getUID());
             }
         } else {
-            logger.warn("Only StringType command is supported on zone air quality mode, received {}", command.getClass().getName());
+            logger.warn("Only StringType command is supported on zone air quality mode, received {}",
+                    command.getClass().getName());
         }
     }
 
@@ -351,7 +353,8 @@ public class AirZoneApiManager {
         return executeUrl("PUT", resourceName, requestContent);
     }
 
-    private @Nullable String executeUrl(String httpMethod, String resourceName, String requestContent) throws IOException {
+    private @Nullable String executeUrl(String httpMethod, String resourceName, String requestContent)
+            throws IOException {
         String url = "http://".concat(airZoneBridgeConfiguration.ipAddress).concat(":")
                 .concat(Integer.toString(airZoneBridgeConfiguration.tcpPort)).concat("/api/v1/").concat(resourceName);
         Properties headerItems = new Properties();

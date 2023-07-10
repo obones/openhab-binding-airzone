@@ -30,7 +30,7 @@ public class AirZoneDetailedErrors {
     /**
      * Returns the detailed message associated to the given error code, if any.
      */
-    @SuppressWarnings("unused") // the code in the else part is definitely used but the IDE insist on saying it is dead...
+    @SuppressWarnings("unused") // the code in the else part is used but the IDE insist on saying it is dead...
     public static @Nullable String getDetailedErrorMessage(@Nullable String errorCode, Localization localization) {
         if (errorCode == null)
             return null;
@@ -43,6 +43,7 @@ public class AirZoneDetailedErrors {
             return null;
     }
 
+    // @formatter:off
     @SuppressWarnings("null")
     private static Map<String, String> knownErrorCodes = Map.ofEntries(
         Map.entry("Error 3", "error.error3.description"),
@@ -65,4 +66,5 @@ public class AirZoneDetailedErrors {
         Map.entry("Error IAQ3", "error.errorIAQ3.description"),
         Map.entry("Error IAQ4", "error.errorIAQ4.description")
     );
+    // @formatter:on
 }
