@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.AirZoneBindingProperties;
-import com.obones.binding.airzone.internal.api.model.AirZoneResponse;
+import com.obones.binding.airzone.internal.api.model.AirZoneHvacResponse;
 import com.obones.binding.airzone.internal.handler.AirZoneBridgeHandler;
 import com.obones.binding.airzone.internal.utils.Localization;
 import com.obones.binding.airzone.internal.utils.ManifestInformation;
@@ -157,7 +157,7 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
     /**
      * Discover the registered zones.
      */
-    public void discoverZones(@Nullable AirZoneResponse latestResponse, ThingUID bridgeUID) {
+    public void discoverZones(@Nullable AirZoneHvacResponse latestResponse, ThingUID bridgeUID) {
         logger.trace("discoverZones(): discovering all zones on bridge {}.", bridgeUID);
 
         if (latestResponse != null) {

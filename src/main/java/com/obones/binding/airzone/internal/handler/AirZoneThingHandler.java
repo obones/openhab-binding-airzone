@@ -59,7 +59,7 @@ import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.AirZoneBindingProperties;
 import com.obones.binding.airzone.internal.api.AirZoneApiManager;
 import com.obones.binding.airzone.internal.api.AirZoneDetailedErrors;
-import com.obones.binding.airzone.internal.api.model.AirZoneZone;
+import com.obones.binding.airzone.internal.api.model.AirZoneHvacZone;
 import com.obones.binding.airzone.internal.config.AirZoneThingConfiguration;
 import com.obones.binding.airzone.internal.utils.Localization;
 
@@ -127,7 +127,7 @@ public class AirZoneThingHandler extends BaseThingHandler {
             }
             AirZoneThingConfiguration config = getConfigAs(AirZoneThingConfiguration.class);
 
-            AirZoneZone zone = bridgeHandler.getApiManager().getZone(config.systemId, config.zoneId);
+            AirZoneHvacZone zone = bridgeHandler.getApiManager().getZone(config.systemId, config.zoneId);
             if (zone == null) {
                 logger.warn("createOptionalChannels: No zone data for {} - {}", config.systemId, config.zoneId);
                 return;
@@ -421,12 +421,12 @@ public class AirZoneThingHandler extends BaseThingHandler {
 
     public boolean refreshChannel(Thing thing, ChannelUID channelUID, AirZoneApiManager apiManager) {
         AirZoneThingConfiguration config = thing.getConfiguration().as(AirZoneThingConfiguration.class);
-        AirZoneZone zone = apiManager.getZone(config.systemId, config.zoneId);
+        AirZoneHvacZone zone = apiManager.getZone(config.systemId, config.zoneId);
 
         return refreshChannel(thing, channelUID, zone);
     }
 
-    public boolean refreshChannel(Thing thing, ChannelUID channelUID, @Nullable AirZoneZone zone) {
+    public boolean refreshChannel(Thing thing, ChannelUID channelUID, @Nullable AirZoneHvacZone zone) {
         if (zone != null) {
             Unit<Temperature> temperatureUnit = (zone.getUnits() == 0 ? SIUnits.CELSIUS : ImperialUnits.FAHRENHEIT);
 
@@ -563,7 +563,7 @@ public class AirZoneThingHandler extends BaseThingHandler {
         return false;
     }
 
-    public void refreshProperties(Thing thing, @Nullable AirZoneZone zone) {
+    public void refreshProperties(Thing thing, @Nullable AirZoneHvacZone zone) {
         if (zone != null) {
             int thermostatType = zone.getThermosType();
             String thermostatTypeDesc = String.format("Unknown thermostat type: %d", thermostatType);
@@ -611,7 +611,7 @@ public class AirZoneThingHandler extends BaseThingHandler {
     }
 
     @SuppressWarnings("unused") // the code in the else part is used but the IDE insist on saying it is dead...
-    private List<@Nullable String> getAllowedModes(AirZoneZone zone) {
+    private List<@Nullable String> getAllowedModes(AirZoneHvacZone zone) {
         List<@Nullable String> result = new ArrayList<@Nullable String>();
         for (int allowedMode : zone.getModes()) {
             @Nullable
@@ -641,7 +641,7 @@ public class AirZoneThingHandler extends BaseThingHandler {
 
                 AirZoneThingConfiguration config = getConfigAs(AirZoneThingConfiguration.class);
 
-                AirZoneZone zone = bridgeHandler.getApiManager().getZone(config.systemId, config.zoneId);
+                AirZoneHvacZone zone = bridgeHandler.getApiManager().getZone(config.systemId, config.zoneId);
                 if (zone == null) {
                     return null;
                 }

@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 import com.obones.binding.airzone.internal.AirZoneBinding;
 import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.api.AirZoneApiManager;
-import com.obones.binding.airzone.internal.api.model.AirZoneZone;
+import com.obones.binding.airzone.internal.api.model.AirZoneHvacZone;
 import com.obones.binding.airzone.internal.config.AirZoneBridgeConfiguration;
 import com.obones.binding.airzone.internal.config.AirZoneThingConfiguration;
 import com.obones.binding.airzone.internal.discovery.AirZoneDiscoveryService;
@@ -362,7 +362,7 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
     private void syncChannelsWithProducts() {
         for (Thing thing : getThing().getThings()) {
             AirZoneThingConfiguration config = thing.getConfiguration().as(AirZoneThingConfiguration.class);
-            AirZoneZone zone = apiManager.getZone(config.systemId, config.zoneId);
+            AirZoneHvacZone zone = apiManager.getZone(config.systemId, config.zoneId);
 
             if (zone != null) {
                 AirZoneThingHandler thingHandler = (AirZoneThingHandler) thing.getHandler();

@@ -50,24 +50,24 @@ public class AirZoneApiManager {
     private @NonNullByDefault({}) final Logger logger = LoggerFactory.getLogger(AirZoneApiManager.class);
     private static final Gson gson = new Gson();
 
-    private class AirZoneZoneMap extends HashMap<Integer, AirZoneZone> {
+    private class AirZoneHvacZoneMap extends HashMap<Integer, AirZoneHvacZone> {
         private Integer getKey(int systemId, int zoneId) {
             return 1000 * systemId + zoneId; // doc says each values goes from 1 to 32 so multiplying by 1000 should be
                                              // safe for a long time while being human readable.
         }
 
-        public @Nullable AirZoneZone put(int systemId, int zoneId, AirZoneZone zone) {
+        public @Nullable AirZoneHvacZone put(int systemId, int zoneId, AirZoneHvacZone zone) {
             return super.put(getKey(systemId, zoneId), zone);
         }
 
-        public @Nullable AirZoneZone get(int systemId, int zoneId) {
+        public @Nullable AirZoneHvacZone get(int systemId, int zoneId) {
             return super.get(getKey(systemId, zoneId));
         }
     }
 
     @Nullable
-    private AirZoneResponse latestResponse = null;
-    private AirZoneZoneMap latestZones = new AirZoneZoneMap();
+    private AirZoneHvacResponse latestResponse = null;
+    private AirZoneHvacZoneMap latestZones = new AirZoneHvacZoneMap();
     private AirZoneBridgeConfiguration airZoneBridgeConfiguration;
 
     @Activate
@@ -82,7 +82,7 @@ public class AirZoneApiManager {
             if (jsonResponse != null) {
                 jsonResponse = jsonResponse.replaceAll("^.+,\n", "");
                 logger.trace("io() cleaned response {}.", jsonResponse);
-                latestResponse = gson.fromJson(jsonResponse, AirZoneResponse.class);
+                latestResponse = gson.fromJson(jsonResponse, AirZoneHvacResponse.class);
 
                 fillLatestZones(latestResponse);
             }
@@ -91,14 +91,14 @@ public class AirZoneApiManager {
         }
     }
 
-    public @Nullable AirZoneResponse getLatestResponse() {
+    public @Nullable AirZoneHvacResponse getLatestResponse() {
         if (latestResponse == null)
             fetchStatus();
 
         return latestResponse;
     }
 
-    public @Nullable AirZoneZone getZone(int systemId, int zoneId) {
+    public @Nullable AirZoneHvacZone getZone(int systemId, int zoneId) {
         if (latestResponse == null)
             fetchStatus();
 
@@ -137,7 +137,7 @@ public class AirZoneApiManager {
         return null;
     }
 
-    private @Nullable AirZoneZone getZone(Thing thing) {
+    private @Nullable AirZoneHvacZone getZone(Thing thing) {
         AirZoneThingConfiguration config = thing.getConfiguration().as(AirZoneThingConfiguration.class);
 
         return latestZones.get(config.systemId, config.zoneId);
@@ -165,7 +165,7 @@ public class AirZoneApiManager {
 
     public void setZoneMode(Thing thing, Command command) {
         if (command instanceof StringType) {
-            AirZoneZone zone = getZone(thing);
+            AirZoneHvacZone zone = getZone(thing);
             if (zone != null) {
                 @Nullable
                 Integer value = AirZoneBindingConstants.ZoneModeToInt.get(((StringType) command).toString());
@@ -189,7 +189,7 @@ public class AirZoneApiManager {
 
     public void setZoneSpeed(Thing thing, Command command) {
         if (command instanceof DecimalType) {
-            AirZoneZone zone = getZone(thing);
+            AirZoneHvacZone zone = getZone(thing);
             if (zone != null) {
                 int value = ((DecimalType) command).intValue();
                 int[] allowedSpeeds = zone.getSpeeds();
@@ -219,7 +219,7 @@ public class AirZoneApiManager {
 
     public void setZoneSleep(Thing thing, Command command) {
         if (command instanceof StringType) {
-            AirZoneZone zone = getZone(thing);
+            AirZoneHvacZone zone = getZone(thing);
             if (zone != null) {
                 @Nullable
                 Integer value = AirZoneBindingConstants.ZoneSleepToInt.get(((StringType) command).toString());
@@ -236,7 +236,7 @@ public class AirZoneApiManager {
 
     public void setZoneAirQualityMode(Thing thing, Command command) {
         if (command instanceof StringType) {
-            AirZoneZone zone = getZone(thing);
+            AirZoneHvacZone zone = getZone(thing);
             if (zone != null) {
                 @Nullable
                 Integer value = AirZoneBindingConstants.ZoneAirQualityModeToInt.get(((StringType) command).toString());
@@ -278,7 +278,7 @@ public class AirZoneApiManager {
 
     private void setZoneStage(Thing thing, Command command, String prefix) {
         if (command instanceof StringType) {
-            AirZoneZone zone = getZone(thing);
+            AirZoneHvacZone zone = getZone(thing);
             if (zone != null) {
                 int allowedStages = (prefix == "cold" ? zone.getColdStages() : zone.getHeatStages());
                 @Nullable
@@ -300,10 +300,10 @@ public class AirZoneApiManager {
         }
     }
 
-    private void fillLatestZones(@Nullable AirZoneResponse latestResponse) {
+    private void fillLatestZones(@Nullable AirZoneHvacResponse latestResponse) {
         if (latestResponse != null) {
-            for (AirZoneSystem system : latestResponse.getSystems()) {
-                for (AirZoneZone zone : system.getData()) {
+            for (AirZoneHvacSystem system : latestResponse.getSystems()) {
+                for (AirZoneHvacZone zone : system.getData()) {
                     latestZones.put(zone.getSystemID(), zone.getZoneID(), zone);
                 }
             }

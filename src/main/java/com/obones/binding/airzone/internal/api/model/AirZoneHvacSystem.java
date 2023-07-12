@@ -12,10 +12,10 @@
  */
 package com.obones.binding.airzone.internal.api.model;
 
-public class AirZoneResponse {
-    private AirZoneSystem[] systems = {};
+public class AirZoneHvacSystem {
+    private AirZoneHvacZone[] data = {};
 
-    public AirZoneSystem[] getSystems() {
-        return systems;
+    public AirZoneHvacZone[] getData() {
+        return data;
     }
 }

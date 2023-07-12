@@ -14,7 +14,7 @@ package com.obones.binding.airzone.internal.api.model;
 
 import org.eclipse.jdt.annotation.Nullable;
 
-public class AirZoneZone {
+public class AirZoneHvacZone {
     /* spell-checker:disable */
     private int systemID;
     private int zoneID;
