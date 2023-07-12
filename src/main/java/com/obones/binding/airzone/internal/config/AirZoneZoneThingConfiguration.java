@@ -15,7 +15,7 @@ package com.obones.binding.airzone.internal.config;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 
 @NonNullByDefault
-public class AirZoneThingConfiguration {
+public class AirZoneZoneThingConfiguration {
     public static final String SYSTEM_ID = "systemId";
     public static final String ZONE_ID = "zoneId";
 

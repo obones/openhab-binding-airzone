@@ -27,7 +27,7 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-import com.obones.binding.airzone.internal.handler.AirZoneThingHandler;
+import com.obones.binding.airzone.internal.handler.AirZoneZoneThingHandler;
 
 /**
  * Dynamic channel state description provider.
@@ -72,8 +72,8 @@ public class AirZoneDynamicStateDescriptionProvider implements DynamicStateDescr
             return null;
         }
 
-        if (handler instanceof AirZoneThingHandler) {
-            AirZoneThingHandler thingHandler = (AirZoneThingHandler) handler;
+        if (handler instanceof AirZoneZoneThingHandler) {
+            AirZoneZoneThingHandler thingHandler = (AirZoneZoneThingHandler) handler;
 
             @Nullable
             StateDescriptionFragmentBuilder builder = StateDescriptionFragmentBuilder.create(originalStateDescription);

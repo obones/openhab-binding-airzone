@@ -34,6 +34,7 @@ import org.openhab.core.thing.ThingStatus;
 import org.openhab.core.thing.ThingStatusDetail;
 import org.openhab.core.thing.ThingTypeUID;
 import org.openhab.core.thing.binding.BaseBridgeHandler;
+import org.openhab.core.thing.binding.ThingHandler;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.RefreshType;
 import org.slf4j.Logger;
@@ -44,7 +45,7 @@ import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.api.AirZoneApiManager;
 import com.obones.binding.airzone.internal.api.model.AirZoneHvacZone;
 import com.obones.binding.airzone.internal.config.AirZoneBridgeConfiguration;
-import com.obones.binding.airzone.internal.config.AirZoneThingConfiguration;
+import com.obones.binding.airzone.internal.config.AirZoneZoneThingConfiguration;
 import com.obones.binding.airzone.internal.discovery.AirZoneDiscoveryService;
 import com.obones.binding.airzone.internal.factory.AirZoneHandlerFactory;
 import com.obones.binding.airzone.internal.utils.Localization;
@@ -361,25 +362,28 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
      */
     private void syncChannelsWithProducts() {
         for (Thing thing : getThing().getThings()) {
-            AirZoneThingConfiguration config = thing.getConfiguration().as(AirZoneThingConfiguration.class);
-            AirZoneHvacZone zone = apiManager.getZone(config.systemId, config.zoneId);
+            ThingHandler thingHandler = thing.getHandler();
+            if (thingHandler instanceof AirZoneZoneThingHandler) {
+                AirZoneZoneThingConfiguration config = thing.getConfiguration().as(AirZoneZoneThingConfiguration.class);
+                AirZoneHvacZone zone = apiManager.getZone(config.systemId, config.zoneId);
 
-            if (zone != null) {
-                AirZoneThingHandler thingHandler = (AirZoneThingHandler) thing.getHandler();
-                if (thingHandler != null) {
-                    thingHandler.refreshProperties(thing, zone);
+                if (zone != null) {
+                    AirZoneZoneThingHandler zoneThingHandler = (AirZoneZoneThingHandler) thingHandler;
+                    if (zoneThingHandler != null) {
+                        zoneThingHandler.refreshProperties(thing, zone);
 
-                    Set<ChannelUID> channelUIDs = new HashSet<>();
-                    for (Channel channel : thing.getChannels()) {
-                        ChannelUID uid = channel.getUID();
-                        if (isLinked(uid)) 
-                            channelUIDs.add(uid);
-                    }
+                        Set<ChannelUID> channelUIDs = new HashSet<>();
+                        for (Channel channel : thing.getChannels()) {
+                            ChannelUID uid = channel.getUID();
+                            if (isLinked(uid)) 
+                                channelUIDs.add(uid);
+                        }
 
-                    if (!channelUIDs.isEmpty()) {
-                        //logger.warn("Some channels are linked");
-                        for (ChannelUID uid : channelUIDs) {
-                            thingHandler.refreshChannel(thing, uid, zone);
+                        if (!channelUIDs.isEmpty()) {
+                            //logger.warn("Some channels are linked");
+                            for (ChannelUID uid : channelUIDs) {
+                                zoneThingHandler.refreshChannel(thing, uid, zone);
+                            }
                         }
                     }
                 }

@@ -37,7 +37,8 @@ import com.google.gson.JsonElement;
 import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.api.model.*;
 import com.obones.binding.airzone.internal.config.AirZoneBridgeConfiguration;
-import com.obones.binding.airzone.internal.config.AirZoneThingConfiguration;
+import com.obones.binding.airzone.internal.config.AirZoneZoneThingConfiguration;
+import com.obones.binding.airzone.internal.handler.AirZoneZoneThingHandler;
 
 /**
  * The {@link AirZoneApiManager} is responsible for the communication with the AirZone web server.
@@ -138,9 +139,13 @@ public class AirZoneApiManager {
     }
 
     private @Nullable AirZoneHvacZone getZone(Thing thing) {
-        AirZoneThingConfiguration config = thing.getConfiguration().as(AirZoneThingConfiguration.class);
+        if (thing.getHandler() instanceof AirZoneZoneThingHandler) {
+            AirZoneZoneThingConfiguration config = thing.getConfiguration().as(AirZoneZoneThingConfiguration.class);
 
-        return latestZones.get(config.systemId, config.zoneId);
+            return latestZones.get(config.systemId, config.zoneId);
+        } else {
+            return null;
+        }
     }
 
     public void setZoneOnOff(Thing thing, Command command) {
@@ -311,7 +316,10 @@ public class AirZoneApiManager {
     }
 
     private void setChannelValue(Thing thing, String fieldName, Command command) {
-        AirZoneThingConfiguration config = thing.getConfiguration().as(AirZoneThingConfiguration.class);
+        if (!(thing.getHandler() instanceof AirZoneZoneThingHandler))
+            return;
+
+        AirZoneZoneThingConfiguration config = thing.getConfiguration().as(AirZoneZoneThingConfiguration.class);
 
         JsonElement json = gson.toJsonTree(new Object());
         json.getAsJsonObject().addProperty("systemID", config.systemId);
