@@ -111,6 +111,13 @@ public class AirZoneApiManager {
         return latestZonesResponse;
     }
 
+    public @Nullable AirZoneHvacSystemsResponse getLatestSystemsResponse() {
+        if (latestSystemsResponse == null)
+            fetchStatus();
+
+        return latestSystemsResponse;
+    }
+
     public @Nullable AirZoneHvacZone getZone(int systemId, int zoneId) {
         if (latestZonesResponse == null)
             fetchStatus();

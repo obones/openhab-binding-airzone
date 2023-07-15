@@ -351,6 +351,7 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
     {
         if (discoveryService != null) {
             discoveryService.discoverZones(apiManager.getLatestZonesResponse(), getThing().getUID());
+            discoveryService.discoverSystems(apiManager.getLatestSystemsResponse(), getThing().getUID());
         }
     }
 
