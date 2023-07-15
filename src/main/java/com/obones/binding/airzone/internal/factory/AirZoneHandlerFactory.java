@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.discovery.AirZoneDiscoveryService;
+import com.obones.binding.airzone.internal.handler.AirZoneBaseThingHandler;
 import com.obones.binding.airzone.internal.handler.AirZoneBindingHandler;
 import com.obones.binding.airzone.internal.handler.AirZoneBridgeHandler;
 import com.obones.binding.airzone.internal.handler.AirZoneZoneThingHandler;
@@ -59,7 +60,7 @@ public class AirZoneHandlerFactory extends BaseThingHandlerFactory {
 
     private Set<AirZoneBindingHandler> airZoneBindingHandlers = new HashSet<>();
     private Set<AirZoneBridgeHandler> airZoneBridgeHandlers = new HashSet<>();
-    private Set<AirZoneZoneThingHandler> airZoneThingHandlers = new HashSet<>();
+    private Set<AirZoneBaseThingHandler> airZoneThingHandlers = new HashSet<>();
 
     private @NonNullByDefault({}) LocaleProvider localeProvider;
     private @NonNullByDefault({}) TranslationProvider i18nProvider;
@@ -111,8 +112,8 @@ public class AirZoneHandlerFactory extends BaseThingHandlerFactory {
         return airZoneBridgeHandler;
     }
 
-    private @Nullable ThingHandler createThingHandler(Thing thing) {
-        logger.trace("createThingHandler({}) called for thing named '{}'.", thing.getUID(), thing.getLabel());
+    private @Nullable ThingHandler createZoneThingHandler(Thing thing) {
+        logger.trace("createZoneThingHandler({}) called for thing named '{}'.", thing.getUID(), thing.getLabel());
         AirZoneZoneThingHandler airZoneThingHandler = new AirZoneZoneThingHandler(thing, localization);
         airZoneThingHandlers.add(airZoneThingHandler);
         return airZoneThingHandler;
@@ -205,7 +206,7 @@ public class AirZoneHandlerFactory extends BaseThingHandlerFactory {
             unregisterDeviceDiscoveryService((AirZoneBridgeHandler) thingHandler);
         } else
         // Handle removal of Things behind the Bridge
-        if (thingHandler instanceof AirZoneZoneThingHandler) {
+        if (thingHandler instanceof AirZoneBaseThingHandler) {
             logger.trace("removeHandler() removing thing '{}'.", thingHandler.toString());
             airZoneThingHandlers.remove(thingHandler);
         }

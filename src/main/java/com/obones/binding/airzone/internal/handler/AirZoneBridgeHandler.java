@@ -43,9 +43,7 @@ import org.slf4j.LoggerFactory;
 import com.obones.binding.airzone.internal.AirZoneBinding;
 import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.api.AirZoneApiManager;
-import com.obones.binding.airzone.internal.api.model.AirZoneHvacZone;
 import com.obones.binding.airzone.internal.config.AirZoneBridgeConfiguration;
-import com.obones.binding.airzone.internal.config.AirZoneZoneThingConfiguration;
 import com.obones.binding.airzone.internal.discovery.AirZoneDiscoveryService;
 import com.obones.binding.airzone.internal.factory.AirZoneHandlerFactory;
 import com.obones.binding.airzone.internal.utils.Localization;
@@ -363,30 +361,17 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
     private void syncChannelsWithProducts() {
         for (Thing thing : getThing().getThings()) {
             ThingHandler thingHandler = thing.getHandler();
-            if (thingHandler instanceof AirZoneZoneThingHandler) {
-                AirZoneZoneThingConfiguration config = thing.getConfiguration().as(AirZoneZoneThingConfiguration.class);
-                AirZoneHvacZone zone = apiManager.getZone(config.systemId, config.zoneId);
 
-                if (zone != null) {
-                    AirZoneZoneThingHandler zoneThingHandler = (AirZoneZoneThingHandler) thingHandler;
-                    if (zoneThingHandler != null) {
-                        zoneThingHandler.refreshProperties(thing, zone);
-
-                        Set<ChannelUID> channelUIDs = new HashSet<>();
-                        for (Channel channel : thing.getChannels()) {
-                            ChannelUID uid = channel.getUID();
-                            if (isLinked(uid)) 
-                                channelUIDs.add(uid);
-                        }
-
-                        if (!channelUIDs.isEmpty()) {
-                            //logger.warn("Some channels are linked");
-                            for (ChannelUID uid : channelUIDs) {
-                                zoneThingHandler.refreshChannel(thing, uid, zone);
-                            }
-                        }
-                    }
+            if (thingHandler instanceof AirZoneBaseThingHandler) {
+                Set<ChannelUID> channelUIDs = new HashSet<>();
+                for (Channel channel : thing.getChannels()) {
+                    ChannelUID uid = channel.getUID();
+                    if (isLinked(uid)) 
+                        channelUIDs.add(uid);
                 }
+
+                AirZoneBaseThingHandler baseThingHandler = (AirZoneBaseThingHandler) thingHandler;
+                baseThingHandler.refreshChannelsAndProperties(apiManager, channelUIDs);
             }
         }
         logger.trace("syncChannelsWithProducts() done.");
