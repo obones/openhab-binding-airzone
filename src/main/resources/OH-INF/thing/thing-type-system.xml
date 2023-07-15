@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- AirZone Binding -->
+<thing:thing-descriptions bindingId="airzone"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
+
+	<!-- -->
+	<!-- AirZone system Binding -->
+	<!-- -->
+	<thing-type id="system">
+		<supported-bridge-type-refs>
+			<bridge-type-ref id="airzone"/>
+		</supported-bridge-type-refs>
+		<label>@text/thing-type.airzone.system.label</label>
+		<description>@text/thing-type.airzone.system.description</description>
+		<category>HVAC</category>
+		<channels>
+			<channel id="errors" typeId="errors"/>
+		</channels>
+		<properties>
+			<property name="manufacturer"/>
+			<property name="systemType"/>
+			<property name="systemFirmware"/>
+			<property name="meterConnected"/>
+		</properties>
+		<representation-property>systemUniqueId</representation-property>
+		<config-description-ref uri="thing-type:airzone:system"/>
+	</thing-type>
+</thing:thing-descriptions>

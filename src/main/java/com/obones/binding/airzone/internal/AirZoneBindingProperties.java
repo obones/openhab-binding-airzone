@@ -40,4 +40,5 @@ public class AirZoneBindingProperties {
     public static final String PROPERTY_SYSTEM_ID = "systemId";
     public static final String PROPERTY_ZONE_ID = "zoneId";
     public static final String PROPERTY_ZONE_UNIQUE_ID = "zoneUniqueId";
+    public static final String PROPERTY_SYSTEM_UNIQUE_ID = "systemUniqueId";
 }

@@ -12,6 +12,7 @@
  */
 package com.obones.binding.airzone.internal.handler;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -19,6 +20,7 @@ import java.util.Set;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.core.config.core.Configuration;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.thing.Bridge;
 import org.openhab.core.thing.Channel;
 import org.openhab.core.thing.ChannelUID;
@@ -33,11 +35,14 @@ import org.openhab.core.thing.binding.builder.ChannelBuilder;
 import org.openhab.core.thing.binding.builder.ThingBuilder;
 import org.openhab.core.thing.type.ChannelTypeUID;
 import org.openhab.core.types.RefreshType;
+import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.obones.binding.airzone.internal.api.AirZoneApiManager;
+import com.obones.binding.airzone.internal.api.AirZoneDetailedErrors;
+import com.obones.binding.airzone.internal.api.model.AirZoneError;
 import com.obones.binding.airzone.internal.utils.Localization;
 
 /***
@@ -181,4 +186,32 @@ public abstract class AirZoneBaseThingHandler extends BaseThingHandler {
     public abstract boolean refreshChannel(ChannelUID channelUID, AirZoneApiManager apiManager);
 
     public abstract void refreshChannelsAndProperties(AirZoneApiManager apiManager, Set<ChannelUID> linkedChannelsUIDs);
+
+    protected State getErrorsToState(AirZoneError @Nullable [] airZoneErrors) {
+        var errors = new ArrayList<String>();
+
+        if (airZoneErrors != null) {
+            for (var airZoneError : airZoneErrors) {
+                String systemValue = airZoneError.getSystem();
+                String zoneValue = airZoneError.getZone();
+
+                boolean isSystem = systemValue != null;
+                boolean isZone = zoneValue != null;
+
+                String originName = isSystem ? "System" : (isZone ? "Zone" : "unknown");
+                String errorCode = isSystem ? systemValue : (isZone ? zoneValue : "unexpected");
+
+                String errorMessage = originName + ": " + errorCode;
+
+                @Nullable
+                String detailedErrorMessage = AirZoneDetailedErrors.getDetailedErrorMessage(errorCode, localization);
+                if (detailedErrorMessage != null)
+                    errorMessage += " - " + detailedErrorMessage;
+
+                errors.add(errorMessage);
+            }
+        }
+
+        return new StringType(gson.toJson(errors.toArray()));
+    }
 }

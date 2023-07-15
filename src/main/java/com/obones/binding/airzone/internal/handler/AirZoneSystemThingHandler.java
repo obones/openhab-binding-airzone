@@ -22,9 +22,12 @@ import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.binding.BridgeHandler;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.RefreshType;
+import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.obones.binding.airzone.internal.AirZoneBindingConstants;
+import com.obones.binding.airzone.internal.AirZoneBindingProperties;
 import com.obones.binding.airzone.internal.api.AirZoneApiManager;
 import com.obones.binding.airzone.internal.api.model.AirZoneHvacSystemInfo;
 import com.obones.binding.airzone.internal.config.AirZoneSystemThingConfiguration;
@@ -81,6 +84,18 @@ public class AirZoneSystemThingHandler extends AirZoneBaseThingHandler {
 
     public boolean refreshChannel(ChannelUID channelUID, @Nullable AirZoneHvacSystemInfo system) {
         if (system != null) {
+            State newState = null;
+            String channelId = channelUID.getId();
+            switch (channelId) {
+                case AirZoneBindingConstants.CHANNEL_SYSTEM_ERRORS:
+                    newState = getErrorsToState(system.getErrors());
+                    break;
+            }
+
+            if (newState != null) {
+                updateState(channelUID, newState);
+                return true;
+            }
         }
 
         return false;
@@ -92,6 +107,10 @@ public class AirZoneSystemThingHandler extends AirZoneBaseThingHandler {
 
     @Override
     protected synchronized void initializeProperties(AirZoneBridgeHandler bridgeHandler) {
+        AirZoneSystemThingConfiguration config = getConfigAs(AirZoneSystemThingConfiguration.class);
+
+        thing.setProperty(AirZoneBindingProperties.PROPERTY_SYSTEM_UNIQUE_ID,
+                AirZoneBridgeHandler.getSystemUniqueId(config.systemId));
     }
 
     @Override
@@ -109,5 +128,38 @@ public class AirZoneSystemThingHandler extends AirZoneBaseThingHandler {
     }
 
     public void refreshProperties(@Nullable AirZoneHvacSystemInfo system) {
+        if (system != null) {
+            int systemType = system.getSystem_type();
+            String systemTypeDesc = String.format("Unknown system type: %d", systemType);
+            switch (systemType) {
+                case 1:
+                    systemTypeDesc = AirZoneBindingConstants.SYSTEM_SYSTEM_TYPE_C6;
+                    break;
+                case 2:
+                    systemTypeDesc = AirZoneBindingConstants.SYSTEM_SYSTEM_TYPE_AQUAGLASS;
+                    break;
+                case 3:
+                    systemTypeDesc = AirZoneBindingConstants.SYSTEM_SYSTEM_TYPE_DZK;
+                    break;
+                case 4:
+                    systemTypeDesc = AirZoneBindingConstants.SYSTEM_SYSTEM_TYPE_RADIANT;
+                    break;
+                case 5:
+                    systemTypeDesc = AirZoneBindingConstants.SYSTEM_SYSTEM_TYPE_C3;
+                    break;
+                case 6:
+                    systemTypeDesc = AirZoneBindingConstants.SYSTEM_SYSTEM_TYPE_ZBS;
+                    break;
+                case 7:
+                    systemTypeDesc = AirZoneBindingConstants.SYSTEM_SYSTEM_TYPE_ZS6;
+                    break;
+            }
+
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_SYSTEM_SYSTEM_TYPE, systemTypeDesc);
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_SYSTEM_SYSTEM_FIRMWARE, system.getSystem_firmware());
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_SYSTEM_MANUFACTURER, system.getManufacturer());
+            thing.setProperty(AirZoneBindingConstants.PROPERTY_SYSTEM_METER_CONNECTED,
+                    Boolean.toString((system.getMc_connected() != 0)));
+        }
     }
 }

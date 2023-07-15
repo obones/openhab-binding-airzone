@@ -495,4 +495,8 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
     public static String getZoneUniqueId(int systemId, int zoneId) {
         return "s" + systemId + "-z" + zoneId; 
     }
+
+    public static String getSystemUniqueId(int systemId) {
+        return "s" + systemId; 
+    }
 }

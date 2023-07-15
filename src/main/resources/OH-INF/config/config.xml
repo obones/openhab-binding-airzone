@@ -60,5 +60,15 @@
 			<advanced>false</advanced>
 		</parameter>
 	</config-description>
+	<!-- -->
+	<!-- AirZone Systems -->
+	<!-- -->
+	<config-description uri="thing-type:airzone:system">
+		<parameter name="systemId" type="integer" min="1" max="32" required="true">
+			<label>@text/config.airzone.thing.system.systemId.label</label>
+			<description>@text/config.airzone.thing.system.systemId.description</description>
+			<advanced>false</advanced>
+		</parameter>
+	</config-description>
 
 </config-description:config-descriptions>

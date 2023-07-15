@@ -152,6 +152,12 @@ public class AirZoneBindingConstants {
 
     // List of all system channel/property ids
     public static final String CHANNEL_SYSTEM_POWER = "power";
+    public static final String CHANNEL_SYSTEM_ERRORS = "errors";
+
+    public static final String PROPERTY_SYSTEM_MANUFACTURER = "manufacturer";
+    public static final String PROPERTY_SYSTEM_SYSTEM_TYPE = "systemType";
+    public static final String PROPERTY_SYSTEM_SYSTEM_FIRMWARE = "systemFirmware";
+    public static final String PROPERTY_SYSTEM_METER_CONNECTED = "meterConnected";
 
     // dynamic system channel type ids
     public static final String CHANNEL_TYPE_SYSTEM_POWER = "power";
@@ -288,4 +294,13 @@ public class AirZoneBindingConstants {
         3, ZONE_AIR_QUALITY_LOW
     );
     // @formatter:on
+
+    // system type property
+    public static final String SYSTEM_SYSTEM_TYPE_C6 = "C6";
+    public static final String SYSTEM_SYSTEM_TYPE_AQUAGLASS = "AQUAGLASS";
+    public static final String SYSTEM_SYSTEM_TYPE_DZK = "DZK";
+    public static final String SYSTEM_SYSTEM_TYPE_RADIANT = "Radiant";
+    public static final String SYSTEM_SYSTEM_TYPE_C3 = "C3";
+    public static final String SYSTEM_SYSTEM_TYPE_ZBS = "ZBS";
+    public static final String SYSTEM_SYSTEM_TYPE_ZS6 = "ZS6";
 }

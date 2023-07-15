@@ -48,6 +48,16 @@
 		<category>NetworkAppliance</category>
 	</channel-type>
 
+	<!-- Channel Type - of Zone or System -->
+
+	<channel-type id="errors">
+		<item-type>String</item-type>
+		<label>@text/channel-type.airzone..errors.label</label>
+		<description>@text/channel-type.airzone..errors.description</description>
+		<category>error</category>
+		<state readOnly="true"/>
+	</channel-type>
+
 	<!-- Channel Type - of Zone -->
 
 	<channel-type id="name" advanced="true">
@@ -187,22 +197,6 @@
 		</command>
 	</channel-type>
 
-	<channel-type id="errors">
-		<item-type>String</item-type>
-		<label>@text/channel-type.airzone.zone.errors.label</label>
-		<description>@text/channel-type.airzone.zone.errors.description</description>
-		<category>error</category>
-		<state readOnly="true"/>
-	</channel-type>
-
-	<channel-type id="power">
-		<item-type>Number:Power</item-type>
-		<label>@text/channel-type.airzone.zone.power.label</label>
-		<description>@text/channel-type.airzone.zone.power.description</description>
-		<category>power</category>
-		<state pattern="%.1f kW" readOnly="true"/>
-	</channel-type>
-
 	<channel-type id="demand" advanced="true">
 		<item-type>Switch</item-type>
 		<label>[ToBeReplaced]</label>
@@ -273,6 +267,16 @@
 			<tag>Control</tag>
 		</tags>
 		<state min="0" max="3"/>
+	</channel-type>
+
+	<!-- Channel Type - of System -->
+
+	<channel-type id="power">
+		<item-type>Number:Power</item-type>
+		<label>@text/channel-type.airzone.system.power.label</label>
+		<description>@text/channel-type.airzone.system.power.description</description>
+		<category>power</category>
+		<state pattern="%.1f kW" readOnly="true"/>
 	</channel-type>
 
 </thing:thing-descriptions>

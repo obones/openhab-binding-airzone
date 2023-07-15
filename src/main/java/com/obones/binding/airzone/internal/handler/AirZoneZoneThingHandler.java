@@ -49,7 +49,6 @@ import org.slf4j.LoggerFactory;
 import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.AirZoneBindingProperties;
 import com.obones.binding.airzone.internal.api.AirZoneApiManager;
-import com.obones.binding.airzone.internal.api.AirZoneDetailedErrors;
 import com.obones.binding.airzone.internal.api.model.AirZoneHvacZone;
 import com.obones.binding.airzone.internal.config.AirZoneZoneThingConfiguration;
 import com.obones.binding.airzone.internal.utils.Localization;
@@ -351,30 +350,7 @@ public class AirZoneZoneThingHandler extends AirZoneBaseThingHandler {
                     newState = new StringType(AirZoneBindingConstants.IntToSleep.get(zone.getSleep()));
                     break;
                 case AirZoneBindingConstants.CHANNEL_ZONE_ERRORS:
-                    var errors = new ArrayList<String>();
-
-                    for (var zoneError : zone.getErrors()) {
-                        String systemValue = zoneError.getSystem();
-                        String zoneValue = zoneError.getZone();
-
-                        boolean isSystem = systemValue != null;
-                        boolean isZone = zoneValue != null;
-
-                        String originName = isSystem ? "System" : (isZone ? "Zone" : "unknown");
-                        String errorCode = isSystem ? systemValue : (isZone ? zoneValue : "unexpected");
-
-                        String errorMessage = originName + ": " + errorCode;
-
-                        @Nullable
-                        String detailedErrorMessage = AirZoneDetailedErrors.getDetailedErrorMessage(errorCode,
-                                localization);
-                        if (detailedErrorMessage != null)
-                            errorMessage += " - " + detailedErrorMessage;
-
-                        errors.add(errorMessage);
-                    }
-
-                    newState = new StringType(gson.toJson(errors.toArray()));
+                    newState = getErrorsToState(zone.getErrors());
                     break;
                 case AirZoneBindingConstants.CHANNEL_ZONE_AIR_DEMAND:
                     newState = zone.getAirDemand() != 1 ? OnOffType.OFF : OnOffType.ON;
