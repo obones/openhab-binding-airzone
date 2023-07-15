@@ -68,7 +68,7 @@ public class AirZoneApiManager {
     }
 
     @Nullable
-    private AirZoneHvacResponse latestResponse = null;
+    private AirZoneHvacResponse latestZonesResponse = null;
     private AirZoneHvacZoneMap latestZones = new AirZoneHvacZoneMap();
     @Nullable
     private AirZoneHvacSystemsResponse latestSystemsResponse = null;
@@ -87,9 +87,9 @@ public class AirZoneApiManager {
             if (jsonResponse != null) {
                 jsonResponse = jsonResponse.replaceAll("^.+,\n", "");
                 logger.trace("io() cleaned response {}.", jsonResponse);
-                latestResponse = gson.fromJson(jsonResponse, AirZoneHvacResponse.class);
+                latestZonesResponse = gson.fromJson(jsonResponse, AirZoneHvacResponse.class);
 
-                fillLatestZones(latestResponse);
+                fillLatestZones(latestZonesResponse);
             }
 
             jsonResponse = executeHvacPostUrl("{\"systemID\":127}");
@@ -104,22 +104,22 @@ public class AirZoneApiManager {
         }
     }
 
-    public @Nullable AirZoneHvacResponse getLatestResponse() {
-        if (latestResponse == null)
+    public @Nullable AirZoneHvacResponse getLatestZonesResponse() {
+        if (latestZonesResponse == null)
             fetchStatus();
 
-        return latestResponse;
+        return latestZonesResponse;
     }
 
     public @Nullable AirZoneHvacZone getZone(int systemId, int zoneId) {
-        if (latestResponse == null)
+        if (latestZonesResponse == null)
             fetchStatus();
 
         return latestZones.get(systemId, zoneId);
     }
 
     public @Nullable AirZoneHvacSystemInfo getSystem(int systemId) {
-        if (latestResponse == null)
+        if (latestZonesResponse == null)
             fetchStatus();
 
         return latestSystems.get(systemId);
