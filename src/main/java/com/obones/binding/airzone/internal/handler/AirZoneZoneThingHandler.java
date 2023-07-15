@@ -34,12 +34,10 @@ import org.openhab.core.thing.Bridge;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingUID;
-import org.openhab.core.thing.binding.BridgeHandler;
 import org.openhab.core.thing.binding.ThingHandlerCallback;
 import org.openhab.core.thing.binding.builder.ThingBuilder;
 import org.openhab.core.thing.type.ChannelTypeUID;
 import org.openhab.core.types.Command;
-import org.openhab.core.types.RefreshType;
 import org.openhab.core.types.State;
 import org.openhab.core.types.StateDescriptionFragmentBuilder;
 import org.openhab.core.types.UnDefType;
@@ -201,101 +199,82 @@ public class AirZoneZoneThingHandler extends AirZoneBaseThingHandler {
     }
 
     @Override
-    public void handleCommand(ChannelUID channelUID, Command command) {
-        logger.trace("handleCommand({},{}) initiated by {}.", channelUID.getAsString(), command,
-                Thread.currentThread());
-        Bridge bridge = getBridge();
-        if (bridge == null) {
-            logger.trace("handleCommand() nothing yet to do as there is no bridge available.");
-        } else {
-            BridgeHandler handler = bridge.getHandler();
-            if (handler == null) {
-                logger.trace("handleCommand() nothing yet to do as thing is not initialized.");
-            } else {
-                AirZoneBridgeHandler bridgeHandler = (AirZoneBridgeHandler) handler;
-                AirZoneApiManager apiManager = bridgeHandler.getApiManager();
+    protected boolean handleActionCommand(ChannelUID channelUID, Command command, AirZoneApiManager apiManager) {
+        String channelId = channelUID.getId();
+        switch (channelId) {
+            case AirZoneBindingConstants.CHANNEL_ZONE_NAME:
+                apiManager.setZoneName(thing, command);
+                break;
 
-                if (command instanceof RefreshType) {
-                    if (!refreshChannel(channelUID, apiManager))
-                        bridgeHandler.handleCommand(channelUID, command);
-                } else {
-                    String channelId = channelUID.getId();
-                    switch (channelId) {
-                        case AirZoneBindingConstants.CHANNEL_ZONE_NAME:
-                            apiManager.setZoneName(thing, command);
-                            break;
+            case AirZoneBindingConstants.CHANNEL_ZONE_ON_OFF:
+                apiManager.setZoneOnOff(thing, command);
+                break;
 
-                        case AirZoneBindingConstants.CHANNEL_ZONE_ON_OFF:
-                            apiManager.setZoneOnOff(thing, command);
-                            break;
+            case AirZoneBindingConstants.CHANNEL_ZONE_SETPOINT:
+                apiManager.setZoneSetPoint(thing, command);
+                break;
 
-                        case AirZoneBindingConstants.CHANNEL_ZONE_SETPOINT:
-                            apiManager.setZoneSetPoint(thing, command);
-                            break;
+            case AirZoneBindingConstants.CHANNEL_ZONE_COOL_SETPOINT:
+                apiManager.setZoneCoolSetPoint(thing, command);
+                break;
 
-                        case AirZoneBindingConstants.CHANNEL_ZONE_COOL_SETPOINT:
-                            apiManager.setZoneCoolSetPoint(thing, command);
-                            break;
+            case AirZoneBindingConstants.CHANNEL_ZONE_HEAT_SETPOINT:
+                apiManager.setZoneHeatSetPoint(thing, command);
+                break;
 
-                        case AirZoneBindingConstants.CHANNEL_ZONE_HEAT_SETPOINT:
-                            apiManager.setZoneHeatSetPoint(thing, command);
-                            break;
+            case AirZoneBindingConstants.CHANNEL_ZONE_MODE:
+                apiManager.setZoneMode(thing, command);
+                break;
 
-                        case AirZoneBindingConstants.CHANNEL_ZONE_MODE:
-                            apiManager.setZoneMode(thing, command);
-                            break;
+            case AirZoneBindingConstants.CHANNEL_ZONE_FAN_SPEED:
+                apiManager.setZoneSpeed(thing, command);
+                break;
 
-                        case AirZoneBindingConstants.CHANNEL_ZONE_FAN_SPEED:
-                            apiManager.setZoneSpeed(thing, command);
-                            break;
+            case AirZoneBindingConstants.CHANNEL_ZONE_COLD_STAGE:
+                apiManager.setZoneColdStage(thing, command);
+                break;
 
-                        case AirZoneBindingConstants.CHANNEL_ZONE_COLD_STAGE:
-                            apiManager.setZoneColdStage(thing, command);
-                            break;
+            case AirZoneBindingConstants.CHANNEL_ZONE_HEAT_STAGE:
+                apiManager.setZoneHeatStage(thing, command);
+                break;
 
-                        case AirZoneBindingConstants.CHANNEL_ZONE_HEAT_STAGE:
-                            apiManager.setZoneHeatStage(thing, command);
-                            break;
+            case AirZoneBindingConstants.CHANNEL_ZONE_SLEEP:
+                apiManager.setZoneSleep(thing, command);
+                break;
 
-                        case AirZoneBindingConstants.CHANNEL_ZONE_SLEEP:
-                            apiManager.setZoneSleep(thing, command);
-                            break;
+            case AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY_MODE:
+                apiManager.setZoneAirQualityMode(thing, command);
+                break;
 
-                        case AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY_MODE:
-                            apiManager.setZoneAirQualityMode(thing, command);
-                            break;
+            case AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY_LOW_THRESHOLD:
+                apiManager.setZoneAirQualityLowThreshold(thing, command);
+                break;
 
-                        case AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY_LOW_THRESHOLD:
-                            apiManager.setZoneAirQualityLowThreshold(thing, command);
-                            break;
+            case AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY_HIGH_THRESHOLD:
+                apiManager.setZoneAirQualityHighThreshold(thing, command);
+                break;
 
-                        case AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY_HIGH_THRESHOLD:
-                            apiManager.setZoneAirQualityHighThreshold(thing, command);
-                            break;
+            case AirZoneBindingConstants.CHANNEL_ZONE_SLATS_VERTICAL_SWING:
+                apiManager.setZoneVerticalSlatsSwing(thing, command);
+                break;
 
-                        case AirZoneBindingConstants.CHANNEL_ZONE_SLATS_VERTICAL_SWING:
-                            apiManager.setZoneVerticalSlatsSwing(thing, command);
-                            break;
+            case AirZoneBindingConstants.CHANNEL_ZONE_SLATS_HORIZONTAL_SWING:
+                apiManager.setZoneHorizontalSlatsSwing(thing, command);
+                break;
 
-                        case AirZoneBindingConstants.CHANNEL_ZONE_SLATS_HORIZONTAL_SWING:
-                            apiManager.setZoneHorizontalSlatsSwing(thing, command);
-                            break;
+            case AirZoneBindingConstants.CHANNEL_ZONE_SLATS_VERTICAL_POSITION:
+                apiManager.setZoneVerticalSlatsPosition(thing, command);
+                break;
 
-                        case AirZoneBindingConstants.CHANNEL_ZONE_SLATS_VERTICAL_POSITION:
-                            apiManager.setZoneVerticalSlatsPosition(thing, command);
-                            break;
+            case AirZoneBindingConstants.CHANNEL_ZONE_SLATS_HORIZONTAL_POSITION:
+                apiManager.setZoneHorizontalSlatsPosition(thing, command);
+                break;
 
-                        case AirZoneBindingConstants.CHANNEL_ZONE_SLATS_HORIZONTAL_POSITION:
-                            apiManager.setZoneHorizontalSlatsPosition(thing, command);
-                            break;
-
-                        default:
-                            handler.handleCommand(channelUID, command);
-                    }
-                }
-            }
+            default:
+                return false;
         }
-        logger.trace("handleCommand() done.");
+
+        return true;
     }
 
     @Override

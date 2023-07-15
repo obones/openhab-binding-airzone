@@ -16,16 +16,13 @@ import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.openhab.core.thing.Bridge;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingUID;
-import org.openhab.core.thing.binding.BridgeHandler;
 import org.openhab.core.thing.binding.ThingHandlerCallback;
 import org.openhab.core.thing.binding.builder.ThingBuilder;
 import org.openhab.core.thing.type.ChannelTypeUID;
 import org.openhab.core.types.Command;
-import org.openhab.core.types.RefreshType;
 import org.openhab.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,30 +49,12 @@ public class AirZoneSystemThingHandler extends AirZoneBaseThingHandler {
     }
 
     @Override
-    public void handleCommand(ChannelUID channelUID, Command command) {
-        logger.trace("handleCommand({},{}) initiated by {}.", channelUID.getAsString(), command,
-                Thread.currentThread());
-        Bridge bridge = getBridge();
-        if (bridge == null) {
-            logger.trace("handleCommand() nothing yet to do as there is no bridge available.");
-        } else {
-            BridgeHandler handler = bridge.getHandler();
-            if (handler == null) {
-                logger.trace("handleCommand() nothing yet to do as thing is not initialized.");
-            } else {
-                AirZoneBridgeHandler bridgeHandler = (AirZoneBridgeHandler) handler;
-                AirZoneApiManager apiManager = bridgeHandler.getApiManager();
-
-                if (command instanceof RefreshType) {
-                    if (!refreshChannel(channelUID, apiManager))
-                        bridgeHandler.handleCommand(channelUID, command);
-                } else {
-                    String channelId = channelUID.getId();
-                    switch (channelId) {
-                    }
-                }
-            }
+    protected boolean handleActionCommand(ChannelUID channelUID, Command command, AirZoneApiManager apiManager) {
+        String channelId = channelUID.getId();
+        switch (channelId) {
         }
+
+        return false;
     }
 
     @Override

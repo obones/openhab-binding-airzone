@@ -30,10 +30,12 @@ import org.openhab.core.thing.ThingStatusDetail;
 import org.openhab.core.thing.ThingStatusInfo;
 import org.openhab.core.thing.ThingUID;
 import org.openhab.core.thing.binding.BaseThingHandler;
+import org.openhab.core.thing.binding.BridgeHandler;
 import org.openhab.core.thing.binding.ThingHandlerCallback;
 import org.openhab.core.thing.binding.builder.ChannelBuilder;
 import org.openhab.core.thing.binding.builder.ThingBuilder;
 import org.openhab.core.thing.type.ChannelTypeUID;
+import org.openhab.core.types.Command;
 import org.openhab.core.types.RefreshType;
 import org.openhab.core.types.State;
 import org.slf4j.Logger;
@@ -182,6 +184,36 @@ public abstract class AirZoneBaseThingHandler extends BaseThingHandler {
                 super.bridgeStatusChanged(info);
         }
     }
+
+    @Override
+    public void handleCommand(ChannelUID channelUID, Command command) {
+        logger.trace("handleCommand({},{}) initiated by {}.", channelUID.getAsString(), command,
+                Thread.currentThread());
+        Bridge bridge = getBridge();
+        if (bridge == null) {
+            logger.trace("handleCommand() nothing yet to do as there is no bridge available.");
+        } else {
+            BridgeHandler handler = bridge.getHandler();
+            if (handler == null) {
+                logger.trace("handleCommand() nothing yet to do as thing is not initialized.");
+            } else {
+                AirZoneBridgeHandler bridgeHandler = (AirZoneBridgeHandler) handler;
+                AirZoneApiManager apiManager = bridgeHandler.getApiManager();
+
+                boolean commandHandled = false;
+                if (command instanceof RefreshType)
+                    commandHandled = refreshChannel(channelUID, apiManager);
+                else
+                    commandHandled = handleActionCommand(channelUID, command, apiManager);
+
+                if (!commandHandled)
+                    bridgeHandler.handleCommand(channelUID, command);
+            }
+        }
+    }
+
+    protected abstract boolean handleActionCommand(ChannelUID channelUID, Command command,
+            AirZoneApiManager apiManager);
 
     public abstract boolean refreshChannel(ChannelUID channelUID, AirZoneApiManager apiManager);
 
