@@ -39,6 +39,7 @@ import com.obones.binding.airzone.internal.discovery.AirZoneDiscoveryService;
 import com.obones.binding.airzone.internal.handler.AirZoneBaseThingHandler;
 import com.obones.binding.airzone.internal.handler.AirZoneBindingHandler;
 import com.obones.binding.airzone.internal.handler.AirZoneBridgeHandler;
+import com.obones.binding.airzone.internal.handler.AirZoneSystemThingHandler;
 import com.obones.binding.airzone.internal.handler.AirZoneZoneThingHandler;
 import com.obones.binding.airzone.internal.utils.Localization;
 
@@ -119,6 +120,13 @@ public class AirZoneHandlerFactory extends BaseThingHandlerFactory {
         return airZoneThingHandler;
     }
 
+    private @Nullable ThingHandler createSystemThingHandler(Thing thing) {
+        logger.trace("createSystemThingHandler({}) called for thing named '{}'.", thing.getUID(), thing.getLabel());
+        AirZoneSystemThingHandler airZoneThingHandler = new AirZoneSystemThingHandler(thing, localization);
+        airZoneThingHandlers.add(airZoneThingHandler);
+        return airZoneThingHandler;
+    }
+
     private void updateBindingState() {
         airZoneBindingHandlers.forEach((AirZoneBindingHandler airZoneBindingHandler) -> {
             airZoneBindingHandler.updateBindingState(airZoneBridgeHandlers.size(), airZoneThingHandlers.size());
@@ -183,8 +191,10 @@ public class AirZoneHandlerFactory extends BaseThingHandlerFactory {
             resultHandler = createBridgeHandler(thing);
         } else
         // Handle creation of Things behind the Bridge
-        if (AirZoneBindingConstants.SUPPORTED_THINGS_ITEMS.contains(thingTypeUID)) {
-            resultHandler = createThingHandler(thing);
+        if (AirZoneBindingConstants.THING_TYPE_AIRZONE_ZONE.equals(thingTypeUID)) {
+            resultHandler = createZoneThingHandler(thing);
+        } else if (AirZoneBindingConstants.THING_TYPE_AIRZONE_SYSTEM.equals(thingTypeUID)) {
+            resultHandler = createSystemThingHandler(thing);
         } else {
             logger.warn("createHandler({}) failed: ThingHandler not found for {}.", thingTypeUID, thing.getLabel());
         }

@@ -50,6 +50,10 @@ public class AirZoneBindingConstants {
      * The Thing identification of a zone defined on the <B>AirZone</B> bridge.
      */
     private static final String THING_AIRZONE_ZONE = "zone";
+    /**
+     * The Thing identification of a system defined on the <B>AirZone</B> bridge.
+     */
+    private static final String THING_AIRZONE_SYSTEM = "system";
 
     // List of all Thing Type UIDs
     public static final ThingTypeUID THING_TYPE_BINDING = new ThingTypeUID(BINDING_ID, THING_AIRZONE_BINDING);
@@ -59,13 +63,14 @@ public class AirZoneBindingConstants {
 
     // List of all Thing Type UIDs beyond the bridge(s)
     public static final ThingTypeUID THING_TYPE_AIRZONE_ZONE = new ThingTypeUID(BINDING_ID, THING_AIRZONE_ZONE);
+    public static final ThingTypeUID THING_TYPE_AIRZONE_SYSTEM = new ThingTypeUID(BINDING_ID, THING_AIRZONE_SYSTEM);
 
     // Definitions of different set of Things
     public static final Set<ThingTypeUID> SUPPORTED_THINGS_BINDING = new HashSet<>(Arrays.asList(THING_TYPE_BINDING));
     public static final Set<ThingTypeUID> SUPPORTED_THINGS_BRIDGE = new HashSet<>(Arrays.asList(THING_TYPE_BRIDGE));
 
     public static final Set<ThingTypeUID> SUPPORTED_THINGS_ITEMS = new HashSet<>(
-            Arrays.asList(THING_TYPE_AIRZONE_ZONE));
+            Arrays.asList(THING_TYPE_AIRZONE_ZONE, THING_TYPE_AIRZONE_SYSTEM));
 
     @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
     public static final Set<ThingTypeUID> DISCOVERABLE_THINGS = Set.of(THING_TYPE_AIRZONE_ZONE, THING_TYPE_BINDING,

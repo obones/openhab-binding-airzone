@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -69,6 +70,9 @@ public class AirZoneApiManager {
     @Nullable
     private AirZoneHvacResponse latestResponse = null;
     private AirZoneHvacZoneMap latestZones = new AirZoneHvacZoneMap();
+    @Nullable
+    private AirZoneHvacSystemsResponse latestSystemsResponse = null;
+    private Map<Integer, AirZoneHvacSystemInfo> latestSystems = new HashMap<>();
     private AirZoneBridgeConfiguration airZoneBridgeConfiguration;
 
     @Activate
@@ -87,6 +91,14 @@ public class AirZoneApiManager {
 
                 fillLatestZones(latestResponse);
             }
+
+            jsonResponse = executeHvacPostUrl("{\"systemID\":127}");
+            if (jsonResponse != null) {
+                jsonResponse = jsonResponse.replaceAll("^.+,\n", "");
+                latestSystemsResponse = gson.fromJson(jsonResponse, AirZoneHvacSystemsResponse.class);
+
+                fillLatestSystems(latestSystemsResponse);
+            }
         } catch (IOException ioe) {
             logger.warn("exception {}", ioe.toString());
         }
@@ -104,6 +116,13 @@ public class AirZoneApiManager {
             fetchStatus();
 
         return latestZones.get(systemId, zoneId);
+    }
+
+    public @Nullable AirZoneHvacSystemInfo getSystem(int systemId) {
+        if (latestResponse == null)
+            fetchStatus();
+
+        return latestSystems.get(systemId);
     }
 
     public @Nullable AirZoneWebServerResponse getServerProperties() {
@@ -311,6 +330,14 @@ public class AirZoneApiManager {
                 for (AirZoneHvacZone zone : system.getData()) {
                     latestZones.put(zone.getSystemID(), zone.getZoneID(), zone);
                 }
+            }
+        }
+    }
+
+    private void fillLatestSystems(@Nullable AirZoneHvacSystemsResponse latestSystemsResponse) {
+        if (latestSystemsResponse != null) {
+            for (AirZoneHvacSystemInfo systemInfo : latestSystemsResponse.getSystems()) {
+                latestSystems.put(systemInfo.getSystemID(), systemInfo);
             }
         }
     }
