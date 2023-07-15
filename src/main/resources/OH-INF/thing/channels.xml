@@ -201,6 +201,7 @@
 		<item-type>Switch</item-type>
 		<label>[ToBeReplaced]</label>
 		<category>flow</category>
+		<state readOnly="true"/>
 	</channel-type>
 
 	<channel-type id="air-quality-mode">
