@@ -19,7 +19,11 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.core.thing.Bridge;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
+import org.openhab.core.thing.ThingUID;
 import org.openhab.core.thing.binding.BridgeHandler;
+import org.openhab.core.thing.binding.ThingHandlerCallback;
+import org.openhab.core.thing.binding.builder.ThingBuilder;
+import org.openhab.core.thing.type.ChannelTypeUID;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.RefreshType;
 import org.openhab.core.types.State;
@@ -103,6 +107,32 @@ public class AirZoneSystemThingHandler extends AirZoneBaseThingHandler {
 
     @Override
     protected synchronized void createOptionalChannels(AirZoneBridgeHandler bridgeHandler) {
+        AirZoneSystemThingConfiguration config = getConfigAs(AirZoneSystemThingConfiguration.class);
+
+        @Nullable
+        AirZoneHvacSystemInfo system = bridgeHandler.getApiManager().getSystem(config.systemId);
+        if (system == null) {
+            logger.warn("createOptionalChannels: No system data for {}", config.systemId);
+            return;
+        }
+
+        ThingHandlerCallback callback = getCallback();
+        if (callback == null) {
+            logger.warn("createOptionalChannels: Could not get callback.");
+            return;
+        }
+
+        ThingBuilder builder = editThing();
+        ThingUID thingUID = thing.getUID();
+
+        @Nullable
+        Double systemPower = system.getPower();
+        if (systemPower != null) {
+            ChannelTypeUID systemPowerTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID,
+                    AirZoneBindingConstants.CHANNEL_TYPE_SYSTEM_POWER);
+            createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_SYSTEM_POWER,
+                    systemPowerTypeUID);
+        }
     }
 
     @Override
