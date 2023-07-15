@@ -36,9 +36,9 @@
 		<category>Text</category>
 	</channel-type>
 
-	<channel-type id="onOff">
+	<channel-type id="on-off">
 		<item-type>Switch</item-type>
-		<label>@text/channel-type.airzone.zone.onOff.label</label>
+		<label>@text/channel-type.airzone.zone.on-off.label</label>
 		<category>Switch</category>
 	</channel-type>
 
@@ -64,9 +64,9 @@
 		<state pattern="%.1f %%" readOnly="true"/>
 	</channel-type>
 
-	<channel-type id="setpointTemperature">
+	<channel-type id="setpoint-temperature">
 		<item-type>Number:Temperature</item-type>
-		<label>@text/channel-type.airzone.zone.setpointTemperature.label</label>
+		<label>@text/channel-type.airzone.zone.setpoint-temperature.label</label>
 		<category>Temperature</category>
 		<tags>
 			<tag>Setpoint</tag>

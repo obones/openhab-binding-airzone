@@ -17,15 +17,15 @@
 		<category>HVAC</category>
 		<channels>
 			<channel id="name" typeId="name"/>
-			<channel id="onOff" typeId="onOff"/>
+			<channel id="on-off" typeId="on-off"/>
 			<channel id="temperature" typeId="temperature"/>
 			<channel id="humidity" typeId="humidity"/>
 			<channel id="mode" typeId="mode"/>
-			<channel id="heatStage" typeId="stage">
-				<label>@text/channel-type.airzone.zone.heatStage.label</label>
+			<channel id="heat-stage" typeId="stage">
+				<label>@text/channel-type.airzone.zone.heat-stage.label</label>
 			</channel>
-			<channel id="coldStage" typeId="stage">
-				<label>@text/channel-type.airzone.zone.coldStage.label</label>
+			<channel id="cold-stage" typeId="stage">
+				<label>@text/channel-type.airzone.zone.cold-stage.label</label>
 			</channel>
 			<channel id="sleep" typeId="sleep"/>
 			<channel id="errors" typeId="errors"/>

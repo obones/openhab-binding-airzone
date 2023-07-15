@@ -97,7 +97,7 @@ public class AirZoneBindingConstants {
 
     // List of all zone channel/property ids
     public static final String CHANNEL_ZONE_NAME = "name";
-    public static final String CHANNEL_ZONE_ON_OFF = "onOff";
+    public static final String CHANNEL_ZONE_ON_OFF = "on-off";
     public static final String CHANNEL_ZONE_TEMPERATURE = "temperature";
     public static final String CHANNEL_ZONE_HUMIDITY = "humidity";
     public static final String CHANNEL_ZONE_SETPOINT = "setpoint";
@@ -105,8 +105,8 @@ public class AirZoneBindingConstants {
     public static final String CHANNEL_ZONE_COOL_SETPOINT = "coolSetpoint";
     public static final String CHANNEL_ZONE_MODE = "mode";
     public static final String CHANNEL_ZONE_FAN_SPEED = "fanSpeed";
-    public static final String CHANNEL_ZONE_HEAT_STAGE = "heatStage";
-    public static final String CHANNEL_ZONE_COLD_STAGE = "coldStage";
+    public static final String CHANNEL_ZONE_HEAT_STAGE = "heat-stage";
+    public static final String CHANNEL_ZONE_COLD_STAGE = "cold-stage";
     public static final String CHANNEL_ZONE_SLEEP = "sleep";
     public static final String CHANNEL_ZONE_ERRORS = "errors";
     public static final String CHANNEL_ZONE_AIR_DEMAND = "air-demand";
@@ -133,7 +133,7 @@ public class AirZoneBindingConstants {
 
     // dynamic zone channel type ids
     public static final String CHANNEL_TYPE_ZONE_SPEED = "speed";
-    public static final String CHANNEL_TYPE_ZONE_SETPOINT_TEMPERATURE = "setpointTemperature";
+    public static final String CHANNEL_TYPE_ZONE_SETPOINT_TEMPERATURE = "setpoint-temperature";
     public static final String CHANNEL_TYPE_ZONE_DEMAND = "demand";
     public static final String CHANNEL_TYPE_ZONE_AIR_QUALITY_MODE = "air-quality-mode";
     public static final String CHANNEL_TYPE_ZONE_AIR_QUALITY = "air-quality";
