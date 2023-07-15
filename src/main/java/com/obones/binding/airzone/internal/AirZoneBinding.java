@@ -82,7 +82,6 @@ public class AirZoneBinding extends AirZoneBridgeConfiguration {
             if ((uncheckedConfiguration.refreshMSecs >= 1000) && (uncheckedConfiguration.refreshMSecs <= 60000)) {
                 this.refreshMSecs = uncheckedConfiguration.refreshMSecs;
             }
-            this.isProtocolTraceEnabled = uncheckedConfiguration.isProtocolTraceEnabled;
 
         }
         logger.trace("AirZoneBinding(constructor) done.");
@@ -97,14 +96,13 @@ public class AirZoneBinding extends AirZoneBridgeConfiguration {
     public AirZoneBridgeConfiguration checked() {
         logger.trace("checked() called.");
         // @formatter:off
-        logger.debug("{}Config[{}={},{}={},{}={},{}={},{}={},{}={},{}={},{}={},{}={},{}={}]",
+        logger.debug("{}Config[{}={},{}={},{}={},{}={},{}={},{}={},{}={},{}={},{}={}]",
                 AirZoneBindingConstants.BINDING_ID,
                 AirZoneBridgeConfiguration.BRIDGE_IPADDRESS, this.ipAddress,
                 AirZoneBridgeConfiguration.BRIDGE_TCPPORT, tcpPort,
                 AirZoneBridgeConfiguration.BRIDGE_TIMEOUT_MSECS, timeoutMsecs,
                 AirZoneBridgeConfiguration.BRIDGE_RETRIES, retries,
-                AirZoneBridgeConfiguration.BRIDGE_REFRESH_MSECS, refreshMSecs,
-                AirZoneBridgeConfiguration.BRIDGE_PROTOCOL_TRACE_ENABLED, isProtocolTraceEnabled);
+                AirZoneBridgeConfiguration.BRIDGE_REFRESH_MSECS, refreshMSecs);
         // @formatter:off
         logger.trace("checked() done.");
         return this;

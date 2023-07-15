@@ -38,12 +38,6 @@
 			<default>10000</default>
 			<advanced>true</advanced>
 		</parameter>
-		<parameter name="isProtocolTraceEnabled" type="boolean" required="false">
-			<label>@text/config.airzone.bridge.isProtocolTraceEnabled.label</label>
-			<description>@text/config.airzone.bridge.isProtocolTraceEnabled.description</description>
-			<default>false</default>
-			<advanced>true</advanced>
-		</parameter>
 	</config-description>
 	<!-- -->
 	<!-- AirZone Zones -->

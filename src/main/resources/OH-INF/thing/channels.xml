@@ -18,36 +18,6 @@
 
 	<!-- Channel Type - of Bridge -->
 
-	<channel-type id="status">
-		<item-type>String</item-type>
-		<label>@text/channel-type.airzone.status.label</label>
-		<description>@text/channel-type.airzone.status.description</description>
-		<category>NetworkAppliance</category>
-		<state readOnly="true"></state>
-	</channel-type>
-
-	<channel-type id="reload" advanced="true">
-		<item-type>Switch</item-type>
-		<label>@text/channel-type.airzone.reload.label</label>
-		<description>@text/channel-type.airzone.reload.description</description>
-		<category>NetworkAppliance</category>
-	</channel-type>
-
-	<channel-type id="downtime" advanced="true">
-		<item-type>Number</item-type>
-		<label>@text/channel-type.airzone.downtime.label</label>
-		<description>@text/channel-type.airzone.downtime.description</description>
-		<category>NetworkAppliance</category>
-		<state readOnly="true"/>
-	</channel-type>
-
-	<channel-type id="doDetection" advanced="true">
-		<item-type>Switch</item-type>
-		<label>@text/channel-type.airzone.doDetection.label</label>
-		<description>@text/channel-type.airzone.doDetection.description</description>
-		<category>NetworkAppliance</category>
-	</channel-type>
-
 	<!-- Channel Type - of Zone or System -->
 
 	<channel-type id="errors">

@@ -86,15 +86,6 @@ public class AirZoneBindingConstants {
     // List of all bridge channel ids
 
     /** Channel/Property identifier describing the current Bridge State. */
-    public static final String CHANNEL_BRIDGE_STATUS = "status";
-    public static final String CHANNEL_BRIDGE_RELOAD = "reload";
-    public static final String CHANNEL_BRIDGE_DOWNTIME = "downtime";
-    public static final String CHANNEL_BRIDGE_DO_DETECTION = "doDetection";
-
-    public static final String PROPERTY_BRIDGE_TIMESTAMP_SUCCESS = "connectionSuccess";
-    public static final String PROPERTY_BRIDGE_TIMESTAMP_ATTEMPT = "connectionAttempt";
-
-    public static final String PROPERTY_BRIDGE_SCENES = "zones";
     public static final String PROPERTY_BRIDGE_MAC = "mac";
     public static final String PROPERTY_BRIDGE_WIFI_CHANNEL = "wifiChannel";
     public static final String PROPERTY_BRIDGE_WIFI_QUALITY = "wifiQuality";

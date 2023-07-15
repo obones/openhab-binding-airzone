@@ -69,7 +69,7 @@ import com.obones.binding.airzone.internal.utils.Localization;
  * @author Olivier Sannier - Initial contribution.
  */
 @NonNullByDefault
-public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZoneBridgeInstance, AirZoneBridgeProvider */{
+public class AirZoneBridgeHandler extends BaseBridgeHandler {
 
     /*
      * a modifier string to avoid the (small) risk of other tasks (outside this binding) locking on the same ip address
@@ -434,10 +434,6 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler /*implements AirZone
          * ===========================================================
          * Common part
          */
-
-        if (airZoneBridgeConfiguration.isProtocolTraceEnabled) {
-            // Threads.findDeadlocked();
-        }
 
         if (airZoneBridgeConfiguration.hasChanged) {
             logger.trace("handleCommandCommsJob(): work on updated bridge configuration parameters.");

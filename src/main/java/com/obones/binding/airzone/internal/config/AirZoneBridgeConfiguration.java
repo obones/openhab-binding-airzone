@@ -21,7 +21,6 @@ public class AirZoneBridgeConfiguration {
     public static final String BRIDGE_TIMEOUT_MSECS = "timeoutMsecs";
     public static final String BRIDGE_RETRIES = "retries";
     public static final String BRIDGE_REFRESH_MSECS = "refreshMsecs";
-    public static final String BRIDGE_PROTOCOL_TRACE_ENABLED = "isProtocolTraceEnabled";
 
     /*
      * Value to flag any changes towards the getter.
@@ -36,5 +35,4 @@ public class AirZoneBridgeConfiguration {
     public int timeoutMsecs = 1000; // one second
     public int retries = 5;
     public long refreshMSecs = 10000L; // 10 seconds
-    public boolean isProtocolTraceEnabled = false;
 }
