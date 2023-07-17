@@ -12,6 +12,7 @@
 package com.obones.binding.airzone.internal.handler;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.openhab.core.library.types.StringType;
 import org.openhab.core.thing.Channel;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
@@ -26,7 +27,6 @@ import org.slf4j.LoggerFactory;
 
 import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.AirZoneBindingProperties;
-import com.obones.binding.airzone.internal.handler.utils.StateUtils;
 import com.obones.binding.airzone.internal.utils.Localization;
 import com.obones.binding.airzone.internal.utils.ManifestInformation;
 
@@ -170,7 +170,7 @@ public class AirZoneBindingHandler extends BaseThingHandler {
             logger.trace("handleCommand(): refreshing item {}.", itemName);
             switch (channelId) {
                 case AirZoneBindingConstants.CHANNEL_BINDING_INFORMATION:
-                    newState = StateUtils.createState(bridgeCountToString());
+                    newState = new StringType(bridgeCountToString());
                     break;
                 default:
                     logger.trace("handleCommand(): cannot handle REFRESH on channel {} as it is of type {}.", itemName,

@@ -24,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.openhab.core.common.AbstractUID;
 import org.openhab.core.common.NamedThreadFactory;
 import org.openhab.core.thing.Bridge;
 import org.openhab.core.thing.Channel;
@@ -32,7 +31,6 @@ import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingStatus;
 import org.openhab.core.thing.ThingStatusDetail;
-import org.openhab.core.thing.ThingTypeUID;
 import org.openhab.core.thing.binding.BaseBridgeHandler;
 import org.openhab.core.thing.binding.ThingHandler;
 import org.openhab.core.types.Command;
@@ -133,42 +131,9 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler {
         logger.debug("Creating a AirZoneBridgeHandler for thing '{}'.", getThing().getUID());
     }
 
-    // Private classes
-
     public AirZoneApiManager getApiManager() {
         return apiManager;
     }
-
-    // Private methods
-
-    /**
-     * Provide the ThingType for a given Channel.
-     * <P>
-     * Separated into this private method to deal with the deprecated method.
-     * </P>
-     *
-     * @param channelUID for type {@link ChannelUID}.
-     * @return thingTypeUID of type {@link ThingTypeUID}.
-     */
-    @SuppressWarnings("null") // unexplained warnings on ThingTypeUID constructor
-    public ThingTypeUID thingTypeUIDOf(ChannelUID channelUID) {
-        String[] segments = channelUID.getAsString().split(AbstractUID.SEPARATOR);
-        if (segments.length > 1) {
-            return new ThingTypeUID(segments[0], segments[1]);
-        }
-        logger.warn("thingTypeUIDOf({}) failed.", channelUID);
-        return new ThingTypeUID(AirZoneBindingConstants.BINDING_ID, AirZoneBindingConstants.UNKNOWN_THING_TYPE_ID);
-    }
-
-    // Objects and Methods for interface AirZoneBridgeInstance
-
-    /**
-     * Information retrieved by ...
-     */
-    //@Override
-    public AirZoneBridgeConfiguration airZoneBridgeConfiguration() {
-        return airZoneBridgeConfiguration;
-    };
 
     // Provisioning/Deprovisioning methods *****
 
