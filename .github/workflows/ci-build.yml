@@ -47,6 +47,6 @@ jobs:
           path: openhab-addons/bundles/com.obones.binding.airzone
 
       - name: Build with maven
-        run: 'openhab-addons/bundles/com.obones.binding.airzone ; mvn clean install -DskipChecks'
+        run: 'cd openhab-addons/bundles/com.obones.binding.airzone ; mvn clean install -DskipChecks'
 
     
