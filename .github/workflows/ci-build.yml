@@ -49,4 +49,11 @@ jobs:
       - name: Build with maven
         run: 'cd openhab-addons/bundles/com.obones.binding.airzone ; mvn clean install -DskipChecks'
 
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: com.obones.binding.airzone-4.0.jar
+          path: |
+            target/com.obones.binding.airzone*.jar
+            !target/com.obones.binding.airzone*-sources.jar
     
