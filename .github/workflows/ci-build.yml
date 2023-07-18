@@ -35,16 +35,6 @@ jobs:
         with:
           maven-version: ${{ matrix.maven }}
 
-      - name: Retrieve openhab version
-        uses: enflo/curl-action@master
-        with:
-          curl: -o archive.zip https://ci.openhab.org/job/openHAB-Distribution/lastSuccessfulBuild/artifact/distributions/openhab/target/openhab-4.0.0-SNAPSHOT.zip
-
-      - name: unzip openhab version
-        uses: TonyBogdanov/zip@1.0
-        with:
-          args: unzip -qq ./archive.zip -d ./openhab
-
       - name: Checkout openhab-addons
         uses: actions/checkout@v3
         with:
