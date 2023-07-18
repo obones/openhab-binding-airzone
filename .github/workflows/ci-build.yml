@@ -14,6 +14,17 @@ jobs:
     name: Build (Java ${{ matrix.java }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Checkout openhab-addons
+        uses: actions/checkout@v3
+        with:
+          repository: openhab/openhab-addons
+          path: openhab-addons
+
+      - name: Checkout addon
+        uses: actions/checkout@v3
+        with:
+          path: openhab-addons/bundles/com.obones.binding.airzone
+
       - name: Set up Cache
         uses: actions/cache@v3
         with:
@@ -34,17 +45,6 @@ jobs:
         uses: stCarolas/setup-maven@v4.5
         with:
           maven-version: ${{ matrix.maven }}
-
-      - name: Checkout openhab-addons
-        uses: actions/checkout@v3
-        with:
-          repository: openhab/openhab-addons
-          path: openhab-addons
-
-      - name: Checkout addon
-        uses: actions/checkout@v3
-        with:
-          path: openhab-addons/bundles/com.obones.binding.airzone
 
       - name: Build with maven
         run: 'cd openhab-addons/bundles/com.obones.binding.airzone ; mvn clean install -DskipChecks'
