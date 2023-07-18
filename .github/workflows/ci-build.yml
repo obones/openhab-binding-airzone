@@ -54,6 +54,6 @@ jobs:
         with:
           name: com.obones.binding.airzone-4.0.jar
           path: |
-            target/com.obones.binding.airzone*.jar
-            !target/com.obones.binding.airzone*-sources.jar
+            openhab-addons/bundles/com.obones.binding.airzone/target/com.obones.binding.airzone*.jar
+            !openhab-addons/bundles/com.obones.binding.airzone/target/com.obones.binding.airzone*-sources.jar
     
