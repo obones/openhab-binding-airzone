@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.openhab.addons.bundles</groupId>
     <artifactId>org.openhab.addons.reactor.bundles</artifactId>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>[3.4, 4.0]</version>
   </parent>
 
   <artifactId>com.obones.binding.airzone</artifactId>
@@ -15,4 +15,6 @@
   <name>openHAB Add-ons :: Bundles :: AirZone Binding</name>
 
   <description>This binding integrates AirZone HVAC system.</description>
+
+  <version>${ohc.version}</version>
 </project>
