@@ -351,14 +351,15 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler {
     private void refreshProperties() {
         if (thing.getProperties().get(AirZoneBindingConstants.PROPERTY_BRIDGE_MAC) == null) {
             var props = apiManager.getServerProperties();
-
-            thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_MAC, props.getMac());
-            thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_WIFI_CHANNEL, ((Integer)props.getWifiChannel()).toString());
-            thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_WIFI_QUALITY, ((Integer)props.getWifiQuality()).toString());
-            thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_WIFI_RSSI, ((Integer)props.getWifiRssi()).toString());
-            thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_INTERFACE, props.getInterface());
-            thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_FIRMWARE, props.getFirmware());
-            thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_TYPE, props.getType());
+            if (props != null) {
+                thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_MAC, props.getMac());
+                thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_WIFI_CHANNEL, ((Integer)props.getWifiChannel()).toString());
+                thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_WIFI_QUALITY, ((Integer)props.getWifiQuality()).toString());
+                thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_WIFI_RSSI, ((Integer)props.getWifiRssi()).toString());
+                thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_INTERFACE, props.getInterface());
+                thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_FIRMWARE, props.getFirmware());
+                thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_TYPE, props.getType());
+            }
 
             var apiVersion = apiManager.getApiVersion();
             thing.setProperty(AirZoneBindingConstants.PROPERTY_BRIDGE_API_VERSION, apiVersion);
