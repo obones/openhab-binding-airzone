@@ -16,5 +16,5 @@
 
   <description>This binding integrates AirZone HVAC system.</description>
 
-  <version>${ohc.version}</version>
+  <version>0.1.0</version>
 </project>
