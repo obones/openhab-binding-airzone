@@ -53,6 +53,8 @@ public class AirZoneApiManager {
     private static final Gson gson = new Gson();
 
     private class AirZoneHvacZoneMap extends HashMap<Integer, AirZoneHvacZone> {
+        public static final long serialVersionUID = 1L;
+
         private Integer getKey(int systemId, int zoneId) {
             return 1000 * systemId + zoneId; // doc says each values goes from 1 to 32 so multiplying by 1000 should be
                                              // safe for a long time while being human readable.
