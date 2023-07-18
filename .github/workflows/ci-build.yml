@@ -1,0 +1,52 @@
+name: Build AirZone binding
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        java: [ '17' ]
+        maven: [ '3.8.6' ]
+        os: [ 'ubuntu-22.04' ]
+    name: Build (Java ${{ matrix.java }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Set up Java ${{ matrix.java }}
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java }}
+
+      - name: Set up Maven ${{ matrix.maven }}
+        uses: stCarolas/setup-maven@v4.5
+        with:
+          maven-version: ${{ matrix.maven }}
+
+      - name: Retrieve openhab version
+        uses: enflo/curl-action@master
+        with:
+          curl: -o archive.zip https://ci.openhab.org/job/openHAB-Distribution/lastSuccessfulBuild/artifact/distributions/openhab/target/openhab-4.0.0-SNAPSHOT.zip
+
+      - name: unzip openhab version
+        uses: TonyBogdanov/zip@1.0
+        with:
+          args: unzip -qq ./archive.zip -d ./openhab
+
+      - name: Checkout openhab-addons
+        uses: actions/checkout@v3
+        with:
+          repository: openhab/openhab-addons
+          path: openhab-addons
+
+      - name: Checkout addon
+        uses: actions/checkout@v3
+        with:
+          path: openhab-addons/bundles/com.obones.binding.airzone
+
+      - name: Build with maven
+        run: 'openhab-addons/bundles/com.obones.binding.airzone ; mvn clean install -DskipChecks'
+
+    
