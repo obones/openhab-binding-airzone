@@ -8,10 +8,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ '17' ]
+        java: [ '11', '17' ]
         maven: [ '3.8.6' ]
         os: [ 'ubuntu-22.04' ]
-    name: Build (Java ${{ matrix.java }}, ${{ matrix.os }})
+        addons-ref: [ '3.4.x', 'master' ]
+        exclude:
+          - java: 11
+            addons-ref: master
+    name: Build on ${{ matrix.addons-ref }} (Java ${{ matrix.java }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout openhab-addons
@@ -19,6 +23,7 @@ jobs:
         with:
           repository: openhab/openhab-addons
           path: openhab-addons
+          ref: ${{ matrix.addons-ref }}
 
       - name: Checkout addon
         uses: actions/checkout@v3
@@ -52,7 +57,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: com.obones.binding.airzone-4.0.jar
+          name: com.obones.binding.airzone
           path: |
             openhab-addons/bundles/com.obones.binding.airzone/target/com.obones.binding.airzone*.jar
             !openhab-addons/bundles/com.obones.binding.airzone/target/com.obones.binding.airzone*-sources.jar
