@@ -195,6 +195,20 @@ public class AirZoneZoneThingHandler extends AirZoneBaseThingHandler {
                     "channel-type.airzone.zone.slats-horizontal-position.label", null);
         }
 
+        if (zone.getEcoAdapt() != null) {
+            ChannelTypeUID channelTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID,
+                    AirZoneBindingConstants.CHANNEL_TYPE_ZONE_ECO_ADAPT);
+            createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_ECO_ADAPT,
+                    channelTypeUID);
+        }
+
+        if (zone.getAntiFreeze() != null) {
+            ChannelTypeUID channelTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID,
+                    AirZoneBindingConstants.CHANNEL_TYPE_ZONE_ANTI_FREEZE);
+            createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_ANTI_FREEZE,
+                    channelTypeUID);
+        }
+
         updateThing(builder.build());
     }
 
@@ -268,6 +282,14 @@ public class AirZoneZoneThingHandler extends AirZoneBaseThingHandler {
 
             case AirZoneBindingConstants.CHANNEL_ZONE_SLATS_HORIZONTAL_POSITION:
                 apiManager.setZoneHorizontalSlatsPosition(thing, command);
+                break;
+
+            case AirZoneBindingConstants.CHANNEL_ZONE_ECO_ADAPT:
+                apiManager.setEcoAdapt(thing, command);
+                break;
+
+            case AirZoneBindingConstants.CHANNEL_ZONE_ANTI_FREEZE:
+                apiManager.setAntiFreeze(thing, command);
                 break;
 
             default:
@@ -387,6 +409,17 @@ public class AirZoneZoneThingHandler extends AirZoneBaseThingHandler {
                         newState = new DecimalType(horizontalPosition);
                     else
                         newState = UnDefType.NULL;
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_ECO_ADAPT:
+                    @Nullable
+                    String ecoAdapt = zone.getEcoAdapt();
+                    if (ecoAdapt != null)
+                        newState = new StringType(AirZoneBindingConstants.StringToEcoAdapt.get(ecoAdapt));
+                    else
+                        newState = UnDefType.NULL;
+                    break;
+                case AirZoneBindingConstants.CHANNEL_ZONE_ANTI_FREEZE:
+                    newState = zone.getAntiFreeze() != 1 ? OnOffType.OFF : OnOffType.ON;
                     break;
             }
 

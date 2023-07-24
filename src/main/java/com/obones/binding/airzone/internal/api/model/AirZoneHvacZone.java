@@ -66,10 +66,8 @@ public class AirZoneHvacZone {
     @SuppressWarnings("unused")
     private double coldangle;
     private int master_zoneID;
-    /*@SuppressWarnings("unused")
-    private String eco_adapt = "";
-    @SuppressWarnings("unused")
-    private int antifreeze;*/
+    private String eco_adapt = null;
+    private int antifreeze;
     private @Nullable Integer slats_vswing;
     private @Nullable Integer slats_hswing;
     private @Nullable Integer slats_vertical;
@@ -225,6 +223,14 @@ public class AirZoneHvacZone {
 
     public @Nullable Integer getSlatsHorizontal() {
         return slats_horizontal;
+    }
+
+    public @Nullable String getEcoAdapt() {
+        return eco_adapt;
+    }
+
+    public @Nullable Integer getAntiFreeze() {
+        return antifreeze;
     }
     /* spell-checker:enable */
 }

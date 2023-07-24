@@ -240,6 +240,39 @@
 		<state min="0" max="3"/>
 	</channel-type>
 
+	<channel-type id="eco-adapt" advanced="true">
+		<item-type>String</item-type>
+		<label>@text/channel-type.airzone.zone.eco-adapt.label</label>
+		<category>price</category>
+		<tags>
+			<tag>Control</tag>
+		</tags>
+		<state>
+			<options>
+				<option value="OFF">Off</option>
+				<option value="MANUAL">Manual</option>
+				<option value="A">A</option>
+				<option value="A_PLUS">A+</option>
+				<option value="A_PLUS_PLUS">A++</option>
+			</options>
+		</state>
+		<command>
+			<options>
+				<option value="OFF">Off</option>
+				<option value="MANUAL">Manual</option>
+				<option value="A">A</option>
+				<option value="A_PLUS">A+</option>
+				<option value="A_PLUS_PLUS">A++</option>
+			</options>
+		</command>
+	</channel-type>
+
+	<channel-type id="anti-freeze" advanced="true">
+		<item-type>Switch</item-type>
+		<label>@text/channel-type.airzone.zone.anti-freeze.label</label>
+		<category>radiator</category>
+	</channel-type>
+
 	<!-- Channel Type - of System -->
 
 	<channel-type id="power">

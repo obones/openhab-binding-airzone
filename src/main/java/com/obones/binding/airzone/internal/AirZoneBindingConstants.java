@@ -121,6 +121,8 @@ public class AirZoneBindingConstants {
     public static final String CHANNEL_ZONE_SLATS_HORIZONTAL_SWING = "slats-horizontal-swing";
     public static final String CHANNEL_ZONE_SLATS_VERTICAL_POSITION = "slats-vertical-position";
     public static final String CHANNEL_ZONE_SLATS_HORIZONTAL_POSITION = "slats-horizontal-position";
+    public static final String CHANNEL_ZONE_ECO_ADAPT = "eco-adapt";
+    public static final String CHANNEL_ZONE_ANTI_FREEZE = "anti-freeze";
 
     public static final String PROPERTY_ZONE_THERMOS_TYPE = "thermosType";
     public static final String PROPERTY_ZONE_THERMOS_FIRMWARE = "thermosFirmware";
@@ -140,6 +142,8 @@ public class AirZoneBindingConstants {
     public static final String CHANNEL_TYPE_ZONE_AIR_QUALITY_THRESHOLD = "air-quality-threshold";
     public static final String CHANNEL_TYPE_ZONE_SLATS_SWING = "slats-swing";
     public static final String CHANNEL_TYPE_ZONE_SLATS_POSITION = "slats-position";
+    public static final String CHANNEL_TYPE_ZONE_ECO_ADAPT = "eco-adapt";
+    public static final String CHANNEL_TYPE_ZONE_ANTI_FREEZE = "anti-freeze";
 
     // List of all system channel/property ids
     public static final String CHANNEL_SYSTEM_POWER = "power";
@@ -283,6 +287,33 @@ public class AirZoneBindingConstants {
         1, ZONE_AIR_QUALITY_GOOD,
         2, ZONE_AIR_QUALITY_MEDIUM,
         3, ZONE_AIR_QUALITY_LOW
+    );
+    // @formatter:on
+
+    // eco adapt channel values
+    public static final String ZONE_ECO_ADAPT_OFF = "OFF";
+    public static final String ZONE_ECO_ADAPT_MANUAL = "MANUAL";
+    public static final String ZONE_ECO_ADAPT_A = "A";
+    public static final String ZONE_ECO_ADAPT_A_PLUS = "A_PLUS";
+    public static final String ZONE_ECO_ADAPT_A_PLUS_PLUS = "A_PLUS_PLUS";
+
+    // @formatter:off
+    @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
+    public static final Map<String, String> StringToEcoAdapt = Map.of(
+        "off", ZONE_ECO_ADAPT_OFF,
+        "manual", ZONE_ECO_ADAPT_MANUAL,
+        "a", ZONE_ECO_ADAPT_A,
+        "a_p", ZONE_ECO_ADAPT_A_PLUS,
+        "a_pp", ZONE_ECO_ADAPT_A_PLUS_PLUS
+    );
+
+    @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
+    public static final Map<String, String> EcoAdaptToString = Map.of(
+        ZONE_ECO_ADAPT_OFF, "off",
+        ZONE_ECO_ADAPT_MANUAL, "manual",
+        ZONE_ECO_ADAPT_A, "a",
+        ZONE_ECO_ADAPT_A_PLUS, "a_p",
+        ZONE_ECO_ADAPT_A_PLUS_PLUS, "a_pp"
     );
     // @formatter:on
 

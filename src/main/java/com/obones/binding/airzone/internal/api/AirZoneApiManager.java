@@ -309,6 +309,28 @@ public class AirZoneApiManager {
         setChannelValue(thing, "slats_horizontal", command);
     }
 
+    public void setEcoAdapt(Thing thing, Command command) {
+        if (command instanceof StringType) {
+            AirZoneHvacZone zone = getZone(thing);
+            if (zone != null) {
+                @Nullable
+                String value = AirZoneBindingConstants.EcoAdaptToString.get(((StringType) command).toString());
+                if (value != null) {
+                    setChannelValue(thing, "eco_adapt", new StringType(value));
+                }
+            } else {
+                logger.warn("No zone values for {}", thing.getUID());
+            }
+        } else {
+            logger.warn("Only StringType command is supported on zone eco adapt, received {}",
+                    command.getClass().getName());
+        }
+    }
+
+    public void setAntiFreeze(Thing thing, Command command) {
+        setChannelValue(thing, "antifreeze", command);
+    }
+
     private void setZoneStage(Thing thing, Command command, String prefix) {
         if (command instanceof StringType) {
             AirZoneHvacZone zone = getZone(thing);
