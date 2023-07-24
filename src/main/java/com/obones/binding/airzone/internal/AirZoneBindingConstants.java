@@ -283,7 +283,7 @@ public class AirZoneBindingConstants {
     // @formatter:off
     @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
     public static final Map<Integer, String> IntToAirQuality = Map.of(
-        0, ZONE_AIR_QUALITY_MODE_OFF,
+        0, ZONE_AIR_QUALITY_OFF,
         1, ZONE_AIR_QUALITY_GOOD,
         2, ZONE_AIR_QUALITY_MEDIUM,
         3, ZONE_AIR_QUALITY_LOW
