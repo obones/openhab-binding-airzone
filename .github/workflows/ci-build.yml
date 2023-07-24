@@ -8,13 +8,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ '11', '17' ]
+        java: [ '17' ]
         maven: [ '3.8.6' ]
         os: [ 'ubuntu-22.04' ]
         addons-ref: [ '3.4.x', 'main' ]
-        exclude:
+        include:
           - java: 11
-            addons-ref: main
+            addons-ref: 3.4.x
+            os: ubuntu-22.04
+            maven: 3.8.6 
     name: Build on ${{ matrix.addons-ref }} (Java ${{ matrix.java }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     steps:
