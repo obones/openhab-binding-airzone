@@ -102,7 +102,7 @@ public class AirZoneApiManager {
                 fillLatestSystems(latestSystemsResponse);
             }
         } catch (IOException ioe) {
-            logger.warn("exception {}", ioe.toString());
+            logger.warn("fetchStatus: exception {}", ioe.toString());
         }
     }
 
@@ -144,7 +144,7 @@ public class AirZoneApiManager {
                 return gson.fromJson(jsonResponse, AirZoneWebServerResponse.class);
             }
         } catch (IOException ioe) {
-            logger.warn("exception {}", ioe.toString());
+            logger.warn("getServerProperties: exception {}", ioe.toString());
         }
         return null;
     }
@@ -161,7 +161,7 @@ public class AirZoneApiManager {
                     return apiVersionResponse.getVersion();
             }
         } catch (IOException ioe) {
-            logger.warn("exception {}", ioe.toString());
+            logger.warn("getApiVersion: exception {}", ioe.toString());
         }
         return null;
     }
@@ -396,7 +396,7 @@ public class AirZoneApiManager {
             try {
                 executeHvacPutUrl(content);
             } catch (IOException ioe) {
-                logger.warn("exception {}", ioe.toString());
+                logger.warn("setChannelValue: {} - exception {}", fieldName, ioe.toString());
             }
         }
 
