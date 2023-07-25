@@ -134,6 +134,7 @@ public class AirZoneBindingConstants {
     public static final String PROPERTY_ZONE_AVAILABLE_HEAT_STAGES = "availableHeatStages";
 
     // dynamic zone channel type ids
+    public static final String CHANNEL_TYPE_ZONE_MODE = "mode";
     public static final String CHANNEL_TYPE_ZONE_SPEED = "speed";
     public static final String CHANNEL_TYPE_ZONE_SETPOINT_TEMPERATURE = "setpoint-temperature";
     public static final String CHANNEL_TYPE_ZONE_DEMAND = "demand";

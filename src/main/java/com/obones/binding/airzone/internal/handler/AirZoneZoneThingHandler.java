@@ -538,13 +538,16 @@ public class AirZoneZoneThingHandler extends AirZoneBaseThingHandler {
 
     public @Nullable StateDescriptionFragmentBuilder adjustChannelState(ChannelTypeUID channelTypeUID,
             StateDescriptionFragmentBuilder builder) {
+        AirZoneHvacZone zone = getZone();
+        if (zone == null)
+            return null;
+
         switch (channelTypeUID.getId()) {
             case AirZoneBindingConstants.CHANNEL_TYPE_ZONE_SETPOINT_TEMPERATURE:
-                AirZoneHvacZone zone = getZone();
-                if (zone == null)
-                    return null;
-
                 return builder.withStep(new BigDecimal(zone.getTempStep()));
+            case AirZoneBindingConstants.CHANNEL_TYPE_ZONE_MODE:
+                // only the master zone can change the mode of operation
+                return builder.withReadOnly(zone.getZoneID() != zone.getMasterZoneID());
             default:
                 return null;
         }
