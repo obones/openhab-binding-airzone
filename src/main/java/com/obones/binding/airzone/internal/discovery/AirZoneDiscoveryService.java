@@ -69,7 +69,7 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
      */
     public AirZoneDiscoveryService() {
         super(AirZoneBindingConstants.DISCOVERABLE_THINGS, DISCOVER_TIMEOUT_SECONDS);
-        logger.warn("AirZoneDiscoveryService(without Bridge) just initialized. {}", System.identityHashCode(this));
+        logger.trace("AirZoneDiscoveryService(without Bridge) just initialized.");
     }
 
     @Reference
@@ -96,8 +96,7 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
      */
     public AirZoneDiscoveryService(Localization localizationHandler) {
         super(AirZoneBindingConstants.DISCOVERABLE_THINGS, DISCOVER_TIMEOUT_SECONDS);
-        logger.warn("AirZoneDiscoveryService(locale={},i18n={}) just initialized. {}", localeProvider, i18nProvider,
-                System.identityHashCode(this));
+        logger.trace("AirZoneDiscoveryService(locale={},i18n={}) just initialized.", localeProvider, i18nProvider);
         localization = localizationHandler;
     }
 
@@ -114,13 +113,12 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
     public AirZoneDiscoveryService(LocationProvider locationProvider, LocaleProvider localeProvider,
             TranslationProvider i18nProvider) {
         this(new Localization(localeProvider, i18nProvider));
-        logger.warn("AirZoneDiscoveryService(locale={},i18n={}) finished. {}", localeProvider, i18nProvider,
-                System.identityHashCode(this));
+        logger.trace("AirZoneDiscoveryService(locale={},i18n={}) finished.", localeProvider, i18nProvider);
     }
 
     @Override
     public void deactivate() {
-        logger.warn("deactivate() called. {}", System.identityHashCode(this));
+        logger.warn("deactivate() called.");
         super.deactivate();
     }
 
