@@ -106,35 +106,35 @@ public class AirZoneZoneThingHandler extends AirZoneBaseThingHandler {
                     channelSetpointTypeUID);
         } else {
             createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_COOL_SETPOINT,
-                    channelSetpointTypeUID, "channel-type.airzone.zone.coolSetpoint.label",
-                    "channel-type.airzone.zone.coolSetpoint.description");
+                    channelSetpointTypeUID, "channel-type.airzone.zone.cool-setpoint.label",
+                    "channel-type.airzone.zone.cool-setpoint.description");
 
             createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_HEAT_SETPOINT,
-                    channelSetpointTypeUID, "channel-type.airzone.zone.heatSetpoint.label",
-                    "channel-type.airzone.zone.heatSetpoint.description");
+                    channelSetpointTypeUID, "channel-type.airzone.zone.heat-setpoint.label",
+                    "channel-type.airzone.zone.heat-setpoint.description");
         }
 
         ChannelTypeUID channelDemandTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID,
                 AirZoneBindingConstants.CHANNEL_TYPE_ZONE_DEMAND);
         if (zone.getAirDemand() != null) {
             createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_AIR_DEMAND,
-                    channelDemandTypeUID, "channel-type.airzone.zone.airDemand.label",
-                    "channel-type.airzone.zone.airDemand.description");
+                    channelDemandTypeUID, "channel-type.airzone.zone.air-demand.label",
+                    "channel-type.airzone.zone.air-demand.description");
         }
         if (zone.getFloorDemand() != null) {
             createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_FLOOR_DEMAND,
-                    channelDemandTypeUID, "channel-type.airzone.zone.floorDemand.label",
-                    "channel-type.airzone.zone.floorDemand.description");
+                    channelDemandTypeUID, "channel-type.airzone.zone.floor-demand.label",
+                    "channel-type.airzone.zone.floor-demand.description");
         }
         if (zone.getColdDemand() != null) {
             createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_COLD_DEMAND,
-                    channelDemandTypeUID, "channel-type.airzone.zone.coldDemand.label",
-                    "channel-type.airzone.zone.coldDemand.description");
+                    channelDemandTypeUID, "channel-type.airzone.zone.cold-demand.label",
+                    "channel-type.airzone.zone.cold-demand.description");
         }
         if (zone.getHeatDemand() != null) {
             createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_HEAT_DEMAND,
-                    channelDemandTypeUID, "channel-type.airzone.zone.heatDemand.label",
-                    "channel-type.airzone.zone.heatDemand.description");
+                    channelDemandTypeUID, "channel-type.airzone.zone.heat-demand.label",
+                    "channel-type.airzone.zone.heat-demand.description");
         }
 
         if (zone.getAirQualityMode() != null) {

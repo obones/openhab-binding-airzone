@@ -101,10 +101,10 @@ public class AirZoneBindingConstants {
     public static final String CHANNEL_ZONE_TEMPERATURE = "temperature";
     public static final String CHANNEL_ZONE_HUMIDITY = "humidity";
     public static final String CHANNEL_ZONE_SETPOINT = "setpoint";
-    public static final String CHANNEL_ZONE_HEAT_SETPOINT = "heatSetpoint";
-    public static final String CHANNEL_ZONE_COOL_SETPOINT = "coolSetpoint";
+    public static final String CHANNEL_ZONE_HEAT_SETPOINT = "heat-setpoint";
+    public static final String CHANNEL_ZONE_COOL_SETPOINT = "cool-setpoint";
     public static final String CHANNEL_ZONE_MODE = "mode";
-    public static final String CHANNEL_ZONE_FAN_SPEED = "fanSpeed";
+    public static final String CHANNEL_ZONE_FAN_SPEED = "fan-speed";
     public static final String CHANNEL_ZONE_HEAT_STAGE = "heat-stage";
     public static final String CHANNEL_ZONE_COLD_STAGE = "cold-stage";
     public static final String CHANNEL_ZONE_SLEEP = "sleep";
