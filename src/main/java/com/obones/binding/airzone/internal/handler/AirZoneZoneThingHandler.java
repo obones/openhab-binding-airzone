@@ -75,11 +75,8 @@ public class AirZoneZoneThingHandler extends AirZoneBaseThingHandler {
 
     @Override
     protected synchronized void createOptionalChannels(AirZoneBridgeHandler bridgeHandler) {
-        AirZoneZoneThingConfiguration config = getConfigAs(AirZoneZoneThingConfiguration.class);
-
-        AirZoneHvacZone zone = bridgeHandler.getApiManager().getZone(config.systemId, config.zoneId);
+        AirZoneHvacZone zone = getZone(bridgeHandler);
         if (zone == null) {
-            logger.warn("createOptionalChannels: No zone data for {} - {}", config.systemId, config.zoneId);
             return;
         }
 
@@ -301,8 +298,7 @@ public class AirZoneZoneThingHandler extends AirZoneBaseThingHandler {
 
     @Override
     public boolean refreshChannel(ChannelUID channelUID, AirZoneApiManager apiManager) {
-        AirZoneZoneThingConfiguration config = thing.getConfiguration().as(AirZoneZoneThingConfiguration.class);
-        AirZoneHvacZone zone = apiManager.getZone(config.systemId, config.zoneId);
+        AirZoneHvacZone zone = getZone(apiManager);
 
         return refreshChannel(channelUID, zone);
     }
@@ -481,8 +477,7 @@ public class AirZoneZoneThingHandler extends AirZoneBaseThingHandler {
 
     @Override
     public void refreshChannelsAndProperties(AirZoneApiManager apiManager, Set<ChannelUID> linkedChannelsUIDs) {
-        AirZoneZoneThingConfiguration config = thing.getConfiguration().as(AirZoneZoneThingConfiguration.class);
-        AirZoneHvacZone zone = apiManager.getZone(config.systemId, config.zoneId);
+        AirZoneHvacZone zone = getZone(apiManager);
 
         if (zone != null) {
             refreshProperties(zone);
@@ -508,29 +503,46 @@ public class AirZoneZoneThingHandler extends AirZoneBaseThingHandler {
         return result;
     }
 
+    private @Nullable AirZoneHvacZone getZone() {
+        Bridge bridge = getBridge();
+        if (bridge == null)
+            return null;
+
+        return getZone(bridge);
+    }
+
+    private @Nullable AirZoneHvacZone getZone(Bridge bridge) {
+        AirZoneBridgeHandler bridgeHandler = (AirZoneBridgeHandler) bridge.getHandler();
+        if (bridgeHandler == null)
+            return null;
+
+        return getZone(bridgeHandler);
+    }
+
+    private @Nullable AirZoneHvacZone getZone(AirZoneBridgeHandler bridgeHandler) {
+        return getZone(bridgeHandler.getApiManager());
+    }
+
+    private @Nullable AirZoneHvacZone getZone(AirZoneApiManager apiManager) {
+        if (!(thing.getHandler() instanceof AirZoneZoneThingHandler))
+            return null;
+
+        AirZoneZoneThingConfiguration config = getConfigAs(AirZoneZoneThingConfiguration.class);
+
+        AirZoneHvacZone zone = apiManager.getZone(config.systemId, config.zoneId);
+        if (zone == null)
+            logger.warn("No zone data for {} - {}", config.systemId, config.zoneId);
+
+        return zone;
+    }
+
     public @Nullable StateDescriptionFragmentBuilder adjustChannelState(ChannelTypeUID channelTypeUID,
             StateDescriptionFragmentBuilder builder) {
         switch (channelTypeUID.getId()) {
             case AirZoneBindingConstants.CHANNEL_TYPE_ZONE_SETPOINT_TEMPERATURE:
-                Bridge bridge = getBridge();
-                if (bridge == null) {
+                AirZoneHvacZone zone = getZone();
+                if (zone == null)
                     return null;
-                }
-
-                AirZoneBridgeHandler bridgeHandler = (AirZoneBridgeHandler) bridge.getHandler();
-                if (bridgeHandler == null) {
-                    return null;
-                }
-
-                if (!(thing.getHandler() instanceof AirZoneZoneThingHandler))
-                    return null;
-
-                AirZoneZoneThingConfiguration config = getConfigAs(AirZoneZoneThingConfiguration.class);
-
-                AirZoneHvacZone zone = bridgeHandler.getApiManager().getZone(config.systemId, config.zoneId);
-                if (zone == null) {
-                    return null;
-                }
 
                 return builder.withStep(new BigDecimal(zone.getTempStep()));
             default:
