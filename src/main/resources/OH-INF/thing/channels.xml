@@ -85,22 +85,22 @@
 		</tags>
 		<state>
 			<options>
-				<option value="STOP">Stop</option>
-				<option value="COOLING">Cooling</option>
-				<option value="HEATING">Heating</option>
-				<option value="FAN">Fan</option>
-				<option value="DRY">Dry</option>
-				<option value="AUTO">Auto</option>
+				<option value="STOP">@text/channel-options.airzone.zone.mode.stop</option>
+				<option value="COOLING">@text/channel-options.airzone.zone.mode.cooling</option>
+				<option value="HEATING">@text/channel-options.airzone.zone.mode.heating</option>
+				<option value="FAN">@text/channel-options.airzone.zone.mode.fan</option>
+				<option value="DRY">@text/channel-options.airzone.zone.mode.dry</option>
+				<option value="AUTO">@text/channel-options.airzone.zone.mode.auto</option>
 			</options>
 		</state>
 		<command>
 			<options>
-				<option value="STOP">Stop</option>
-				<option value="COOLING">Cooling</option>
-				<option value="HEATING">Heating</option>
-				<option value="FAN">Fan</option>
-				<option value="DRY">Dry</option>
-				<option value="AUTO">Auto</option>
+				<option value="STOP">@text/channel-options.airzone.zone.mode.stop</option>
+				<option value="COOLING">@text/channel-options.airzone.zone.mode.cooling</option>
+				<option value="HEATING">@text/channel-options.airzone.zone.mode.heating</option>
+				<option value="FAN">@text/channel-options.airzone.zone.mode.fan</option>
+				<option value="DRY">@text/channel-options.airzone.zone.mode.dry</option>
+				<option value="AUTO">@text/channel-options.airzone.zone.mode.auto</option>
 			</options>
 		</command>
 	</channel-type>
@@ -127,16 +127,16 @@
 		</tags>
 		<state>
 			<options>
-				<option value="AIR">Air</option>
-				<option value="RADIANT">Radiant</option>
-				<option value="COMBINED">Combined</option>
+				<option value="AIR">@text/channel-options.airzone.zone.stage.air</option>
+				<option value="RADIANT">@text/channel-options.airzone.zone.stage.radiant</option>
+				<option value="COMBINED">@text/channel-options.airzone.zone.stage.combined</option>
 			</options>
 		</state>
 		<command>
 			<options>
-				<option value="AIR">Air</option>
-				<option value="RADIANT">Radiant</option>
-				<option value="COMBINED">Combined</option>
+				<option value="AIR">@text/channel-options.airzone.zone.stage.air</option>
+				<option value="RADIANT">@text/channel-options.airzone.zone.stage.radiant</option>
+				<option value="COMBINED">@text/channel-options.airzone.zone.stage.combined</option>
 			</options>
 		</command>
 	</channel-type>
@@ -151,18 +151,18 @@
 		</tags>
 		<state>
 			<options>
-				<option value="OFF">Off</option>
-				<option value="THIRTY">30</option>
-				<option value="SIXTY">60</option>
-				<option value="NINETY">90</option>
+				<option value="OFF">@text/channel-options.airzone.zone.sleep.off</option>
+				<option value="THIRTY">@text/channel-options.airzone.zone.sleep.thirty</option>
+				<option value="SIXTY">@text/channel-options.airzone.zone.sleep.sixty</option>
+				<option value="NINETY">@text/channel-options.airzone.zone.sleep.ninety</option>
 			</options>
 		</state>
 		<command>
 			<options>
-				<option value="OFF">Off</option>
-				<option value="THIRTY">30</option>
-				<option value="SIXTY">60</option>
-				<option value="NINETY">90</option>
+				<option value="OFF">@text/channel-options.airzone.zone.sleep.off</option>
+				<option value="THIRTY">@text/channel-options.airzone.zone.sleep.thirty</option>
+				<option value="SIXTY">@text/channel-options.airzone.zone.sleep.sixty</option>
+				<option value="NINETY">@text/channel-options.airzone.zone.sleep.ninety</option>
 			</options>
 		</command>
 	</channel-type>
@@ -184,16 +184,16 @@
 		</tags>
 		<state>
 			<options>
-				<option value="OFF">Off</option>
-				<option value="ON">On</option>
-				<option value="AUTO">Auto</option>
+				<option value="OFF">@text/channel-options.airzone.zone.air-quality-mode.off</option>
+				<option value="ON">@text/channel-options.airzone.zone.air-quality-mode.on</option>
+				<option value="AUTO">@text/channel-options.airzone.zone.air-quality-mode.auto</option>
 			</options>
 		</state>
 		<command>
 			<options>
-				<option value="OFF">Off</option>
-				<option value="ON">On</option>
-				<option value="AUTO">Auto</option>
+				<option value="OFF">@text/channel-options.airzone.zone.air-quality-mode.off</option>
+				<option value="ON">@text/channel-options.airzone.zone.air-quality-mode.on</option>
+				<option value="AUTO">@text/channel-options.airzone.zone.air-quality-mode.auto</option>
 			</options>
 		</command>
 	</channel-type>
@@ -205,10 +205,10 @@
 		<category>carbondioxide</category>
 		<state readOnly="true">
 			<options>
-				<option value="OFF">Off</option>
-				<option value="GOOD">Good</option>
-				<option value="MEDIUM">Medium</option>
-				<option value="LOW">Low</option>
+				<option value="OFF">@text/channel-options.airzone.zone.air-quality.off</option>
+				<option value="GOOD">@text/channel-options.airzone.zone.air-quality.good</option>
+				<option value="MEDIUM">@text/channel-options.airzone.zone.air-quality.medium</option>
+				<option value="LOW">@text/channel-options.airzone.zone.air-quality.low</option>
 			</options>
 		</state>
 	</channel-type>
@@ -249,20 +249,20 @@
 		</tags>
 		<state>
 			<options>
-				<option value="OFF">Off</option>
-				<option value="MANUAL">Manual</option>
-				<option value="A">A</option>
-				<option value="A_PLUS">A+</option>
-				<option value="A_PLUS_PLUS">A++</option>
+				<option value="OFF">@text/channel-options.airzone.zone.eco-adapt.off</option>
+				<option value="MANUAL">@text/channel-options.airzone.zone.eco-adapt.manual</option>
+				<option value="A">@text/channel-options.airzone.zone.eco-adapt.a</option>
+				<option value="A_PLUS">@text/channel-options.airzone.zone.eco-adapt.a-plus</option>
+				<option value="A_PLUS_PLUS">@text/channel-options.airzone.zone.eco-adapt.a-plus-plus</option>
 			</options>
 		</state>
 		<command>
 			<options>
-				<option value="OFF">Off</option>
-				<option value="MANUAL">Manual</option>
-				<option value="A">A</option>
-				<option value="A_PLUS">A+</option>
-				<option value="A_PLUS_PLUS">A++</option>
+				<option value="OFF">@text/channel-options.airzone.zone.eco-adapt.off</option>
+				<option value="MANUAL">@text/channel-options.airzone.zone.eco-adapt.manual</option>
+				<option value="A">@text/channel-options.airzone.zone.eco-adapt.a</option>
+				<option value="A_PLUS">@text/channel-options.airzone.zone.eco-adapt.a-plus</option>
+				<option value="A_PLUS_PLUS">@text/channel-options.airzone.zone.eco-adapt.a-plus-plus</option>
 			</options>
 		</command>
 	</channel-type>
