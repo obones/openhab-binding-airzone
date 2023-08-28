@@ -296,7 +296,6 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler {
     private synchronized void refreshSchedulerJob() {
         logger.debug("refreshSchedulerJob() initiated by {} starting cycle {}.", Thread.currentThread(),
                 refreshCounter);
-        logger.trace("refreshSchedulerJob(): processing of possible HSM messages.");
 
         apiManager.fetchStatus();
 
