@@ -66,6 +66,9 @@ public class AirZoneSystemThingHandler extends AirZoneBaseThingHandler {
     }
 
     public boolean refreshChannel(ChannelUID channelUID, @Nullable AirZoneHvacSystemInfo system) {
+        if (channelIsInActionCommand(channelUID))
+            return true;
+
         if (system != null) {
             State newState = null;
             String channelId = channelUID.getId();

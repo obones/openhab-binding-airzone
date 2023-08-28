@@ -13,6 +13,8 @@
 package com.obones.binding.airzone.internal.handler;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -56,6 +58,8 @@ import com.obones.binding.airzone.internal.utils.Localization;
 @NonNullByDefault
 public abstract class AirZoneBaseThingHandler extends BaseThingHandler {
     private @NonNullByDefault({}) final Logger logger = LoggerFactory.getLogger(AirZoneBaseThingHandler.class);
+    private @NonNullByDefault({}) Set<String> channelsInActionCommand = Collections
+            .synchronizedSet(new HashSet<String>());
     protected Localization localization;
     protected static final Gson gson = new Gson();
 
@@ -201,10 +205,16 @@ public abstract class AirZoneBaseThingHandler extends BaseThingHandler {
                 AirZoneApiManager apiManager = bridgeHandler.getApiManager();
 
                 boolean commandHandled = false;
-                if (command instanceof RefreshType)
+                if (command instanceof RefreshType) {
                     commandHandled = refreshChannel(channelUID, apiManager);
-                else
-                    commandHandled = handleActionCommand(channelUID, command, apiManager);
+                } else {
+                    channelsInActionCommand.add(channelUID.getAsString());
+                    try {
+                        commandHandled = handleActionCommand(channelUID, command, apiManager);
+                    } finally {
+                        channelsInActionCommand.remove(channelUID.getAsString());
+                    }
+                }
 
                 if (!commandHandled)
                     bridgeHandler.handleCommand(channelUID, command);
@@ -245,5 +255,9 @@ public abstract class AirZoneBaseThingHandler extends BaseThingHandler {
         }
 
         return new StringType(gson.toJson(errors.toArray()));
+    }
+
+    protected boolean channelIsInActionCommand(ChannelUID channelUID) {
+        return channelsInActionCommand.contains(channelUID.getAsString());
     }
 }

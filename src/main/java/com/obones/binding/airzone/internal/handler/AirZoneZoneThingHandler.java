@@ -211,6 +211,7 @@ public class AirZoneZoneThingHandler extends AirZoneBaseThingHandler {
 
     @Override
     protected boolean handleActionCommand(ChannelUID channelUID, Command command, AirZoneApiManager apiManager) {
+        logger.debug("handling action command {} for channel {}", command.toString(), channelUID.getAsString());
         String channelId = channelUID.getId();
         switch (channelId) {
             case AirZoneBindingConstants.CHANNEL_ZONE_NAME:
@@ -290,9 +291,12 @@ public class AirZoneZoneThingHandler extends AirZoneBaseThingHandler {
                 break;
 
             default:
+                logger.debug("Don't know how to handle action command {} for channel {}", command.toString(),
+                        channelUID.getAsString());
                 return false;
         }
 
+        logger.debug("Done handling action command {} for channel {}", command.toString(), channelUID.getAsString());
         return true;
     }
 
@@ -304,6 +308,11 @@ public class AirZoneZoneThingHandler extends AirZoneBaseThingHandler {
     }
 
     public boolean refreshChannel(ChannelUID channelUID, @Nullable AirZoneHvacZone zone) {
+        if (channelIsInActionCommand(channelUID)) {
+            logger.debug("channel {} is processed by a command, ignoring refresh", channelUID.getAsString());
+            return true;
+        }
+
         if (zone != null) {
             Unit<Temperature> temperatureUnit = (zone.getUnits() == 0 ? SIUnits.CELSIUS : ImperialUnits.FAHRENHEIT);
 
