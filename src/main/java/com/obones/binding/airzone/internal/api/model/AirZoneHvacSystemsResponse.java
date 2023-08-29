@@ -11,10 +11,12 @@
  */
 package com.obones.binding.airzone.internal.api.model;
 
-public class AirZoneHvacSystemsResponse {
-    private AirZoneHvacSystemInfo[] systems;
+import org.eclipse.jdt.annotation.Nullable;
 
-    public AirZoneHvacSystemInfo[] getSystems() {
+public class AirZoneHvacSystemsResponse {
+    private AirZoneHvacSystemInfo @Nullable [] systems;
+
+    public AirZoneHvacSystemInfo @Nullable [] getSystems() {
         return systems;
     }
 }

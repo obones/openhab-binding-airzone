@@ -367,8 +367,11 @@ public class AirZoneApiManager {
 
     private void fillLatestSystems(@Nullable AirZoneHvacSystemsResponse latestSystemsResponse) {
         if (latestSystemsResponse != null) {
-            for (AirZoneHvacSystemInfo systemInfo : latestSystemsResponse.getSystems()) {
-                latestSystems.put(systemInfo.getSystemID(), systemInfo);
+            var systems = latestSystemsResponse.getSystems();
+            if (systems != null) {
+                for (AirZoneHvacSystemInfo systemInfo : systems) {
+                    latestSystems.put(systemInfo.getSystemID(), systemInfo);
+                }
             }
         }
     }

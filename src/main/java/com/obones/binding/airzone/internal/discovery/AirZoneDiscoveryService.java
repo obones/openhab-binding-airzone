@@ -194,25 +194,29 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
         logger.trace("discoverSystems(): discovering all systems on bridge {}.", bridgeUID);
 
         if (latestResponse != null) {
-            for (var system : latestResponse.getSystems()) {
-                String systemName = system.getManufacturer().toString();
-                logger.trace("discoverSystems(): found system {}.", systemName);
+            var systems = latestResponse.getSystems();
+            if (systems != null) {
+                for (var system : systems) {
+                    String systemName = system.getManufacturer().toString();
+                    logger.trace("discoverSystems(): found system {}.", systemName);
 
-                String label = "AirZone - System - ".concat(systemName.replaceAll("\\P{Alnum}", "_"));
-                logger.trace("discoverSystems(): using label {}.", label);
+                    String label = "AirZone - System - ".concat(systemName.replaceAll("\\P{Alnum}", "_"));
+                    logger.trace("discoverSystems(): using label {}.", label);
 
-                String systemUniqueId = AirZoneBridgeHandler.getSystemUniqueId(system.getSystemID());
+                    String systemUniqueId = AirZoneBridgeHandler.getSystemUniqueId(system.getSystemID());
 
-                ThingTypeUID thingTypeUID = AirZoneBindingConstants.THING_TYPE_AIRZONE_SYSTEM;
-                ThingUID thingUID = new ThingUID(thingTypeUID, bridgeUID, systemUniqueId);
+                    ThingTypeUID thingTypeUID = AirZoneBindingConstants.THING_TYPE_AIRZONE_SYSTEM;
+                    ThingUID thingUID = new ThingUID(thingTypeUID, bridgeUID, systemUniqueId);
 
-                DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID).withThingType(thingTypeUID)
-                        .withProperty(AirZoneBindingProperties.PROPERTY_SYSTEM_ID, system.getSystemID())
-                        .withProperty(AirZoneBindingProperties.PROPERTY_SYSTEM_UNIQUE_ID, systemUniqueId)
-                        .withRepresentationProperty(AirZoneBindingProperties.PROPERTY_SYSTEM_UNIQUE_ID)
-                        .withBridge(bridgeUID).withLabel(label).build();
-                logger.debug("discoverSystems(): registering new thing {}.", discoveryResult);
-                thingDiscovered(discoveryResult);
+                    DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID)
+                            .withThingType(thingTypeUID)
+                            .withProperty(AirZoneBindingProperties.PROPERTY_SYSTEM_ID, system.getSystemID())
+                            .withProperty(AirZoneBindingProperties.PROPERTY_SYSTEM_UNIQUE_ID, systemUniqueId)
+                            .withRepresentationProperty(AirZoneBindingProperties.PROPERTY_SYSTEM_UNIQUE_ID)
+                            .withBridge(bridgeUID).withLabel(label).build();
+                    logger.debug("discoverSystems(): registering new thing {}.", discoveryResult);
+                    thingDiscovered(discoveryResult);
+                }
             }
         }
     }
