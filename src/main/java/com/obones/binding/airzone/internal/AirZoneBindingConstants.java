@@ -28,6 +28,7 @@ import org.openhab.core.thing.ThingTypeUID;
  * <UL>
  * <LI>{@link #THING_AIRZONE_BRIDGE} for the bridge itself,</LI>
  * <LI>{@link #THING_AIRZONE_ZONE} for the zones controlled by AirZone</LI>
+ * <LI>{@link #THING_AIRZONE_ALL_ZONES} for the special "all zones" item that controls all zones known by AirZone</LI>
  * </UL>
  *
  * @author Olivier Sannier - Initial contribution
@@ -51,6 +52,10 @@ public class AirZoneBindingConstants {
      */
     private static final String THING_AIRZONE_ZONE = "zone";
     /**
+     * The Thing identification of the special "all zones" to control all zones in the <B>AirZone</B> bridge.
+     */
+    private static final String THING_AIRZONE_ALL_ZONES = "all-zones";
+    /**
      * The Thing identification of a system defined on the <B>AirZone</B> bridge.
      */
     private static final String THING_AIRZONE_SYSTEM = "system";
@@ -63,6 +68,8 @@ public class AirZoneBindingConstants {
 
     // List of all Thing Type UIDs beyond the bridge(s)
     public static final ThingTypeUID THING_TYPE_AIRZONE_ZONE = new ThingTypeUID(BINDING_ID, THING_AIRZONE_ZONE);
+    public static final ThingTypeUID THING_TYPE_AIRZONE_ALL_ZONES = new ThingTypeUID(BINDING_ID,
+            THING_AIRZONE_ALL_ZONES);
     public static final ThingTypeUID THING_TYPE_AIRZONE_SYSTEM = new ThingTypeUID(BINDING_ID, THING_AIRZONE_SYSTEM);
 
     // Definitions of different set of Things
@@ -70,7 +77,7 @@ public class AirZoneBindingConstants {
     public static final Set<ThingTypeUID> SUPPORTED_THINGS_BRIDGE = new HashSet<>(Arrays.asList(THING_TYPE_BRIDGE));
 
     public static final Set<ThingTypeUID> SUPPORTED_THINGS_ITEMS = new HashSet<>(
-            Arrays.asList(THING_TYPE_AIRZONE_ZONE, THING_TYPE_AIRZONE_SYSTEM));
+            Arrays.asList(THING_TYPE_AIRZONE_ZONE, THING_TYPE_AIRZONE_ALL_ZONES, THING_TYPE_AIRZONE_SYSTEM));
 
     @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
     public static final Set<ThingTypeUID> DISCOVERABLE_THINGS = Set.of(THING_TYPE_AIRZONE_ZONE, THING_TYPE_BINDING,

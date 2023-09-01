@@ -16,7 +16,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import javax.measure.Unit;
 import javax.measure.quantity.Temperature;
@@ -36,8 +35,8 @@ import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingUID;
 import org.openhab.core.thing.binding.ThingHandlerCallback;
 import org.openhab.core.thing.binding.builder.ThingBuilder;
+import org.openhab.core.thing.type.AutoUpdatePolicy;
 import org.openhab.core.thing.type.ChannelTypeUID;
-import org.openhab.core.types.Command;
 import org.openhab.core.types.State;
 import org.openhab.core.types.StateDescriptionFragmentBuilder;
 import org.openhab.core.types.UnDefType;
@@ -48,6 +47,7 @@ import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.AirZoneBindingProperties;
 import com.obones.binding.airzone.internal.api.AirZoneApiManager;
 import com.obones.binding.airzone.internal.api.model.AirZoneHvacZone;
+import com.obones.binding.airzone.internal.api.model.AirZoneHvacZonePutRequestParameters;
 import com.obones.binding.airzone.internal.config.AirZoneZoneThingConfiguration;
 import com.obones.binding.airzone.internal.utils.Localization;
 
@@ -58,7 +58,7 @@ import com.obones.binding.airzone.internal.utils.Localization;
  * @author Olivier Sannier - Initial contribution
  */
 @NonNullByDefault
-public class AirZoneZoneThingHandler extends AirZoneBaseThingHandler {
+public class AirZoneZoneThingHandler extends AirZoneBaseZoneThingHandler {
     private @NonNullByDefault({}) final Logger logger = LoggerFactory.getLogger(AirZoneZoneThingHandler.class);
 
     public AirZoneZoneThingHandler(Thing thing, Localization localization) {
@@ -75,238 +75,47 @@ public class AirZoneZoneThingHandler extends AirZoneBaseThingHandler {
 
     @Override
     protected synchronized void createOptionalChannels(AirZoneBridgeHandler bridgeHandler) {
-        AirZoneHvacZone zone = getZone(bridgeHandler);
-        if (zone == null) {
-            return;
-        }
+        super.createOptionalChannels(bridgeHandler, AutoUpdatePolicy.DEFAULT);
+    }
 
-        ThingHandlerCallback callback = getCallback();
-        if (callback == null) {
-            logger.warn("createOptionalChannels: Could not get callback.");
-            return;
-        }
-
-        ThingBuilder builder = editThing();
-        ThingUID thingUID = thing.getUID();
-
-        // create speed channel if it can be set to any value
-        if (zone.getSpeeds().length > 0) {
-            ChannelTypeUID channelTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID,
-                    AirZoneBindingConstants.CHANNEL_TYPE_ZONE_SPEED);
-
-            createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_FAN_SPEED,
-                    channelTypeUID);
-        }
-
-        // create one or two setpoint channels depending on the zone capabilities
-        ChannelTypeUID channelSetpointTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID,
-                AirZoneBindingConstants.CHANNEL_TYPE_ZONE_SETPOINT_TEMPERATURE);
-        if (zone.getDoubleSetpoint() == 0) {
-            createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_SETPOINT,
-                    channelSetpointTypeUID);
-        } else {
-            createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_COOL_SETPOINT,
-                    channelSetpointTypeUID, "channel-type.airzone.zone.cool-setpoint.label",
-                    "channel-type.airzone.zone.cool-setpoint.description");
-
-            createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_HEAT_SETPOINT,
-                    channelSetpointTypeUID, "channel-type.airzone.zone.heat-setpoint.label",
-                    "channel-type.airzone.zone.heat-setpoint.description");
-        }
+    @Override
+    protected void createOptionalChannels(AirZoneHvacZone zone, ThingHandlerCallback callback, ThingBuilder builder,
+            ThingUID thingUID, AutoUpdatePolicy autoUpdatePolicy) {
+        super.createOptionalChannels(zone, callback, builder, thingUID, autoUpdatePolicy);
 
         ChannelTypeUID channelDemandTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID,
                 AirZoneBindingConstants.CHANNEL_TYPE_ZONE_DEMAND);
         if (zone.getAirDemand() != null) {
             createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_AIR_DEMAND,
-                    channelDemandTypeUID, "channel-type.airzone.zone.air-demand.label",
+                    channelDemandTypeUID, autoUpdatePolicy, "channel-type.airzone.zone.air-demand.label",
                     "channel-type.airzone.zone.air-demand.description");
         }
         if (zone.getFloorDemand() != null) {
             createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_FLOOR_DEMAND,
-                    channelDemandTypeUID, "channel-type.airzone.zone.floor-demand.label",
+                    channelDemandTypeUID, autoUpdatePolicy, "channel-type.airzone.zone.floor-demand.label",
                     "channel-type.airzone.zone.floor-demand.description");
         }
         if (zone.getColdDemand() != null) {
             createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_COLD_DEMAND,
-                    channelDemandTypeUID, "channel-type.airzone.zone.cold-demand.label",
+                    channelDemandTypeUID, autoUpdatePolicy, "channel-type.airzone.zone.cold-demand.label",
                     "channel-type.airzone.zone.cold-demand.description");
         }
         if (zone.getHeatDemand() != null) {
             createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_HEAT_DEMAND,
-                    channelDemandTypeUID, "channel-type.airzone.zone.heat-demand.label",
+                    channelDemandTypeUID, autoUpdatePolicy, "channel-type.airzone.zone.heat-demand.label",
                     "channel-type.airzone.zone.heat-demand.description");
         }
 
         if (zone.getAirQualityMode() != null) {
-            ChannelTypeUID channelAirQualityModeTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID,
-                    AirZoneBindingConstants.CHANNEL_TYPE_ZONE_AIR_QUALITY_MODE);
             ChannelTypeUID channelAirQualityTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID,
                     AirZoneBindingConstants.CHANNEL_TYPE_ZONE_AIR_QUALITY);
-            ChannelTypeUID channelAirQualityThresholdTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID,
-                    AirZoneBindingConstants.CHANNEL_TYPE_ZONE_AIR_QUALITY_THRESHOLD);
-
-            createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY_MODE,
-                    channelAirQualityModeTypeUID);
 
             createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY,
-                    channelAirQualityTypeUID);
-
-            createOptionalChannel(callback, builder, thingUID,
-                    AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY_LOW_THRESHOLD, channelAirQualityThresholdTypeUID,
-                    "channel-type.airzone.zone.air-quality-low-threshold.label",
-                    "channel-type.airzone.zone.air-quality-low-threshold.description");
-
-            createOptionalChannel(callback, builder, thingUID,
-                    AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY_HIGH_THRESHOLD, channelAirQualityThresholdTypeUID,
-                    "channel-type.airzone.zone.air-quality-high-threshold.label",
-                    "channel-type.airzone.zone.air-quality-high-threshold.description");
+                    channelAirQualityTypeUID, autoUpdatePolicy);
         }
-
-        ChannelTypeUID channelSlatsSwingTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID,
-                AirZoneBindingConstants.CHANNEL_TYPE_ZONE_SLATS_SWING);
-        if (zone.getSlatsVSwing() != null) {
-            createOptionalChannel(callback, builder, thingUID,
-                    AirZoneBindingConstants.CHANNEL_ZONE_SLATS_VERTICAL_SWING, channelSlatsSwingTypeUID,
-                    "channel-type.airzone.zone.slats-vertical-swing.label",
-                    "channel-type.airzone.zone.slats-vertical-swing.description");
-        }
-
-        if (zone.getSlatsHSwing() != null) {
-            createOptionalChannel(callback, builder, thingUID,
-                    AirZoneBindingConstants.CHANNEL_ZONE_SLATS_HORIZONTAL_SWING, channelSlatsSwingTypeUID,
-                    "channel-type.airzone.zone.slats-horizontal-swing.label",
-                    "channel-type.airzone.zone.slats-horizontal-swing.description");
-        }
-
-        ChannelTypeUID channelSlatsPositionTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID,
-                AirZoneBindingConstants.CHANNEL_TYPE_ZONE_SLATS_POSITION);
-        if (zone.getSlatsHorizontal() != null) {
-            createOptionalChannel(callback, builder, thingUID,
-                    AirZoneBindingConstants.CHANNEL_ZONE_SLATS_HORIZONTAL_POSITION, channelSlatsPositionTypeUID,
-                    "channel-type.airzone.zone.slats-horizontal-position.label", null);
-        }
-
-        if (zone.getSlatsVertical() != null) {
-            createOptionalChannel(callback, builder, thingUID,
-                    AirZoneBindingConstants.CHANNEL_ZONE_SLATS_VERTICAL_POSITION, channelSlatsPositionTypeUID,
-                    "channel-type.airzone.zone.slats-horizontal-position.label", null);
-        }
-
-        if (zone.getEcoAdapt() != null) {
-            ChannelTypeUID channelTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID,
-                    AirZoneBindingConstants.CHANNEL_TYPE_ZONE_ECO_ADAPT);
-            createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_ECO_ADAPT,
-                    channelTypeUID);
-        }
-
-        if (zone.getAntiFreeze() != null) {
-            ChannelTypeUID channelTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID,
-                    AirZoneBindingConstants.CHANNEL_TYPE_ZONE_ANTI_FREEZE);
-            createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_ANTI_FREEZE,
-                    channelTypeUID);
-        }
-
-        updateThing(builder.build());
     }
 
     @Override
-    protected boolean handleActionCommand(ChannelUID channelUID, Command command, AirZoneApiManager apiManager) {
-        logger.debug("handling action command {} for channel {}", command.toString(), channelUID.getAsString());
-        String channelId = channelUID.getId();
-        switch (channelId) {
-            case AirZoneBindingConstants.CHANNEL_ZONE_NAME:
-                apiManager.setZoneName(thing, command);
-                break;
-
-            case AirZoneBindingConstants.CHANNEL_ZONE_ON_OFF:
-                apiManager.setZoneOnOff(thing, command);
-                break;
-
-            case AirZoneBindingConstants.CHANNEL_ZONE_SETPOINT:
-                apiManager.setZoneSetPoint(thing, command);
-                break;
-
-            case AirZoneBindingConstants.CHANNEL_ZONE_COOL_SETPOINT:
-                apiManager.setZoneCoolSetPoint(thing, command);
-                break;
-
-            case AirZoneBindingConstants.CHANNEL_ZONE_HEAT_SETPOINT:
-                apiManager.setZoneHeatSetPoint(thing, command);
-                break;
-
-            case AirZoneBindingConstants.CHANNEL_ZONE_MODE:
-                apiManager.setZoneMode(thing, command);
-                break;
-
-            case AirZoneBindingConstants.CHANNEL_ZONE_FAN_SPEED:
-                apiManager.setZoneSpeed(thing, command);
-                break;
-
-            case AirZoneBindingConstants.CHANNEL_ZONE_COLD_STAGE:
-                apiManager.setZoneColdStage(thing, command);
-                break;
-
-            case AirZoneBindingConstants.CHANNEL_ZONE_HEAT_STAGE:
-                apiManager.setZoneHeatStage(thing, command);
-                break;
-
-            case AirZoneBindingConstants.CHANNEL_ZONE_SLEEP:
-                apiManager.setZoneSleep(thing, command);
-                break;
-
-            case AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY_MODE:
-                apiManager.setZoneAirQualityMode(thing, command);
-                break;
-
-            case AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY_LOW_THRESHOLD:
-                apiManager.setZoneAirQualityLowThreshold(thing, command);
-                break;
-
-            case AirZoneBindingConstants.CHANNEL_ZONE_AIR_QUALITY_HIGH_THRESHOLD:
-                apiManager.setZoneAirQualityHighThreshold(thing, command);
-                break;
-
-            case AirZoneBindingConstants.CHANNEL_ZONE_SLATS_VERTICAL_SWING:
-                apiManager.setZoneVerticalSlatsSwing(thing, command);
-                break;
-
-            case AirZoneBindingConstants.CHANNEL_ZONE_SLATS_HORIZONTAL_SWING:
-                apiManager.setZoneHorizontalSlatsSwing(thing, command);
-                break;
-
-            case AirZoneBindingConstants.CHANNEL_ZONE_SLATS_VERTICAL_POSITION:
-                apiManager.setZoneVerticalSlatsPosition(thing, command);
-                break;
-
-            case AirZoneBindingConstants.CHANNEL_ZONE_SLATS_HORIZONTAL_POSITION:
-                apiManager.setZoneHorizontalSlatsPosition(thing, command);
-                break;
-
-            case AirZoneBindingConstants.CHANNEL_ZONE_ECO_ADAPT:
-                apiManager.setEcoAdapt(thing, command);
-                break;
-
-            case AirZoneBindingConstants.CHANNEL_ZONE_ANTI_FREEZE:
-                apiManager.setAntiFreeze(thing, command);
-                break;
-
-            default:
-                logger.debug("Don't know how to handle action command {} for channel {}", command.toString(),
-                        channelUID.getAsString());
-                return false;
-        }
-
-        logger.debug("Done handling action command {} for channel {}", command.toString(), channelUID.getAsString());
-        return true;
-    }
-
-    @Override
-    public boolean refreshChannel(ChannelUID channelUID, AirZoneApiManager apiManager) {
-        AirZoneHvacZone zone = getZone(apiManager);
-
-        return refreshChannel(channelUID, zone);
-    }
-
     public boolean refreshChannel(ChannelUID channelUID, @Nullable AirZoneHvacZone zone) {
         if (channelIsInActionCommand(channelUID)) {
             logger.debug("channel {} is processed by a command, ignoring refresh", channelUID.getAsString());
@@ -437,6 +246,7 @@ public class AirZoneZoneThingHandler extends AirZoneBaseThingHandler {
         return false;
     }
 
+    @Override
     public void refreshProperties(@Nullable AirZoneHvacZone zone) {
         if (zone != null) {
             int thermostatType = zone.getThermosType();
@@ -484,19 +294,6 @@ public class AirZoneZoneThingHandler extends AirZoneBaseThingHandler {
         }
     }
 
-    @Override
-    public void refreshChannelsAndProperties(AirZoneApiManager apiManager, Set<ChannelUID> linkedChannelsUIDs) {
-        AirZoneHvacZone zone = getZone(apiManager);
-
-        if (zone != null) {
-            refreshProperties(zone);
-
-            for (ChannelUID uid : linkedChannelsUIDs) {
-                refreshChannel(uid, zone);
-            }
-        }
-    }
-
     @SuppressWarnings("unused") // the code in the else part is used but the IDE insist on saying it is dead...
     private List<@Nullable String> getAllowedModes(AirZoneHvacZone zone) {
         List<@Nullable String> result = new ArrayList<@Nullable String>();
@@ -528,11 +325,8 @@ public class AirZoneZoneThingHandler extends AirZoneBaseThingHandler {
         return getZone(bridgeHandler);
     }
 
-    private @Nullable AirZoneHvacZone getZone(AirZoneBridgeHandler bridgeHandler) {
-        return getZone(bridgeHandler.getApiManager());
-    }
-
-    private @Nullable AirZoneHvacZone getZone(AirZoneApiManager apiManager) {
+    @Override
+    public @Nullable AirZoneHvacZone getZone(AirZoneApiManager apiManager) {
         if (!(thing.getHandler() instanceof AirZoneZoneThingHandler))
             return null;
 
@@ -543,6 +337,13 @@ public class AirZoneZoneThingHandler extends AirZoneBaseThingHandler {
             logger.warn("No zone data for {} - {}", config.systemId, config.zoneId);
 
         return zone;
+    }
+
+    @Override
+    public AirZoneHvacZonePutRequestParameters getPutRequestParameters() {
+        AirZoneZoneThingConfiguration config = getConfigAs(AirZoneZoneThingConfiguration.class);
+
+        return new AirZoneHvacZonePutRequestParameters(config.systemId, config.zoneId);
     }
 
     public @Nullable StateDescriptionFragmentBuilder adjustChannelState(ChannelTypeUID channelTypeUID,

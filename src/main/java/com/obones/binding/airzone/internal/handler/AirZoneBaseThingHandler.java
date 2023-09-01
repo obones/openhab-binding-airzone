@@ -36,6 +36,7 @@ import org.openhab.core.thing.binding.BridgeHandler;
 import org.openhab.core.thing.binding.ThingHandlerCallback;
 import org.openhab.core.thing.binding.builder.ChannelBuilder;
 import org.openhab.core.thing.binding.builder.ThingBuilder;
+import org.openhab.core.thing.type.AutoUpdatePolicy;
 import org.openhab.core.thing.type.ChannelTypeUID;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.RefreshType;
@@ -120,8 +121,8 @@ public abstract class AirZoneBaseThingHandler extends BaseThingHandler {
     protected abstract void createOptionalChannels(AirZoneBridgeHandler bridgeHandler);
 
     protected ThingBuilder createOptionalChannel(ThingHandlerCallback callback, ThingBuilder builder, ThingUID thingUID,
-            String ChannelId, ChannelTypeUID channelTypeUID, @Nullable String labelKey,
-            @Nullable String descriptionKey) {
+            String ChannelId, ChannelTypeUID channelTypeUID, AutoUpdatePolicy autoUpdatePolicy,
+            @Nullable String labelKey, @Nullable String descriptionKey) {
         ChannelUID channelUID = new ChannelUID(thing.getUID(), ChannelId);
         ChannelBuilder channelBuilder = callback.createChannelBuilder(channelUID, channelTypeUID);
         if (labelKey != null)
@@ -132,6 +133,19 @@ public abstract class AirZoneBaseThingHandler extends BaseThingHandler {
         Channel channel = channelBuilder.build();
 
         return builder.withChannel(channel);
+    }
+
+    protected ThingBuilder createOptionalChannel(ThingHandlerCallback callback, ThingBuilder builder, ThingUID thingUID,
+            String ChannelId, ChannelTypeUID channelTypeUID, AutoUpdatePolicy autoUpdatePolicy) {
+        return createOptionalChannel(callback, builder, thingUID, ChannelId, channelTypeUID, autoUpdatePolicy, null,
+                null);
+    }
+
+    protected ThingBuilder createOptionalChannel(ThingHandlerCallback callback, ThingBuilder builder, ThingUID thingUID,
+            String ChannelId, ChannelTypeUID channelTypeUID, @Nullable String labelKey,
+            @Nullable String descriptionKey) {
+        return createOptionalChannel(callback, builder, thingUID, ChannelId, channelTypeUID, AutoUpdatePolicy.DEFAULT,
+                labelKey, descriptionKey);
     }
 
     protected ThingBuilder createOptionalChannel(ThingHandlerCallback callback, ThingBuilder builder, ThingUID thingUID,

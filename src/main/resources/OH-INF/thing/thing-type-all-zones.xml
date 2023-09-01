@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- AirZone Binding -->
+<thing:thing-descriptions bindingId="airzone"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
+
+	<!-- -->
+	<!-- AirZone zone Binding -->
+	<!-- -->
+	<thing-type id="all-zones">
+		<supported-bridge-type-refs>
+			<bridge-type-ref id="airzone"/>
+		</supported-bridge-type-refs>
+		<label>@text/thing-type.airzone.all-zones.label</label>
+		<description>@text/thing-type.airzone.all-zones.description</description>
+		<category>HVAC</category>
+		<channels>
+			<channel id="on-off" typeId="on-off">
+				<autoUpdatePolicy>veto</autoUpdatePolicy>
+			</channel>
+			<channel id="mode" typeId="mode">
+				<autoUpdatePolicy>veto</autoUpdatePolicy>
+			</channel>
+			<channel id="heat-stage" typeId="stage">
+				<label>@text/channel-type.airzone.zone.heat-stage.label</label>
+				<autoUpdatePolicy>veto</autoUpdatePolicy>
+			</channel>
+			<channel id="cold-stage" typeId="stage">
+				<label>@text/channel-type.airzone.zone.cold-stage.label</label>
+				<autoUpdatePolicy>veto</autoUpdatePolicy>
+			</channel>
+			<channel id="sleep" typeId="sleep">
+				<autoUpdatePolicy>veto</autoUpdatePolicy>
+			</channel>
+		</channels>
+		<properties>
+			<property name="vendor">AirZone</property>
+		</properties>
+		<representation-property>allZonesUniqueId</representation-property>
+		<config-description-ref uri="thing-type:airzone:all-zones"/>
+	</thing-type>
+</thing:thing-descriptions>

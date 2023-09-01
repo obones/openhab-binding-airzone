@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.discovery.AirZoneDiscoveryService;
+import com.obones.binding.airzone.internal.handler.AirZoneAllZonesThingHandler;
 import com.obones.binding.airzone.internal.handler.AirZoneBaseThingHandler;
 import com.obones.binding.airzone.internal.handler.AirZoneBindingHandler;
 import com.obones.binding.airzone.internal.handler.AirZoneBridgeHandler;
@@ -115,16 +116,22 @@ public class AirZoneHandlerFactory extends BaseThingHandlerFactory {
 
     private @Nullable ThingHandler createZoneThingHandler(Thing thing) {
         logger.trace("createZoneThingHandler({}) called for thing named '{}'.", thing.getUID(), thing.getLabel());
-        AirZoneZoneThingHandler airZoneThingHandler = new AirZoneZoneThingHandler(thing, localization);
-        airZoneThingHandlers.add(airZoneThingHandler);
-        return airZoneThingHandler;
+        return registerAirZoneBaseHandler(new AirZoneZoneThingHandler(thing, localization));
+    }
+
+    private @Nullable ThingHandler createAllZonesThingHandler(Thing thing) {
+        logger.trace("createAllZonesThingHandler({}) called for thing named '{}'.", thing.getUID(), thing.getLabel());
+        return registerAirZoneBaseHandler(new AirZoneAllZonesThingHandler(thing, localization));
     }
 
     private @Nullable ThingHandler createSystemThingHandler(Thing thing) {
         logger.trace("createSystemThingHandler({}) called for thing named '{}'.", thing.getUID(), thing.getLabel());
-        AirZoneSystemThingHandler airZoneThingHandler = new AirZoneSystemThingHandler(thing, localization);
-        airZoneThingHandlers.add(airZoneThingHandler);
-        return airZoneThingHandler;
+        return registerAirZoneBaseHandler(new AirZoneSystemThingHandler(thing, localization));
+    }
+
+    private AirZoneBaseThingHandler registerAirZoneBaseHandler(AirZoneBaseThingHandler airZoneBaseThingHandler) {
+        airZoneThingHandlers.add(airZoneBaseThingHandler);
+        return airZoneBaseThingHandler;
     }
 
     private void updateBindingState() {
@@ -193,6 +200,8 @@ public class AirZoneHandlerFactory extends BaseThingHandlerFactory {
         // Handle creation of Things behind the Bridge
         if (AirZoneBindingConstants.THING_TYPE_AIRZONE_ZONE.equals(thingTypeUID)) {
             resultHandler = createZoneThingHandler(thing);
+        } else if (AirZoneBindingConstants.THING_TYPE_AIRZONE_ALL_ZONES.equals(thingTypeUID)) {
+            resultHandler = createAllZonesThingHandler(thing);
         } else if (AirZoneBindingConstants.THING_TYPE_AIRZONE_SYSTEM.equals(thingTypeUID)) {
             resultHandler = createSystemThingHandler(thing);
         } else {

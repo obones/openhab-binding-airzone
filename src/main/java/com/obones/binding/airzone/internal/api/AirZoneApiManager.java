@@ -27,6 +27,7 @@ import org.openhab.core.library.types.DecimalType;
 import org.openhab.core.library.types.OnOffType;
 import org.openhab.core.library.types.StringType;
 import org.openhab.core.thing.Thing;
+import org.openhab.core.thing.binding.ThingHandler;
 import org.openhab.core.types.Command;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Reference;
@@ -38,8 +39,7 @@ import com.google.gson.JsonElement;
 import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.api.model.*;
 import com.obones.binding.airzone.internal.config.AirZoneBridgeConfiguration;
-import com.obones.binding.airzone.internal.config.AirZoneZoneThingConfiguration;
-import com.obones.binding.airzone.internal.handler.AirZoneZoneThingHandler;
+import com.obones.binding.airzone.internal.handler.AirZoneBaseZoneThingHandler;
 
 /**
  * The {@link AirZoneApiManager} is responsible for the communication with the AirZone web server.
@@ -127,6 +127,18 @@ public class AirZoneApiManager {
         return latestZones.get(systemId, zoneId);
     }
 
+    public @Nullable AirZoneHvacZone getMasterZone(int systemId) {
+        if (latestZonesResponse == null)
+            fetchStatus();
+
+        for (var zone : latestZones.values()) {
+            if ((zone.getSystemID() == systemId) && (zone.getMasterZoneID() == zone.getZoneID()))
+                return zone;
+        }
+
+        return null;
+    }
+
     public @Nullable AirZoneHvacSystemInfo getSystem(int systemId) {
         if (latestZonesResponse == null)
             fetchStatus();
@@ -167,10 +179,9 @@ public class AirZoneApiManager {
     }
 
     private @Nullable AirZoneHvacZone getZone(Thing thing) {
-        if (thing.getHandler() instanceof AirZoneZoneThingHandler) {
-            AirZoneZoneThingConfiguration config = thing.getConfiguration().as(AirZoneZoneThingConfiguration.class);
-
-            return latestZones.get(config.systemId, config.zoneId);
+        ThingHandler thingHandler = thing.getHandler();
+        if (thingHandler instanceof AirZoneBaseZoneThingHandler) {
+            return ((AirZoneBaseZoneThingHandler) thingHandler).getZone(this);
         } else {
             return null;
         }
@@ -377,14 +388,16 @@ public class AirZoneApiManager {
     }
 
     private void setChannelValue(Thing thing, String fieldName, Command command) {
-        if (!(thing.getHandler() instanceof AirZoneZoneThingHandler))
+        ThingHandler thingHandler = thing.getHandler();
+        if (!(thingHandler instanceof AirZoneBaseZoneThingHandler))
             return;
 
-        AirZoneZoneThingConfiguration config = thing.getConfiguration().as(AirZoneZoneThingConfiguration.class);
+        AirZoneHvacZonePutRequestParameters putRequestParameters = ((AirZoneBaseZoneThingHandler) thingHandler)
+                .getPutRequestParameters();
 
         JsonElement json = gson.toJsonTree(new Object());
-        json.getAsJsonObject().addProperty("systemID", config.systemId);
-        json.getAsJsonObject().addProperty("zoneID", config.zoneId);
+        json.getAsJsonObject().addProperty("systemID", putRequestParameters.getSystemID());
+        json.getAsJsonObject().addProperty("zoneID", putRequestParameters.getZoneID());
 
         if (command instanceof Number) {
             json.getAsJsonObject().addProperty(fieldName, ((Number) command).doubleValue());
