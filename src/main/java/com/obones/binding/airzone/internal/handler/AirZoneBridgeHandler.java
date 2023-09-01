@@ -314,7 +314,7 @@ public class AirZoneBridgeHandler extends BaseBridgeHandler {
     private void doDiscovery()
     {
         if (discoveryService != null) {
-            discoveryService.discoverZones(apiManager.getLatestZonesResponse(), getThing().getUID());
+            discoveryService.discoverZones(apiManager, getThing().getUID());
             discoveryService.discoverSystems(apiManager.getLatestSystemsResponse(), getThing().getUID());
         }
     }

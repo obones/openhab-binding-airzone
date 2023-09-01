@@ -139,6 +139,15 @@ public class AirZoneApiManager {
         return null;
     }
 
+    public @Nullable AirZoneHvacZone getMasterZone(AirZoneHvacSystem system) {
+        for (var zone : system.getData()) {
+            if (zone.getMasterZoneID() == zone.getZoneID())
+                return zone;
+        }
+
+        return null;
+    }
+
     public @Nullable AirZoneHvacSystemInfo getSystem(int systemId) {
         if (latestZonesResponse == null)
             fetchStatus();

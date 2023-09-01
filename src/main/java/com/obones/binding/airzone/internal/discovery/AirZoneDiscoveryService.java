@@ -27,8 +27,10 @@ import org.slf4j.LoggerFactory;
 
 import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.AirZoneBindingProperties;
+import com.obones.binding.airzone.internal.api.AirZoneApiManager;
 import com.obones.binding.airzone.internal.api.model.AirZoneHvacResponse;
 import com.obones.binding.airzone.internal.api.model.AirZoneHvacSystemsResponse;
+import com.obones.binding.airzone.internal.api.model.AirZoneHvacZone;
 import com.obones.binding.airzone.internal.handler.AirZoneBridgeHandler;
 import com.obones.binding.airzone.internal.utils.Localization;
 import com.obones.binding.airzone.internal.utils.ManifestInformation;
@@ -156,9 +158,11 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
     /**
      * Discover the registered zones.
      */
-    public void discoverZones(@Nullable AirZoneHvacResponse latestResponse, ThingUID bridgeUID) {
+    public void discoverZones(AirZoneApiManager apiManager, ThingUID bridgeUID) {
         logger.trace("discoverZones(): discovering all zones on bridge {}.", bridgeUID);
 
+        @Nullable
+        AirZoneHvacResponse latestResponse = apiManager.getLatestZonesResponse();
         if (latestResponse != null) {
             for (var system : latestResponse.getSystems()) {
                 for (var zone : system.getData()) {
@@ -180,6 +184,27 @@ public class AirZoneDiscoveryService extends AbstractDiscoveryService implements
                             .withRepresentationProperty(AirZoneBindingProperties.PROPERTY_ZONE_UNIQUE_ID)
                             .withBridge(bridgeUID).withLabel(label).build();
                     logger.debug("discoverZones(): registering new thing {}.", discoveryResult);
+                    thingDiscovered(discoveryResult);
+                }
+
+                // add the "all zones" thing
+                @Nullable
+                AirZoneHvacZone masterZone = apiManager.getMasterZone(system);
+                if (masterZone != null) {
+                    int systemId = masterZone.getSystemID();
+                    String allZonesUniqueId = AirZoneBridgeHandler.getZoneUniqueId(systemId, 0);
+
+                    String label = String.format("AirZone - All zones (system %d)", systemId);
+
+                    ThingTypeUID allZonesThingTypeUID = AirZoneBindingConstants.THING_TYPE_AIRZONE_ALL_ZONES;
+                    ThingUID allZonesThingUID = new ThingUID(allZonesThingTypeUID, bridgeUID, allZonesUniqueId);
+                    DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(allZonesThingUID)
+                            .withThingType(allZonesThingTypeUID)
+                            .withProperty(AirZoneBindingProperties.PROPERTY_SYSTEM_ID, systemId)
+                            .withProperty(AirZoneBindingProperties.PROPERTY_ZONE_UNIQUE_ID, allZonesUniqueId)
+                            .withRepresentationProperty(AirZoneBindingProperties.PROPERTY_ZONE_UNIQUE_ID)
+                            .withBridge(bridgeUID).withLabel(label).build();
+                    logger.debug("discoverZones(): registering new \"all zones\" thing {}.", discoveryResult);
                     thingDiscovered(discoveryResult);
                 }
             }
