@@ -15,9 +15,12 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
@@ -444,24 +447,43 @@ public class AirZoneApiManager {
         return executeUrl("PUT", resourceName, requestContent);
     }
 
+    private static final Object executeUrlLock = new Object();
+    private static @Nullable Instant nextCallNotBefore = null;
+
     private @Nullable String executeUrl(String httpMethod, String resourceName, String requestContent)
             throws IOException {
         String url = "http://".concat(airZoneBridgeConfiguration.ipAddress).concat(":")
                 .concat(Integer.toString(airZoneBridgeConfiguration.tcpPort)).concat("/api/v1/").concat(resourceName);
         Properties headerItems = new Properties();
         InputStream content = new ByteArrayInputStream(requestContent.getBytes(StandardCharsets.UTF_8));
-        String jsonResponse = HttpUtil.executeUrl(httpMethod, url, headerItems, content, "application/json",
-                airZoneBridgeConfiguration.timeoutMsecs);
+
+        String jsonResponse = null;
+        logger.trace("executeUrl - {}: trying to enter synchronized section", httpMethod);
+        synchronized (executeUrlLock) {
+            // Give the bridge some time to breathe, but only wait until the next allowed time has been reached
+            // If no call was ever made, use a default value in the past so that the while loop below exits immediately.
+            Instant effectiveNextCallNotBefore = Optional.ofNullable(nextCallNotBefore)
+                    .orElse(Instant.now().minus(1, ChronoUnit.MINUTES));
+
+            logger.trace("executeUrl - {}: Next call not before: {}", httpMethod, effectiveNextCallNotBefore);
+            while ((Instant.now().isBefore(effectiveNextCallNotBefore))) {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ie) {
+                    logger.trace("io() wait interrupted.");
+                }
+            }
+            logger.trace("executeUrl - {}: wait has ended, send HTTP request", httpMethod);
+
+            jsonResponse = HttpUtil.executeUrl(httpMethod, url, headerItems, content, "application/json",
+                    airZoneBridgeConfiguration.timeoutMsecs);
+
+            nextCallNotBefore = Instant.now().plus(3, ChronoUnit.SECONDS);
+        }
+        logger.trace("executeUrl - {}: exited synchronized section", httpMethod);
+
         if (jsonResponse == null)
             logger.warn("no json response");
-
-        // Give the bridge some time to breathe
-        logger.trace("io(): wait time {} msecs.", airZoneBridgeConfiguration.timeoutMsecs);
-        try {
-            Thread.sleep(airZoneBridgeConfiguration.timeoutMsecs);
-        } catch (InterruptedException ie) {
-            logger.trace("io() wait interrupted.");
-        }
 
         return jsonResponse;
     }
