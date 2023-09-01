@@ -125,6 +125,8 @@ public abstract class AirZoneBaseThingHandler extends BaseThingHandler {
             @Nullable String labelKey, @Nullable String descriptionKey) {
         ChannelUID channelUID = new ChannelUID(thing.getUID(), ChannelId);
         ChannelBuilder channelBuilder = callback.createChannelBuilder(channelUID, channelTypeUID);
+
+        channelBuilder.withAutoUpdatePolicy(autoUpdatePolicy);
         if (labelKey != null)
             channelBuilder = channelBuilder.withLabel(localization.getText(labelKey));
         if (descriptionKey != null)
