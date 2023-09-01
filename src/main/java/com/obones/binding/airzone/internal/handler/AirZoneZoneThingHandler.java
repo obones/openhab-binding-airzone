@@ -75,7 +75,7 @@ public class AirZoneZoneThingHandler extends AirZoneBaseZoneThingHandler {
 
     @Override
     protected synchronized void createOptionalChannels(AirZoneBridgeHandler bridgeHandler) {
-        super.createOptionalChannels(bridgeHandler, AutoUpdatePolicy.DEFAULT);
+        super.createOptionalChannels(bridgeHandler, AutoUpdatePolicy.RECOMMEND);
     }
 
     @Override
