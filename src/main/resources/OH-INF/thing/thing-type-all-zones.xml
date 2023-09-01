@@ -16,23 +16,7 @@
 		<description>@text/thing-type.airzone.all-zones.description</description>
 		<category>HVAC</category>
 		<channels>
-			<channel id="on-off" typeId="on-off">
-				<autoUpdatePolicy>veto</autoUpdatePolicy>
-			</channel>
-			<channel id="mode" typeId="mode">
-				<autoUpdatePolicy>veto</autoUpdatePolicy>
-			</channel>
-			<channel id="heat-stage" typeId="stage">
-				<label>@text/channel-type.airzone.zone.heat-stage.label</label>
-				<autoUpdatePolicy>veto</autoUpdatePolicy>
-			</channel>
-			<channel id="cold-stage" typeId="stage">
-				<label>@text/channel-type.airzone.zone.cold-stage.label</label>
-				<autoUpdatePolicy>veto</autoUpdatePolicy>
-			</channel>
-			<channel id="sleep" typeId="sleep">
-				<autoUpdatePolicy>veto</autoUpdatePolicy>
-			</channel>
+			<!-- We would love to declare channels with an autoUpdatePolicy node but its value is ignored -->
 		</channels>
 		<properties>
 			<property name="vendor">AirZone</property>

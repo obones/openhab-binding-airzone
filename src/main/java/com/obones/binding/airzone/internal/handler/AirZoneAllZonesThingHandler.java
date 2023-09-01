@@ -20,9 +20,11 @@ import org.openhab.core.thing.ThingUID;
 import org.openhab.core.thing.binding.ThingHandlerCallback;
 import org.openhab.core.thing.binding.builder.ThingBuilder;
 import org.openhab.core.thing.type.AutoUpdatePolicy;
+import org.openhab.core.thing.type.ChannelTypeUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.obones.binding.airzone.internal.AirZoneBindingConstants;
 import com.obones.binding.airzone.internal.AirZoneBindingProperties;
 import com.obones.binding.airzone.internal.api.AirZoneApiManager;
 import com.obones.binding.airzone.internal.api.model.AirZoneHvacZone;
@@ -57,9 +59,31 @@ public class AirZoneAllZonesThingHandler extends AirZoneBaseZoneThingHandler {
     @Override
     protected void createOptionalChannels(AirZoneHvacZone zone, ThingHandlerCallback callback, ThingBuilder builder,
             ThingUID thingUID, AutoUpdatePolicy autoUpdatePolicy) {
-        super.createOptionalChannels(zone, callback, builder, thingUID, autoUpdatePolicy);
+        // Those channels should be definable in the XML but the autoUpdatePolicy node seems to be ignored.
+        ChannelTypeUID channelOnOffTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID,
+                AirZoneBindingConstants.CHANNEL_TYPE_ZONE_ON_OFF);
+        createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_ON_OFF,
+                channelOnOffTypeUID, autoUpdatePolicy);
 
-        // No optional channels that are specific to the "All zones" handler
+        ChannelTypeUID channelModeTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID,
+                AirZoneBindingConstants.CHANNEL_TYPE_ZONE_MODE);
+        createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_MODE,
+                channelModeTypeUID, autoUpdatePolicy);
+
+        ChannelTypeUID channelStageTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID,
+                AirZoneBindingConstants.CHANNEL_TYPE_ZONE_STAGE);
+        createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_HEAT_STAGE,
+                channelStageTypeUID, autoUpdatePolicy, "channel-type.airzone.zone.heat-stage.label", null);
+        createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_COLD_STAGE,
+                channelStageTypeUID, autoUpdatePolicy, "channel-type.airzone.zone.cold-stage.label", null);
+
+        ChannelTypeUID channelSleepTypeUID = new ChannelTypeUID(AirZoneBindingConstants.BINDING_ID,
+                AirZoneBindingConstants.CHANNEL_TYPE_ZONE_SLEEP);
+        createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_ZONE_SLEEP,
+                channelSleepTypeUID, autoUpdatePolicy);
+
+        // Called last to have the channels above be presented first in the UI
+        super.createOptionalChannels(zone, callback, builder, thingUID, autoUpdatePolicy);
     }
 
     @Override
