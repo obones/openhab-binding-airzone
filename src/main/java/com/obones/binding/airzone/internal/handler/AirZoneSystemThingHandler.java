@@ -115,6 +115,8 @@ public class AirZoneSystemThingHandler extends AirZoneBaseThingHandler {
             createOptionalChannel(callback, builder, thingUID, AirZoneBindingConstants.CHANNEL_SYSTEM_POWER,
                     systemPowerTypeUID);
         }
+
+        updateThing(builder.build());
     }
 
     @Override
