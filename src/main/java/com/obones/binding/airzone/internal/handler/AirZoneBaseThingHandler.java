@@ -134,7 +134,8 @@ public abstract class AirZoneBaseThingHandler extends BaseThingHandler {
 
         Channel channel = channelBuilder.build();
 
-        return builder.withChannel(channel);
+        // Add channel (remove it beforehand to avoid duplicates, it's a no-op if it did not exist)
+        return builder.withoutChannel(channelUID).withChannel(channel);
     }
 
     protected ThingBuilder createOptionalChannel(ThingHandlerCallback callback, ThingBuilder builder, ThingUID thingUID,
