@@ -278,12 +278,14 @@ public class AirZoneZoneThingHandler extends AirZoneBaseZoneThingHandler {
             }
 
             List<@Nullable String> allowedModes = getAllowedModes(zone);
+            @Nullable
+            Integer masterZoneID = zone.getMasterZoneID();
 
             thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_TYPE, thermostatTypeDesc);
             thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_FIRMWARE, zone.getThermosFirmware());
             thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_THERMOS_RADIO, thermostatRadioDesc);
             thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_MASTER_ZONE_ID,
-                    Integer.toString(zone.getMasterZoneID()));
+                    (masterZoneID != null) ? Integer.toString(masterZoneID) : null);
             thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_AVAILABLE_MODES, allowedModes.toString());
             thing.setProperty(AirZoneBindingConstants.PROPERTY_ZONE_AVAILABLE_SPEEDS,
                     Arrays.toString(zone.getSpeeds()));
@@ -357,7 +359,7 @@ public class AirZoneZoneThingHandler extends AirZoneBaseZoneThingHandler {
                 return builder.withStep(new BigDecimal(zone.getTempStep()));
             case AirZoneBindingConstants.CHANNEL_TYPE_ZONE_MODE:
                 // only the master zone can change the mode of operation
-                return builder.withReadOnly(zone.getZoneID() != zone.getMasterZoneID());
+                return builder.withReadOnly(!AirZoneApiManager.getIsMasterZone(zone));
             default:
                 return null;
         }

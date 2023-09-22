@@ -42,7 +42,7 @@ public class AirZoneHvacZone {
     private double roomTemp;
     private int sleep;
     private double temp_step;
-    private int[] modes = {};
+    private int @Nullable [] modes = {};
     private int mode;
     private int[] speeds = {};
     private int speed;
@@ -65,7 +65,7 @@ public class AirZoneHvacZone {
     private double heatangle;
     @SuppressWarnings("unused")
     private double coldangle;
-    private int master_zoneID;
+    private @Nullable Integer master_zoneID;
     private String eco_adapt = null;
     private int antifreeze;
     private @Nullable Integer slats_vswing;
@@ -130,6 +130,9 @@ public class AirZoneHvacZone {
     }
 
     public int[] getModes() {
+        if (modes == null)
+            return new int[0];
+
         return modes;
     }
 
@@ -205,7 +208,7 @@ public class AirZoneHvacZone {
         return aq_thrhigh;
     };
 
-    public int getMasterZoneID() {
+    public @Nullable Integer getMasterZoneID() {
         return master_zoneID;
     };
 

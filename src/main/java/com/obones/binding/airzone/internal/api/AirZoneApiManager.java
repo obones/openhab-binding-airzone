@@ -135,7 +135,7 @@ public class AirZoneApiManager {
             fetchStatus();
 
         for (var zone : latestZones.values()) {
-            if ((zone.getSystemID() == systemId) && (zone.getMasterZoneID() == zone.getZoneID()))
+            if ((zone.getSystemID() == systemId) && getIsMasterZone(zone))
                 return zone;
         }
 
@@ -143,12 +143,27 @@ public class AirZoneApiManager {
     }
 
     public @Nullable AirZoneHvacZone getMasterZone(AirZoneHvacSystem system) {
+        // find the zone that has the same Id as the master zone id
         for (var zone : system.getData()) {
-            if (zone.getMasterZoneID() == zone.getZoneID())
+            if (getIsMasterZone(zone))
                 return zone;
         }
 
         return null;
+    }
+
+    public static boolean getIsMasterZone(@Nullable AirZoneHvacZone zone) {
+        if (zone == null)
+            return false;
+
+        @Nullable
+        Integer masterZoneID = zone.getMasterZoneID();
+
+        if (masterZoneID != null)
+            return masterZoneID == zone.getZoneID();
+
+        // older systems do not provide the masterZoneId field, so we assume the master zone is the only one with modes
+        return zone.getModes().length > 0;
     }
 
     public @Nullable AirZoneHvacSystemInfo getSystem(int systemId) {
