@@ -44,7 +44,7 @@ public class AirZoneHvacZone {
     private double temp_step;
     private int @Nullable [] modes = {};
     private int mode;
-    private int[] speeds = {};
+    private @Nullable Integer speeds;
     private int speed;
     private int coldStage;
     private int heatStage;
@@ -141,7 +141,16 @@ public class AirZoneHvacZone {
     };
 
     public int[] getSpeeds() {
-        return speeds;
+        if (speeds != null) {
+            int[] value = new int[speeds + 1];
+            for (int i = 0; i < value.length; i++) {
+                value[i] = i;
+            }
+            return value;
+        }
+        else {
+            return new int[0];
+        }
     }
 
     public int getSpeed() {
