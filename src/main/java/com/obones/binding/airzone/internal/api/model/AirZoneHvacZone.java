@@ -141,8 +141,11 @@ public class AirZoneHvacZone {
     };
 
     public int[] getSpeeds() {
+        if (speeds == null) {
+            return new int[0];
+        }
         int[] value = new int[speeds + 1];
-        for (int i=0; i <= speeds; i++) {
+        for (int i = 0; i < value.length; i++) {
             value[i] = i;
         }
         return value;
