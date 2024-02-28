@@ -32,7 +32,7 @@ public class AirZoneBridgeConfiguration {
      */
     public String ipAddress = "192.168.1.1";
     public int tcpPort = 3000;
-    public int timeoutMsecs = 1000; // one second
+    public int timeoutMsecs = 3000; // three seconds
     public int retries = 5;
     public long refreshMSecs = 10000L; // 10 seconds
 }
