@@ -4,8 +4,8 @@
  * See the NOTICE file(s) distributed with this work for additional
  * information.
  *
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. 
- * If a copy of the MPL was not distributed with this file, 
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+ * If a copy of the MPL was not distributed with this file,
  * you can obtain one at https://mozilla.org/MPL/2.0/.
  *
  * SPDX-License-Identifier: MPL-2.0
@@ -79,7 +79,6 @@ public class AirZoneBindingConstants {
     public static final Set<ThingTypeUID> SUPPORTED_THINGS_ITEMS = new HashSet<>(
             Arrays.asList(THING_TYPE_AIRZONE_ZONE, THING_TYPE_AIRZONE_ALL_ZONES, THING_TYPE_AIRZONE_SYSTEM));
 
-    @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
     public static final Set<ThingTypeUID> DISCOVERABLE_THINGS = Set.of(THING_TYPE_AIRZONE_ZONE, THING_TYPE_BINDING,
             THING_TYPE_BRIDGE);
 
@@ -188,7 +187,6 @@ public class AirZoneBindingConstants {
     public static final String ZONE_MODE_AUTO = "AUTO";
 
     // @formatter:off
-    @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
     public static final Map<Integer, String> IntToZoneMode = Map.of(
         1, ZONE_MODE_STOP,
         2, ZONE_MODE_COOLING,
@@ -198,7 +196,6 @@ public class AirZoneBindingConstants {
         7, ZONE_MODE_AUTO
     );
 
-    @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
     public static final Map<String, Integer> ZoneModeToInt = Map.of(
         ZONE_MODE_STOP, 1,
         ZONE_MODE_COOLING, 2,
@@ -215,14 +212,12 @@ public class AirZoneBindingConstants {
     public static final String ZONE_STAGE_COMBINED = "COMBINED";
 
     // @formatter:off
-    @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
     public static final Map<Integer, String> IntToStage = Map.of(
         1, ZONE_STAGE_AIR,
         2, ZONE_STAGE_RADIANT,
         3, ZONE_STAGE_COMBINED
     );
 
-    @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
     public static final Map<String, Integer> ZoneStageToInt = Map.of(
         ZONE_STAGE_AIR, 1,
         ZONE_STAGE_RADIANT, 2,
@@ -237,7 +232,6 @@ public class AirZoneBindingConstants {
     public static final String ZONE_SLEEP_NINETY = "NINETY";
 
     // @formatter:off
-    @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
     public static final Map<Integer, String> IntToSleep = Map.of(
         0, ZONE_SLEEP_OFF,
         30, ZONE_SLEEP_THIRTY,
@@ -245,7 +239,6 @@ public class AirZoneBindingConstants {
         90, ZONE_SLEEP_NINETY
     );
 
-    @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
     public static final Map<String, Integer> ZoneSleepToInt = Map.of(
         ZONE_SLEEP_OFF, 0,
         ZONE_SLEEP_THIRTY, 30,
@@ -270,14 +263,12 @@ public class AirZoneBindingConstants {
     public static final String ZONE_AIR_QUALITY_MODE_AUTO = "AUTO";
 
     // @formatter:off
-    @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
     public static final Map<Integer, String> IntToAirQualityMode = Map.of(
         0, ZONE_AIR_QUALITY_MODE_OFF,
         1, ZONE_AIR_QUALITY_MODE_ON,
         2, ZONE_AIR_QUALITY_MODE_AUTO
     );
 
-    @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
     public static final Map<String, Integer> ZoneAirQualityModeToInt = Map.of(
         ZONE_AIR_QUALITY_MODE_OFF, 0,
         ZONE_AIR_QUALITY_MODE_ON, 1,
@@ -292,7 +283,6 @@ public class AirZoneBindingConstants {
     public static final String ZONE_AIR_QUALITY_LOW = "LOW";
 
     // @formatter:off
-    @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
     public static final Map<Integer, String> IntToAirQuality = Map.of(
         0, ZONE_AIR_QUALITY_OFF,
         1, ZONE_AIR_QUALITY_GOOD,
@@ -309,7 +299,6 @@ public class AirZoneBindingConstants {
     public static final String ZONE_ECO_ADAPT_A_PLUS_PLUS = "A_PLUS_PLUS";
 
     // @formatter:off
-    @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
     public static final Map<String, String> StringToEcoAdapt = Map.of(
         "off", ZONE_ECO_ADAPT_OFF,
         "manual", ZONE_ECO_ADAPT_MANUAL,
@@ -318,7 +307,6 @@ public class AirZoneBindingConstants {
         "a_pp", ZONE_ECO_ADAPT_A_PLUS_PLUS
     );
 
-    @SuppressWarnings("null") // the "of" method has no annotations despite it not returning Null
     public static final Map<String, String> EcoAdaptToString = Map.of(
         ZONE_ECO_ADAPT_OFF, "off",
         ZONE_ECO_ADAPT_MANUAL, "manual",
