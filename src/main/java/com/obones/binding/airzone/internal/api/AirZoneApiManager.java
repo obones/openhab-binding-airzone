@@ -20,9 +20,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.Properties;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.core.io.net.http.HttpUtil;
@@ -477,8 +478,9 @@ public class AirZoneApiManager {
         synchronized (executeUrlLock) {
             // Give the bridge some time to breathe, but only wait until the next allowed time has been reached
             // If no call was ever made, use a default value in the past so that the while loop below exits immediately.
-            Instant effectiveNextCallNotBefore = Optional.ofNullable(nextCallNotBefore)
-                    .orElse(Instant.now().minus(1, ChronoUnit.MINUTES));
+            @NonNull
+            Instant effectiveNextCallNotBefore = Objects.requireNonNullElse(nextCallNotBefore,
+                    Instant.now().minus(1, ChronoUnit.MINUTES));
 
             logger.trace("executeUrl - {}: Next call not before: {}", httpMethod, effectiveNextCallNotBefore);
             while ((Instant.now().isBefore(effectiveNextCallNotBefore))) {
