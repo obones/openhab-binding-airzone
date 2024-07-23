@@ -1,11 +1,11 @@
 // @formatter:off
 /**
- * Copyright (c) 2023-2024 Olivier Sannier 
+ * Copyright (c) 2023-2024 Olivier Sannier
  ** See the NOTICE file(s) distributed with this work for additional
  * information.
  *
- * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. 
- * If a copy of the MPL was not distributed with this file, 
+ * This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0.
+ * If a copy of the MPL was not distributed with this file,
  * you can obtain one at https://mozilla.org/MPL/2.0/.
  *
  * SPDX-License-Identifier: MPL-2.0
@@ -141,6 +141,10 @@ public class AirZoneHvacZone {
     };
 
     public int[] getSpeeds() {
+        // store value locally to avoid "speeds" is nullable on the line that uses it as an array index
+        @Nullable
+        Integer speeds = this.speeds;
+
         if (speeds != null) {
             int[] value = new int[speeds + 1];
             for (int i = 0; i < value.length; i++) {
@@ -192,15 +196,15 @@ public class AirZoneHvacZone {
     public @Nullable Integer getFloorDemand() {
         return floor_demand;
     }
-    
+
     public @Nullable Integer getColdDemand() {
         return cold_demand;
     }
-    
+
     public @Nullable Integer getHeatDemand() {
         return heat_demand;
     }
-    
+
     public @Nullable Integer getAirQuality() {
         return aq_quality;
     };
