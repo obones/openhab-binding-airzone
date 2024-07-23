@@ -14,6 +14,9 @@ jobs:
         addons-ref: [ '4.1.x', '4.2.x', 'main' ]
     name: Build on ${{ matrix.addons-ref }} (Java ${{ matrix.java }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    permissions:
+      id-token: write
+      attestations: write
     steps:
       - name: Checkout openhab-addons
         uses: actions/checkout@v4
@@ -59,3 +62,9 @@ jobs:
             openhab-addons/bundles/com.obones.binding.airzone/target/com.obones.binding.airzone*.jar
             !openhab-addons/bundles/com.obones.binding.airzone/target/com.obones.binding.airzone*-sources.jar
 
+      - name: Create attestation
+        uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: |
+            openhab-addons/bundles/com.obones.binding.airzone/target/com.obones.binding.airzone*.jar
+            !openhab-addons/bundles/com.obones.binding.airzone/target/com.obones.binding.airzone*-sources.jar
