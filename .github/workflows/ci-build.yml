@@ -5,6 +5,9 @@ on:
 
 jobs:
   build:
+    env:
+      addon-path: 'openhab-addons/bundles/com.obones.binding.airzone'
+      is-release: ${{ startsWith(github.ref, '/refs/tags/v') }}
     strategy:
       fail-fast: false
       matrix:
@@ -32,16 +35,16 @@ jobs:
       attestations: write
     steps:
       - name: Checkout openhab-addons
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: openhab/openhab-addons
           path: openhab-addons
           ref: ${{ matrix.addons-ref }}
 
-      - name: Checkout addon
-        uses: actions/checkout@v4
+      - name: Checkout addon in ${{ env.addon-path }}
+        uses: actions/checkout@v6
         with:
-          path: openhab-addons/bundles/com.obones.binding.airzone
+          path: ${{ env.addon-path }}
 
       - name: Apply patches for version ${{ matrix.addons-ref }} from ${{ format('"{0}/patches/{1}.patch"', env.addon-path, matrix.addons-ref) }}
         if: ${{ hashFiles(format('{0}/patches/{1}.patch', env.addon-path, matrix.addons-ref)) != '' }}
@@ -49,7 +52,7 @@ jobs:
         run: git apply patches/${{ matrix.addons-ref }}.patch
 
       - name: Set up Cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/.m2/repository
@@ -59,7 +62,7 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Set up Java ${{ matrix.java }}
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.java }}
@@ -70,19 +73,22 @@ jobs:
           maven-version: ${{ matrix.maven }}
 
       - name: Build with maven
-        run: 'cd openhab-addons/bundles/com.obones.binding.airzone ; mvn clean install -DskipChecks'
+        working-directory: ${{ env.addon-path }}
+        run: mvn clean install -DskipChecks
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
+        if: ${{ env.is-release == true }}
         with:
           name: com.obones.binding.airzone-openhab_${{ matrix.addons-ref }}-java_${{ matrix.java }}
           path: |
-            openhab-addons/bundles/com.obones.binding.airzone/target/com.obones.binding.airzone*.jar
-            !openhab-addons/bundles/com.obones.binding.airzone/target/com.obones.binding.airzone*-sources.jar
+            ${{ env.addon-path }}/target/com.obones.binding.airzone*.jar
+            !${{ env.addon-path }}/target/com.obones.binding.airzone*-sources.jar
 
       - name: Create attestation
         uses: actions/attest-build-provenance@v1
+        if: ${{ env.is-release == true }}
         with:
           subject-path: |
-            openhab-addons/bundles/com.obones.binding.airzone/target/com.obones.binding.airzone*.jar
-            !openhab-addons/bundles/com.obones.binding.airzone/target/com.obones.binding.airzone*-sources.jar
+            ${{ env.addon-path }}/target/com.obones.binding.airzone*.jar
+            !${{ env.addon-path }}/target/com.obones.binding.airzone*-sources.jar
