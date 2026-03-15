@@ -12,7 +12,7 @@
 
   <artifactId>com.obones.binding.airzone</artifactId>
 
-  <version>0.2.4</version>
+  <version>0.2.5</version>
 
   <name>openHAB Add-ons :: Bundles :: AirZone Binding</name>
 
