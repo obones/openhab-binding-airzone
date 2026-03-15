@@ -11,7 +11,20 @@ jobs:
         java: [ '17' ]
         maven: [ '3.9.4' ]
         os: [ 'ubuntu-22.04' ]
-        addons-ref: [ '4.1.x', '4.2.x', 'main' ]
+        addons-ref: [ '4.1.x', '4.2.x', '4.3.x' ]
+        include:
+          - java: 21
+            addons-ref: 5.0.x
+            os: ubuntu-22.04
+            maven: 3.9.4
+          - java: 21
+            addons-ref: 5.1.x
+            os: ubuntu-22.04
+            maven: 3.9.4
+          - java: 21
+            addons-ref: main
+            os: ubuntu-22.04
+            maven: 3.9.6
     name: Build on ${{ matrix.addons-ref }} (Java ${{ matrix.java }}, ${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     permissions:
@@ -29,6 +42,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: openhab-addons/bundles/com.obones.binding.airzone
+
+      - name: Apply patches for version ${{ matrix.addons-ref }} from ${{ format('"{0}/patches/{1}.patch"', env.addon-path, matrix.addons-ref) }}
+        if: ${{ hashFiles(format('{0}/patches/{1}.patch', env.addon-path, matrix.addons-ref)) != '' }}
+        working-directory: ${{ env.addon-path }}
+        run: git apply patches/${{ matrix.addons-ref }}.patch
 
       - name: Set up Cache
         uses: actions/cache@v4
